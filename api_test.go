@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/DotNetAge/gograph/internal/api"
-	"github.com/DotNetAge/gograph/internal/cypher"
+	"github.com/DotNetAge/gograph/pkg/api"
+	"github.com/DotNetAge/gograph/pkg/cypher"
 )
 
 func testPath(t *testing.T) string {
@@ -697,44 +697,43 @@ func TestRemoveLabel(t *testing.T) {
 	rows.Close()
 
 	if vipCount != 1 {
-	        t.Errorf("expected 1 VIP, got %d", vipCount)
+		t.Errorf("expected 1 VIP, got %d", vipCount)
 	}
 
 	_, err = db.Exec(ctx, "MATCH (n:VIP) REMOVE n:VIP")
 	if err != nil {
-	        t.Fatalf("failed to remove label: %v", err)
+		t.Fatalf("failed to remove label: %v", err)
 	}
 
 	rows, err = db.Query(ctx, "MATCH (n:VIP) RETURN n")
 	if err != nil {
-	        t.Fatalf("failed to query VIPs after remove: %v", err)
+		t.Fatalf("failed to query VIPs after remove: %v", err)
 	}
 	vipCount = 0
 	for rows.Next() {
-	        vipCount++
+		vipCount++
 	}
 	rows.Close()
 
 	if vipCount != 0 {
-	        t.Errorf("expected 0 VIP after remove, got %d", vipCount)
+		t.Errorf("expected 0 VIP after remove, got %d", vipCount)
 	}
-	}
+}
 
-	func TestWithObservability(t *testing.T) {
+func TestWithObservability(t *testing.T) {
 	path := testPath(t)
 	defer os.Remove(path)
 
 	obs := cypher.NewObservability()
 	db, err := api.Open(path, api.WithObservability(obs))
 	if err != nil {
-	t.Fatalf("failed to open db with observability: %v", err)
+		t.Fatalf("failed to open db with observability: %v", err)
 	}
 	defer db.Close()
 
 	ctx := context.Background()
 	_, err = db.Exec(ctx, "CREATE (n:User {name: 'Alice'})")
 	if err != nil {
-	t.Fatalf("failed to exec: %v", err)
+		t.Fatalf("failed to exec: %v", err)
 	}
-	}
-
+}
