@@ -86,6 +86,8 @@ type RelationPattern struct {
 	StartNode  *NodePattern
 	EndNode    *NodePattern
 	Properties map[string]interface{}
+	MinHops    int
+	MaxHops    int
 }
 
 // RelDirection represents the direction of a relationship pattern.

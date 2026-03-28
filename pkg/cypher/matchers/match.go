@@ -32,7 +32,6 @@ func (m *Matcher) Execute(clause *ast.MatchClause, varVars map[string]interface{
 	if len(clause.Pattern.Elements) > 0 {
 		elem := clause.Pattern.Elements[0]
 		if elem.Node != nil && elem.Relation != nil {
-			// Find start nodes using index if possible
 			var startNodes []*graph.Node
 			if len(elem.Node.Labels) > 0 {
 				ids, _ := m.Index.LookupByLabel(elem.Node.Labels[0])
@@ -49,7 +48,6 @@ func (m *Matcher) Execute(clause *ast.MatchClause, varVars map[string]interface{
 					}
 				}
 			} else {
-				// Fallback to full node scan
 				iter, _ := m.Store.NewIter(nil)
 				for iter.SeekGE([]byte(storage.KeyPrefixNode)); iter.Valid(); iter.Next() {
 					key := iter.Key()
@@ -66,61 +64,85 @@ func (m *Matcher) Execute(clause *ast.MatchClause, varVars map[string]interface{
 				iter.Close()
 			}
 
-			// For each start node, follow adjacency list
-			adj := graph.NewAdjacencyList(m.Store)
-			for _, startNode := range startNodes {
-				relIDs, _ := adj.GetAllRelated(startNode.ID)
-				for _, relID := range relIDs {
-					relData, err := m.Store.Get(storage.RelKey(relID))
-					if err != nil {
-						continue
-					}
-					var rel graph.Relationship
-					if err := storage.Unmarshal(relData, &rel); err != nil {
-						continue
-					}
-
-					// Check rel type and direction
-					if elem.Relation.RelType != "" && rel.Type != elem.Relation.RelType {
-						continue
-					}
-					// Only follow outgoing relationships in current simple implementation
-					if rel.StartNodeID != startNode.ID {
-						continue
-					}
-
-					// Load end node
-					endData, err := m.Store.Get(storage.NodeKey(rel.EndNodeID))
-					if err != nil {
-						continue
-					}
-					var endNode graph.Node
-					if err := storage.Unmarshal(endData, &endNode); err != nil {
-						continue
-					}
-
-					if elem.Relation.EndNode != nil {
-						if !m.NodeMatchesProperties(&endNode, elem.Relation.EndNode.Labels, elem.Relation.EndNode.Properties) {
+			// Handle variable length paths (e.g., [r*1..3])
+			if elem.Relation.MinHops > 1 || elem.Relation.MaxHops > 1 {
+				for _, startNode := range startNodes {
+					visited := make(map[string]bool)
+					visited[startNode.ID] = true
+					variablePaths := m.findVariableLengthPaths(startNode, &elem, visited)
+					matchedPaths = append(matchedPaths, variablePaths...)
+				}
+			} else {
+				adj := graph.NewAdjacencyList(m.Store)
+				for _, startNode := range startNodes {
+					relIDs, _ := adj.GetAllRelated(startNode.ID)
+					for _, relID := range relIDs {
+						relData, err := m.Store.Get(storage.RelKey(relID))
+						if err != nil {
 							continue
 						}
-					}
+						var rel graph.Relationship
+						if err := storage.Unmarshal(relData, &rel); err != nil {
+							continue
+						}
 
-					path := make(map[string]interface{})
-					if elem.Node.Variable != "" {
-						path[elem.Node.Variable] = startNode
+						if elem.Relation.RelType != "" && rel.Type != elem.Relation.RelType {
+							continue
+						}
+
+						var endNodeID string
+						switch elem.Relation.Dir {
+						case ast.RelDirOutgoing, "":
+							if rel.StartNodeID != startNode.ID {
+								continue
+							}
+							endNodeID = rel.EndNodeID
+						case ast.RelDirIncoming:
+							if rel.EndNodeID != startNode.ID {
+								continue
+							}
+							endNodeID = rel.StartNodeID
+						case ast.RelDirBoth:
+							if rel.StartNodeID == startNode.ID {
+								endNodeID = rel.EndNodeID
+							} else {
+								continue
+							}
+						default:
+							continue
+						}
+
+						endData, err := m.Store.Get(storage.NodeKey(endNodeID))
+						if err != nil {
+							continue
+						}
+						var endNode graph.Node
+						if err := storage.Unmarshal(endData, &endNode); err != nil {
+							continue
+						}
+
+						if elem.Relation.EndNode != nil {
+							if !m.NodeMatchesProperties(&endNode, elem.Relation.EndNode.Labels, elem.Relation.EndNode.Properties) {
+								continue
+							}
+						}
+
+						path := make(map[string]interface{})
+						if elem.Node.Variable != "" {
+							path[elem.Node.Variable] = startNode
+						}
+						if elem.Relation.Variable != "" {
+							path[elem.Relation.Variable] = &rel
+						}
+						if elem.Relation.EndNode != nil && elem.Relation.EndNode.Variable != "" {
+							path[elem.Relation.EndNode.Variable] = &endNode
+						}
+						matchedPaths = append(matchedPaths, path)
 					}
-					if elem.Relation.Variable != "" {
-						path[elem.Relation.Variable] = &rel
-					}
-					if elem.Relation.EndNode != nil && elem.Relation.EndNode.Variable != "" {
-						path[elem.Relation.EndNode.Variable] = &endNode
-					}
-					matchedPaths = append(matchedPaths, path)
 				}
 			}
 		} else if elem.Node != nil {
 			if len(elem.Node.Labels) > 0 {
-				// Use index
 				ids, _ := m.Index.LookupByLabel(elem.Node.Labels[0])
 				for _, id := range ids {
 					data, err := m.Store.Get(storage.NodeKey(id))
@@ -141,7 +163,6 @@ func (m *Matcher) Execute(clause *ast.MatchClause, varVars map[string]interface{
 					}
 				}
 			} else {
-				// Fallback to full node scan
 				nodeIter, err := m.Store.NewIter(nil)
 				if err != nil {
 					return nil, nil, err
@@ -193,8 +214,6 @@ func (m *Matcher) Execute(clause *ast.MatchClause, varVars map[string]interface{
 		}
 		rows = append(rows, row)
 
-		// This updates varVars, but it only keeps the last row's state for subsequent modifiers
-		// unless we fix the executor to loop.
 		for k, v := range path {
 			varVars[k] = v
 		}
@@ -333,6 +352,14 @@ func (m *Matcher) EvaluateExpression(path map[string]interface{}, expr ast.Expre
 			return leftVal == rightStr
 		case "!=":
 			return leftVal != rightStr
+		case ">":
+			return leftVal > rightStr
+		case ">=":
+			return leftVal >= rightStr
+		case "<":
+			return leftVal < rightStr
+		case "<=":
+			return leftVal <= rightStr
 		}
 	}
 	return false

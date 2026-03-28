@@ -484,7 +484,7 @@ func (p *Parser) parseRelationPattern() (*ast.RelationPattern, ast.RelDirection,
 		p.pos++
 		p.skipWhitespace()
 
-		if p.isIdentifierStart() && p.peek() != ':' {
+		if p.isIdentifierStart() && p.peek() != ':' && p.peek() != '*' && p.peek() != '[' {
 			ident, err := p.parseIdentifier()
 			if err == nil {
 				rel.Variable = ident.Name
@@ -499,6 +499,18 @@ func (p *Parser) parseRelationPattern() (*ast.RelationPattern, ast.RelDirection,
 				return nil, "", err
 			}
 			rel.RelType = relType.Name
+		}
+
+		p.skipWhitespace()
+
+		if p.peek() == '*' {
+			p.pos++
+			minHops, maxHops, err := p.parseHopRange()
+			if err != nil {
+				return nil, "", err
+			}
+			rel.MinHops = minHops
+			rel.MaxHops = maxHops
 		}
 
 		p.skipWhitespace()
@@ -914,4 +926,70 @@ func (p *Parser) isDigit() bool {
 	}
 	c := p.input[p.pos]
 	return c >= '0' && c <= '9'
+}
+
+func (p *Parser) parseHopRange() (minHops, maxHops int, err error) {
+	minHops = 1
+	maxHops = -1
+
+	p.skipWhitespace()
+
+	if p.isDigit() {
+		minStr := ""
+		for p.isDigit() {
+			minStr += string(p.peek())
+			p.pos++
+		}
+		fmt.Sscanf(minStr, "%d", &minHops)
+
+		p.skipWhitespace()
+
+		if p.peek() == '.' {
+			p.pos++
+			if p.peek() == '.' {
+				p.pos++
+				p.skipWhitespace()
+				if p.isDigit() {
+					maxStr := ""
+					for p.isDigit() {
+						maxStr += string(p.peek())
+						p.pos++
+					}
+					fmt.Sscanf(maxStr, "%d", &maxHops)
+				} else {
+					maxHops = -1
+				}
+			} else {
+				p.pos--
+			}
+		} else {
+			maxHops = minHops
+		}
+	} else if p.peek() == '.' {
+		p.pos++
+		if p.peek() == '.' {
+			p.pos++
+			p.skipWhitespace()
+			maxStr := ""
+			for p.isDigit() {
+				maxStr += string(p.peek())
+				p.pos++
+			}
+			if maxStr != "" {
+				fmt.Sscanf(maxStr, "%d", &maxHops)
+			}
+		}
+	}
+
+	if maxHops == 0 {
+		return 0, 0, fmt.Errorf("max hops cannot be 0")
+	}
+	if minHops == 0 {
+		return 0, 0, fmt.Errorf("min hops cannot be 0")
+	}
+	if maxHops > 0 && minHops > maxHops {
+		return 0, 0, fmt.Errorf("min hops cannot be greater than max hops")
+	}
+
+	return minHops, maxHops, nil
 }
