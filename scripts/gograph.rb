@@ -1,17 +1,34 @@
 class Gograph < Formula
   desc "Pure Go embedded graph database"
   homepage "https://github.com/DotNetAge/gograph"
-  url "https://github.com/DotNetAge/gograph/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "71db0954df271fe71a6ff4d57c64625fb4632ab796d98405bd9a27afc9c5234f"
+  version "v0.1.0-4-g3f04068"
   license "MIT"
 
-  depends_on "go" => :build
+  on_macos do
+    if Hardware::CPU.arm?
+      url "https://github.com/DotNetAge/gograph/releases/download/vv0.1.0-4-g3f04068/gograph-v0.1.0-4-g3f04068-darwin-arm64.tar.gz"
+      sha256 "bf0e8b3cea6154b2228b3fbb0020861f1ce74a23ec9a43d3277335ee0bb4be0f"
+    else
+      url "https://github.com/DotNetAge/gograph/releases/download/vv0.1.0-4-g3f04068/gograph-v0.1.0-4-g3f04068-darwin-amd64.tar.gz"
+      sha256 "15baaa4c86a27de182cf79194b60a13f7788f7ac961f8ef2b8ebb4eee1a1bb92"
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      url "https://github.com/DotNetAge/gograph/releases/download/vv0.1.0-4-g3f04068/gograph-v0.1.0-4-g3f04068-linux-arm64.tar.gz"
+      sha256 "bc3ddd14153f5321a8b1ee05c03f65b009db698424f4e386cf93e881619cfb7f"
+    else
+      url "https://github.com/DotNetAge/gograph/releases/download/vv0.1.0-4-g3f04068/gograph-v0.1.0-4-g3f04068-linux-amd64.tar.gz"
+      sha256 "3478c94eb828e85fd931af6d7e5cbb038c085c30c447f9664c6b2845d8dec3b7"
+    end
+  end
 
   def install
-    system "go", "build", "-ldflags", "-X main.Version=#{version}", "-o", bin/"gog", "./cmd/gograph"
+    bin.install "gograph"
   end
 
   test do
-    system "#{bin}/gog", "query", "MATCH (n) RETURN n"
+    system "#{bin}/gograph", "query", "MATCH (n) RETURN n"
   end
 end
