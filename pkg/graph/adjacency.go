@@ -96,20 +96,18 @@ func (adj *AdjacencyList) GetAllRelated(nodeID string) ([]string, error) {
 	}
 	defer iter.Close()
 
+	prefixStr := string(prefix)
 	for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
 		key := iter.Key()
+		keyStr := string(key)
 		if !hasAdjPrefix(key, prefix) {
 			break
 		}
-		
-		// Key format: adj:{nodeID}:{relType}:{direction}:{relID}
-		// Example: adj:1:KNOWS:out:5
-		keyStr := string(key)
-		parts := strings.Split(keyStr, ":")
-		if len(parts) >= 5 {
-			relID := parts[4]
-			// To avoid duplicates (since a self-loop would appear as 'in' and 'out'), 
-			// we can rely on caller to distinct them or just return.
+
+		remainder := strings.TrimPrefix(keyStr, prefixStr)
+		parts := strings.Split(remainder, ":")
+		if len(parts) >= 3 {
+			relID := strings.Join(parts[2:], ":")
 			relIDs = append(relIDs, relID)
 		}
 	}

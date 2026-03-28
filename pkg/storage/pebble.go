@@ -95,3 +95,20 @@ func (i *Iterator) Key() []byte            { return i.iter.Key() }
 func (i *Iterator) Value() []byte          { return i.iter.Value() }
 func (i *Iterator) Error() error           { return i.iter.Error() }
 func (i *Iterator) Close() error           { return i.iter.Close() }
+
+func (db *DB) DumpAll() (map[string][]byte, error) {
+	result := make(map[string][]byte)
+	iter, err := db.NewIter(nil)
+	if err != nil {
+		return nil, err
+	}
+	defer iter.Close()
+
+	for iter.SeekGE([]byte{}); iter.Valid(); iter.Next() {
+		key := string(iter.Key())
+		value := make([]byte, len(iter.Value()))
+		copy(value, iter.Value())
+		result[key] = value
+	}
+	return result, nil
+}

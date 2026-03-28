@@ -93,11 +93,11 @@ func (c *Creator) Execute(t *tx.Transaction, clause *ast.CreateClause) (affected
 				}
 
 				if err := c.adj.AddRelationship(t, rel); err != nil {
-					return 0, 0, err
-				}
+				return 0, 0, err
+			}
 
-				affectedNodes++
-				affectedRels++
+			affectedNodes++
+			affectedRels++
 			}
 		}
 	}
