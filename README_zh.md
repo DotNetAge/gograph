@@ -6,6 +6,7 @@
   [![Go Version](https://img.shields.io/github/go-mod/go-version/DotNetAge/gograph)](https://golang.org/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Go Report Card](https://goreportcard.com/badge/github.com/DotNetAge/gograph)](https://goreportcard.com/report/github.com/DotNetAge/gograph)
+  [![codecov](https://codecov.io/gh/DotNetAge/gograph/graph/badge.svg?token=placeholder)](https://codecov.io/gh/DotNetAge/gograph)
   [![Docs](https://img.shields.io/badge/docs-gograph.rayainfo.cn-2094f3.svg)](https://gograph.rayainfo.cn)
 		
   <p>
