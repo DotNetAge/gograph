@@ -6,7 +6,7 @@
   [![Go Version](https://img.shields.io/github/go-mod/go-version/DotNetAge/gograph)](https://golang.org/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Go Report Card](https://goreportcard.com/badge/github.com/DotNetAge/gograph)](https://goreportcard.com/report/github.com/DotNetAge/gograph)
-  [![Docs](https://img.shields.io/badge/docs-gograph.rayainfo.cn-4cae4f.svg)](https://gograph.rayainfo.cn)
+  [![Docs](https://img.shields.io/badge/docs-gograph.rayainfo.cn-2094f3.svg)](https://gograph.rayainfo.cn)
 
   <p>
     <a href="README_zh.md">简体中文</a> | <strong>English</strong>
@@ -83,11 +83,11 @@ func main() {
 
 The `gograph` binary provides a powerful TUI and command-line utilities.
 
-| Command | Description |
-| --- | --- |
-| `gograph` | Launch Interactive TUI (default to `default.db`) |
-| `gograph query <cypher>` | Run a read-only query |
-| `gograph exec <cypher>` | Run a data modification command |
+| Command                  | Description                                      |
+| ------------------------ | ------------------------------------------------ |
+| `gograph`                | Launch Interactive TUI (default to `default.db`) |
+| `gograph query <cypher>` | Run a read-only query                            |
+| `gograph exec <cypher>`  | Run a data modification command                  |
 
 **Example:**
 ```bash

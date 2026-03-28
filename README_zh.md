@@ -6,7 +6,7 @@
   [![Go Version](https://img.shields.io/github/go-mod/go-version/DotNetAge/gograph)](https://golang.org/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Go Report Card](https://goreportcard.com/badge/github.com/DotNetAge/gograph)](https://goreportcard.com/report/github.com/DotNetAge/gograph)
-  [![Docs](https://img.shields.io/badge/docs-gograph.rayainfo.cn-4cae4f.svg)](https://gograph.rayainfo.cn)
+  [![Docs](https://img.shields.io/badge/docs-gograph.rayainfo.cn-2094f3.svg)](https://gograph.rayainfo.cn)
 		
   <p>
     <strong>简体中文</strong> | <a href="README.md">English</a>
@@ -83,11 +83,11 @@ func main() {
 
 `gograph` 二进制文件提供了一个强大的交互式 TUI 和命令行工具。
 
-| 命令 | 说明 |
-| --- | --- |
-| `gograph` | 启动交互式 TUI (默认路径 `default.db`) |
-| `gograph query <cypher>` | 执行只读查询 |
-| `gograph exec <cypher>` | 执行数据修改指令 |
+| 命令                     | 说明                                   |
+| ------------------------ | -------------------------------------- |
+| `gograph`                | 启动交互式 TUI (默认路径 `default.db`) |
+| `gograph query <cypher>` | 执行只读查询                           |
+| `gograph exec <cypher>`  | 执行数据修改指令                       |
 
 **使用示例：**
 ```bash

@@ -3,4 +3,5 @@ bin/
 *.out
 .db
 test.db/
+default.db/
 coverage.html
