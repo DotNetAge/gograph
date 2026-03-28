@@ -17,9 +17,10 @@ type Parser struct {
 
 // NewParser creates a new Parser for the given Cypher query string.
 func NewParser(input string) *Parser {
+	trimmed := strings.TrimSpace(input)
 	return &Parser{
-		input:  strings.TrimSpace(input),
-		length: len(input),
+		input:  trimmed,
+		length: len(trimmed),
 	}
 }
 
@@ -283,11 +284,12 @@ func (p *Parser) parseRemove() (*ast.RemoveClause, error) {
 					return nil, err
 				}
 				removals = append(removals, ast.RemoveItem{
-					Type:  ast.RemoveItemTypeLabel,
-					Label: label.Name,
+					Type:     ast.RemoveItemTypeLabel,
+					Label:    label.Name,
 					Property: ast.PropertyAccess{Node: ident.Name},
 				})
-			} else if p.peek() == '.' {				p.pos++
+			} else if p.peek() == '.' {
+				p.pos++
 				prop, err := p.parseIdentifier()
 				if err != nil {
 					return nil, err

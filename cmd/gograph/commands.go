@@ -16,10 +16,16 @@ import (
 var execCmd = &cobra.Command{
 	Use:   "exec [db_path] [cypher_query]",
 	Short: "Execute a data modification Cypher query (CREATE, SET, DELETE, REMOVE)",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dbPath := args[0]
-		query := args[1]
+		dbPath := defaultDBPath
+		query := ""
+		if len(args) == 1 {
+			query = args[0]
+		} else {
+			dbPath = args[0]
+			query = args[1]
+		}
 
 		db, err := api.Open(dbPath)
 		if err != nil {
@@ -43,10 +49,16 @@ var execCmd = &cobra.Command{
 var queryCmd = &cobra.Command{
 	Use:   "query [db_path] [cypher_query]",
 	Short: "Execute a data retrieval Cypher query (MATCH ... RETURN)",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dbPath := args[0]
-		query := args[1]
+		dbPath := defaultDBPath
+		query := ""
+		if len(args) == 1 {
+			query = args[0]
+		} else {
+			dbPath = args[0]
+			query = args[1]
+		}
 
 		db, err := api.Open(dbPath)
 		if err != nil {
@@ -107,7 +119,20 @@ func formatValue(val interface{}) string {
 	case *graph.Node:
 		props := []string{}
 		for k, pv := range v.Properties {
-			props = append(props, fmt.Sprintf("%s:%s", k, pv.StringValue()))
+			var propVal string
+			switch pv.Type() {
+			case graph.PropertyTypeString:
+				propVal = pv.StringValue()
+			case graph.PropertyTypeInt:
+				propVal = fmt.Sprintf("%d", pv.IntValue())
+			case graph.PropertyTypeFloat:
+				propVal = fmt.Sprintf("%f", pv.FloatValue())
+			case graph.PropertyTypeBool:
+				propVal = fmt.Sprintf("%t", pv.BoolValue())
+			default:
+				propVal = "unknown"
+			}
+			props = append(props, fmt.Sprintf("%s:%s", k, propVal))
 		}
 		labels := strings.Join(v.Labels, ":")
 		if labels != "" {
@@ -121,7 +146,20 @@ func formatValue(val interface{}) string {
 	case *graph.Relationship:
 		props := []string{}
 		for k, pv := range v.Properties {
-			props = append(props, fmt.Sprintf("%s:%s", k, pv.StringValue()))
+			var propVal string
+			switch pv.Type() {
+			case graph.PropertyTypeString:
+				propVal = pv.StringValue()
+			case graph.PropertyTypeInt:
+				propVal = fmt.Sprintf("%d", pv.IntValue())
+			case graph.PropertyTypeFloat:
+				propVal = fmt.Sprintf("%f", pv.FloatValue())
+			case graph.PropertyTypeBool:
+				propVal = fmt.Sprintf("%t", pv.BoolValue())
+			default:
+				propVal = "unknown"
+			}
+			props = append(props, fmt.Sprintf("%s:%s", k, propVal))
 		}
 		propStr := ""
 		if len(props) > 0 {

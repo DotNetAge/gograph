@@ -7,10 +7,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Version = "dev"
+const defaultDBPath = "default.db"
+
 var rootCmd = &cobra.Command{
 	Use:   "gograph [command] [database_path]",
 	Short: "GoGraph is a pure Go embedded graph database",
 	Long:  `GoGraph is a lightweight, zero-dependency embedded graph database supporting a core subset of Cypher.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		dbPath := defaultDBPath
+		if len(args) > 0 {
+			dbPath = args[0]
+		}
+		return runTUI(dbPath)
+	},
 }
 
 func main() {

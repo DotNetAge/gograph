@@ -208,6 +208,8 @@ func (m *Matcher) Execute(clause *ast.MatchClause, varVars map[string]interface{
 				} else {
 					columns = append(columns, lookup.Node+"."+lookup.Property)
 				}
+			} else if ident, ok := item.Expression.(*ast.Identifier); ok {
+				columns = append(columns, ident.Name)
 			}
 		}
 	} else if len(rows) > 0 {

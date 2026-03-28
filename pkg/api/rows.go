@@ -42,9 +42,13 @@ func (r *Rows) Scan(dest ...interface{}) error {
 					*d = s
 				}
 			case *int:
-				if s, ok := val.(int); ok {
-					*d = s
+				switch v := val.(type) {
+				case int:
+					*d = v
+				case int64:
+					*d = int(v)
 				}
+
 			case *int64:
 				switch v := val.(type) {
 				case int64:

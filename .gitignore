@@ -1,3 +1,6 @@
 specs/
 bin/
 *.out
+.db
+test.db/
+coverage.html

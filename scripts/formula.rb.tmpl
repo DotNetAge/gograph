@@ -1,0 +1,34 @@
+class Gograph < Formula
+  desc "Pure Go embedded graph database"
+  homepage "https://github.com/DotNetAge/gograph"
+  version "{{VERSION}}"
+  license "MIT"
+
+  on_macos do
+    if Hardware::CPU.arm?
+      url "https://github.com/DotNetAge/gograph/releases/download/v{{VERSION}}/gograph-{{VERSION}}-darwin-arm64.tar.gz"
+      sha256 "{{MAC_ARM64_SHA256}}"
+    else
+      url "https://github.com/DotNetAge/gograph/releases/download/v{{VERSION}}/gograph-{{VERSION}}-darwin-amd64.tar.gz"
+      sha256 "{{MAC_AMD64_SHA256}}"
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      url "https://github.com/DotNetAge/gograph/releases/download/v{{VERSION}}/gograph-{{VERSION}}-linux-arm64.tar.gz"
+      sha256 "{{LINUX_ARM64_SHA256}}"
+    else
+      url "https://github.com/DotNetAge/gograph/releases/download/v{{VERSION}}/gograph-{{VERSION}}-linux-amd64.tar.gz"
+      sha256 "{{LINUX_AMD64_SHA256}}"
+    end
+  end
+
+  def install
+    bin.install "gograph"
+  end
+
+  test do
+    system "#{bin}/gograph", "query", "MATCH (n) RETURN n"
+  end
+end
