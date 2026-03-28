@@ -64,6 +64,13 @@
         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/quick-start/"/>
     </url>
     <url>
+        <loc>Nonerelease-notes/v0.1.1/</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonerelease-notes/v0.1.1/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/release-notes/v0.1.1/"/>
+    </url>
+    <url>
         <loc>Nonezh/</loc>
         <lastmod>2026-03-28</lastmod>
         <changefreq>daily</changefreq>
@@ -125,5 +132,12 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/quick-start/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonequick-start/"/>
+    </url>
+    <url>
+        <loc>Nonezh/release-notes/v0.1.1/</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/release-notes/v0.1.1/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonerelease-notes/v0.1.1/"/>
     </url>
 </urlset>
