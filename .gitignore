@@ -5,3 +5,4 @@ bin/
 test.db/
 default.db/
 coverage.html
+dist/
