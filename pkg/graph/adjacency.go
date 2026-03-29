@@ -71,14 +71,16 @@ func (adj *AdjacencyList) GetRelatedNodes(nodeID, relType string, direction Dire
 			return nil, err
 		}
 
-		for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
-			key := iter.Key()
-			if !hasAdjPrefix(key, prefix) {
-				break
+		func() {
+			defer iter.Close()
+			for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
+				key := iter.Key()
+				if !hasAdjPrefix(key, prefix) {
+					break
+				}
+				nodeIDs = append(nodeIDs, string(iter.Value()))
 			}
-			nodeIDs = append(nodeIDs, string(iter.Value()))
-		}
-		iter.Close()
+		}()
 	}
 
 	return nodeIDs, nil

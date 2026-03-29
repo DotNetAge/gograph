@@ -1,208 +1,252 @@
-// Package modifiers provides executors for Cypher data modification clauses
-// including SET, DELETE, and REMOVE operations.
 package modifiers
 
 import (
-	"strings"
-
 	"github.com/DotNetAge/gograph/pkg/cypher/ast"
-	"github.com/DotNetAge/gograph/pkg/cypher/matchers"
+	"github.com/DotNetAge/gograph/pkg/cypher/utils"
 	"github.com/DotNetAge/gograph/pkg/graph"
 	"github.com/DotNetAge/gograph/pkg/storage"
 	"github.com/DotNetAge/gograph/pkg/tx"
 )
 
-// Modifier executes data modification clauses (SET, DELETE, REMOVE).
-// It coordinates with the Matcher to find existing graph elements to modify.
 type Modifier struct {
-	Store   *storage.DB
-	Matcher *matchers.Matcher
-	index   *graph.Index
-	adj     *graph.AdjacencyList
+	Store *storage.DB
+	index *graph.Index
+	adj   *graph.AdjacencyList
 }
 
-// NewModifier creates a new Modifier instance with the given storage and matcher.
-func NewModifier(store *storage.DB, matcher *matchers.Matcher) *Modifier {
+func NewModifier(store *storage.DB) *Modifier {
 	return &Modifier{
-		Store:   store,
-		Matcher: matcher,
-		index:   graph.NewIndex(store),
-		adj:     graph.NewAdjacencyList(store),
+		Store: store,
+		index: graph.NewIndex(store),
+		adj:   graph.NewAdjacencyList(store),
 	}
 }
 
-// ExecuteSet executes a SET clause to update node properties.
-// It returns the count of affected nodes.
-func (m *Modifier) ExecuteSet(t *tx.Transaction, clause *ast.SetClause, varVars map[string]interface{}, params map[string]interface{}) (affectedNodes int, err error) {
-	for _, assignment := range clause.Assignments {
-		nodeID := assignment.Property.Node
-		if node, ok := varVars[nodeID].(*graph.Node); ok {
-			// Remove old index before modifying properties
-			m.index.RemovePropertyIndex(t, node)
+func (m *Modifier) ExecuteSet(t *tx.Transaction, stmt *ast.SetStmt, path map[string]interface{}, params map[string]interface{}) (affectedNodes int, err error) {
+	for _, item := range stmt.Items {
+		if item.Target == nil {
+			continue
+		}
 
-			val := m.resolveValue(assignment.Value, params)
-			node.Properties[assignment.Property.Property] = graph.ToPropertyValue(val)
+		var node *graph.Node
+		var rel *graph.Relationship
 
-			data, err := storage.Marshal(node)
-			if err != nil {
-				return 0, err
+		if ident, ok := item.Target.(*ast.Ident); ok {
+			if obj, exists := path[ident.Name]; exists {
+				switch o := obj.(type) {
+				case *graph.Node:
+					node = o
+				case *graph.Relationship:
+					rel = o
+				}
 			}
-			if err := t.Put(storage.NodeKey(node.ID), data); err != nil {
-				return 0, err
+		} else if pa, ok := item.Target.(*ast.PropertyAccessExpr); ok {
+			if ident, ok := pa.Target.(*ast.Ident); ok {
+				if obj, exists := path[ident.Name]; exists {
+					switch o := obj.(type) {
+					case *graph.Node:
+						node = o
+					case *graph.Relationship:
+						rel = o
+					}
+				}
 			}
 
-			// Rebuild index with new properties
-			if err := m.index.BuildPropertyIndex(t, node); err != nil {
-				return 0, err
+			if item.IsLabel {
+				if node != nil {
+					label := m.exprToString(item.Value, params)
+					if label != "" {
+						node.Labels = append(node.Labels, label)
+						if err := m.saveNode(t, node); err != nil {
+							return 0, err
+						}
+						affectedNodes++
+					}
+				}
+				continue
 			}
 
-			affectedNodes++
+			value := m.exprToValue(item.Value, params)
+			if node != nil {
+				node.Properties[pa.Property] = graph.ToPropertyValue(value)
+				if err := m.saveNode(t, node); err != nil {
+					return 0, err
+				}
+				affectedNodes++
+			} else if rel != nil {
+				rel.Properties[pa.Property] = graph.ToPropertyValue(value)
+				if err := m.saveRel(t, rel); err != nil {
+					return 0, err
+				}
+			}
 		}
 	}
+
 	return affectedNodes, nil
 }
 
-// ExecuteDelete executes a DELETE clause to remove nodes and relationships.
-// If Detach is true, it also removes all relationships connected to deleted nodes.
-// It returns the count of affected nodes and relationships.
-func (m *Modifier) ExecuteDelete(t *tx.Transaction, clause *ast.DeleteClause, varVars map[string]interface{}, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
-	for _, expr := range clause.Expressions {
-		switch v := expr.(type) {
-		case *ast.PropertyLookup:
-			if v.Property == "" {
-				if node, ok := varVars[v.Node].(*graph.Node); ok {
-					if clause.Detach {
-						if err := m.deleteRelationshipsOfNode(t, node.ID); err != nil {
-							continue
+func (m *Modifier) ExecuteDelete(t *tx.Transaction, stmt *ast.DeleteStmt, path map[string]interface{}, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
+	for _, expr := range stmt.Items {
+		var node *graph.Node
+		var rel *graph.Relationship
+
+		switch e := expr.(type) {
+		case *ast.Ident:
+			if obj, exists := path[e.Name]; exists {
+				switch o := obj.(type) {
+				case *graph.Node:
+					node = o
+				case *graph.Relationship:
+					rel = o
+				}
+			}
+		case *ast.PropertyAccessExpr:
+			if ident, ok := e.Target.(*ast.Ident); ok {
+				if obj, exists := path[ident.Name]; exists {
+					switch o := obj.(type) {
+					case *graph.Node:
+						node = o
+					case *graph.Relationship:
+						rel = o
+					}
+				}
+			}
+		}
+
+		if rel != nil {
+			if err := m.deleteRel(t, rel); err != nil {
+				return 0, 0, err
+			}
+			affectedRels++
+		} else if node != nil {
+			if stmt.Detach {
+				if err := m.detachDeleteNode(t, node); err != nil {
+					return 0, 0, err
+				}
+			} else {
+				if err := m.deleteNode(t, node); err != nil {
+					return 0, 0, err
+				}
+			}
+			affectedNodes++
+		}
+	}
+
+	return affectedNodes, affectedRels, nil
+}
+
+func (m *Modifier) ExecuteRemove(t *tx.Transaction, stmt *ast.RemoveStmt, path map[string]interface{}, params map[string]interface{}) (affectedNodes int, err error) {
+	for _, item := range stmt.Items {
+		if item.Target == nil {
+			continue
+		}
+
+		var node *graph.Node
+
+		if item.IsLabel {
+			if ident, ok := item.Target.(*ast.Ident); ok {
+				if obj, exists := path[ident.Name]; exists {
+					if n, ok := obj.(*graph.Node); ok {
+						node = n
+					}
+				}
+			}
+			if node != nil {
+				if err := m.index.RemoveLabelIndex(t, node); err != nil {
+					return 0, err
+				}
+				if err := m.saveNode(t, node); err != nil {
+					return 0, err
+				}
+				affectedNodes++
+			}
+		} else {
+			if pa, ok := item.Target.(*ast.PropertyAccessExpr); ok {
+				if ident, ok := pa.Target.(*ast.Ident); ok {
+					if obj, exists := path[ident.Name]; exists {
+						switch o := obj.(type) {
+						case *graph.Node:
+							node = o
+						case *graph.Relationship:
+							delete(o.Properties, pa.Property)
+							if err := m.saveRel(t, o); err != nil {
+								return 0, err
+							}
 						}
 					}
-					if err := m.index.RemoveLabelIndex(t, node); err != nil {
-						continue
-					}
-					if err := m.index.RemovePropertyIndex(t, node); err != nil {
-						continue
-					}
-					if err := t.Delete(storage.NodeKey(node.ID)); err != nil {
-						continue
+				}
+				if node != nil {
+					delete(node.Properties, pa.Property)
+					if err := m.saveNode(t, node); err != nil {
+						return 0, err
 					}
 					affectedNodes++
 				}
 			}
-		case *ast.RelationVariable:
-			if rel, ok := varVars[v.Name].(*graph.Relationship); ok {
-				if err := m.adj.RemoveRelationship(t, rel); err != nil {
-					continue
-				}
-				if err := t.Delete(storage.RelKey(rel.ID)); err != nil {
-					continue
-				}
-				affectedRels++
-			}
 		}
 	}
-	return affectedNodes, affectedRels, nil
-}
 
-// ExecuteRemove executes a REMOVE clause to remove labels or properties from nodes.
-// It returns the count of affected nodes.
-func (m *Modifier) ExecuteRemove(t *tx.Transaction, clause *ast.RemoveClause, varVars map[string]interface{}, params map[string]interface{}) (affectedNodes int, err error) {
-	for _, remove := range clause.Removals {
-		var targetNode *graph.Node
-
-		if remove.Type == ast.RemoveItemTypeLabel {
-			if node, ok := varVars[remove.Property.Node].(*graph.Node); ok {
-				targetNode = node
-			}
-			if targetNode != nil {
-				// Remove old indexes
-				m.index.RemoveLabelIndex(t, targetNode)
-				m.index.RemovePropertyIndex(t, targetNode)
-
-				targetNode.RemoveLabel(remove.Label)
-				data, err := storage.Marshal(targetNode)
-				if err != nil {
-					return 0, err
-				}
-				if err := t.Put(storage.NodeKey(targetNode.ID), data); err != nil {
-					return 0, err
-				}
-
-				// Rebuild indexes
-				if err := m.index.BuildLabelIndex(t, targetNode); err != nil {
-					return 0, err
-				}
-				if err := m.index.BuildPropertyIndex(t, targetNode); err != nil {
-					return 0, err
-				}
-
-				affectedNodes++
-			}
-		} else if remove.Type == ast.RemoveItemTypeProperty {
-			if node, ok := varVars[remove.Property.Node].(*graph.Node); ok {
-				targetNode = node
-			}
-			if targetNode != nil {
-				m.index.RemovePropertyIndex(t, targetNode)
-
-				delete(targetNode.Properties, remove.Property.Property)
-
-				data, err := storage.Marshal(targetNode)
-				if err != nil {
-					return 0, err
-				}
-				if err := t.Put(storage.NodeKey(targetNode.ID), data); err != nil {
-					return 0, err
-				}
-
-				if err := m.index.BuildPropertyIndex(t, targetNode); err != nil {
-					return 0, err
-				}
-
-				affectedNodes++
-			}
-		}
-	}
 	return affectedNodes, nil
 }
-// resolveValue resolves an expression to its value, considering parameters.
-func (m *Modifier) resolveValue(expr ast.Expression, params map[string]interface{}) interface{} {
-	switch v := expr.(type) {
-	case *ast.Literal:
-		return v.Value
-	case *ast.Identifier:
-		paramName := strings.TrimPrefix(v.Name, "$")
-		if val, ok := params[paramName]; ok {
-			return val
-		}
-		return nil
-	default:
-		return nil
-	}
-}
 
-// deleteRelationshipsOfNode removes all relationships connected to a node.
-func (m *Modifier) deleteRelationshipsOfNode(t *tx.Transaction, nodeID string) error {
-	relsToDelete, err := m.adj.GetAllRelated(nodeID)
+func (m *Modifier) saveNode(t *tx.Transaction, node *graph.Node) error {
+	data, err := storage.Marshal(node)
 	if err != nil {
 		return err
 	}
+	if err := t.Put(storage.NodeKey(node.ID), data); err != nil {
+		return err
+	}
+	return m.index.BuildPropertyIndex(t, node)
+}
 
-	for _, relID := range relsToDelete {
-		data, err := t.Get(storage.RelKey(relID))
+func (m *Modifier) saveRel(t *tx.Transaction, rel *graph.Relationship) error {
+	data, err := storage.Marshal(rel)
+	if err != nil {
+		return err
+	}
+	return t.Put(storage.RelKey(rel.ID), data)
+}
+
+func (m *Modifier) deleteNode(t *tx.Transaction, node *graph.Node) error {
+	if err := t.Delete(storage.NodeKey(node.ID)); err != nil {
+		return err
+	}
+	if err := m.index.RemoveLabelIndex(t, node); err != nil {
+		return err
+	}
+	return m.index.RemovePropertyIndex(t, node)
+}
+
+func (m *Modifier) deleteRel(t *tx.Transaction, rel *graph.Relationship) error {
+	if err := t.Delete(storage.RelKey(rel.ID)); err != nil {
+		return err
+	}
+	return m.adj.RemoveRelationship(t, rel)
+}
+
+func (m *Modifier) detachDeleteNode(t *tx.Transaction, node *graph.Node) error {
+	relIDs, _ := m.adj.GetAllRelated(node.ID)
+	for _, relID := range relIDs {
+		relData, err := m.Store.Get(storage.RelKey(relID))
 		if err != nil {
 			continue
 		}
 		var rel graph.Relationship
-		if err := storage.Unmarshal(data, &rel); err != nil {
+		if err := storage.Unmarshal(relData, &rel); err != nil {
 			continue
 		}
-		if err := m.adj.RemoveRelationship(t, &rel); err != nil {
-			continue
-		}
-		if err := t.Delete(storage.RelKey(rel.ID)); err != nil {
-			continue
+		if err := m.deleteRel(t, &rel); err != nil {
+			return err
 		}
 	}
+	return m.deleteNode(t, node)
+}
 
-	return nil
+func (m *Modifier) exprToValue(expr ast.Expr, params map[string]interface{}) interface{} {
+	return utils.ExprToValue(expr, params)
+}
+
+func (m *Modifier) exprToString(expr ast.Expr, params map[string]interface{}) string {
+	return utils.ExprToString(expr, params)
 }

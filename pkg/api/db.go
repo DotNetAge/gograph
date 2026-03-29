@@ -53,7 +53,7 @@ func Open(path string, opts ...DBOption) (*DB, error) {
 	for _, opt := range opts {
 		opt(db)
 	}
-	db.executor = cypher.NewExecutor(store, cypher.WithObservability(db.obs))
+	db.executor = cypher.NewExecutor(store)
 	return db, nil
 }
 
@@ -74,18 +74,21 @@ func (db *DB) Close() error {
 // The query can include optional positional parameters passed as arguments.
 func (db *DB) Exec(ctx context.Context, cypherQuery string, args ...interface{}) (Result, error) {
 	db.mu.RLock()
+	if db.closed {
+		db.mu.RUnlock()
+		return Result{}, ErrDBClosed
+	}
+	db.mu.RUnlock()
+
+	params := extractParams(args)
+
+	db.mu.RLock()
 	defer db.mu.RUnlock()
 	if db.closed {
 		return Result{}, ErrDBClosed
 	}
 
-	params := extractParams(args)
-	ast, err := cypher.NewParser(cypherQuery).Parse()
-	if err != nil {
-		return Result{}, err
-	}
-
-	cypherResult, err := db.executor.Execute(ctx, ast, params)
+	cypherResult, err := db.executor.Execute(ctx, cypherQuery, params)
 	if err != nil {
 		return Result{}, err
 	}
@@ -98,18 +101,21 @@ func (db *DB) Exec(ctx context.Context, cypherQuery string, args ...interface{})
 // The query can include optional positional parameters passed as arguments.
 func (db *DB) Query(ctx context.Context, cypherQuery string, args ...interface{}) (*Rows, error) {
 	db.mu.RLock()
+	if db.closed {
+		db.mu.RUnlock()
+		return nil, ErrDBClosed
+	}
+	db.mu.RUnlock()
+
+	params := extractParams(args)
+
+	db.mu.RLock()
 	defer db.mu.RUnlock()
 	if db.closed {
 		return nil, ErrDBClosed
 	}
 
-	params := extractParams(args)
-	ast, err := cypher.NewParser(cypherQuery).Parse()
-	if err != nil {
-		return nil, err
-	}
-
-	result, err := db.executor.Execute(ctx, ast, params)
+	result, err := db.executor.Execute(ctx, cypherQuery, params)
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +200,9 @@ func (tx *Tx) Exec(cypherQuery string, args ...interface{}) (Result, error) {
 	}
 
 	params := extractParams(args)
-	ast, err := cypher.NewParser(cypherQuery).Parse()
+	
+	p := cypher.NewParser(cypherQuery)
+	ast, err := p.Parse()
 	if err != nil {
 		return Result{}, err
 	}
@@ -218,7 +226,9 @@ func (tx *Tx) Query(cypherQuery string, args ...interface{}) (*Rows, error) {
 	}
 
 	params := extractParams(args)
-	ast, err := cypher.NewParser(cypherQuery).Parse()
+
+	p := cypher.NewParser(cypherQuery)
+	ast, err := p.Parse()
 	if err != nil {
 		return nil, err
 	}
