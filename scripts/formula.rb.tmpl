@@ -6,10 +6,10 @@ class Gograph < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/DotNetAge/gograph/releases/download/v{{VERSION}}/gograph-{{VERSION}}-darwin-arm64.tar.gz"
+      url "https://github.com/DotNetAge/gograph/releases/download/{{VERSION}}/gograph-{{VERSION}}-darwin-arm64.tar.gz"
       sha256 "{{MAC_ARM64_SHA256}}"
     else
-      url "https://github.com/DotNetAge/gograph/releases/download/v{{VERSION}}/gograph-{{VERSION}}-darwin-amd64.tar.gz"
+      url "https://github.com/DotNetAge/gograph/releases/download/{{VERSION}}/gograph-{{VERSION}}-darwin-amd64.tar.gz"
       sha256 "{{MAC_AMD64_SHA256}}"
     end
   end

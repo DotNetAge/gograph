@@ -31,7 +31,7 @@
     
     
       
-        <title>Cypher Syntax Guide - GoGraph Documentation</title>
+        <title>OpenCypher Complete Syntax Quick Reference - GoGraph Documentation</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cypher-syntax-guide" class="md-skip">
+        <a href="#opencypher-complete-syntax-quick-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Cypher Syntax Guide
+              OpenCypher Complete Syntax Quick Reference
             
           </span>
         </div>
@@ -291,7 +291,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../v0.1.1.md" class="md-tabs__link">
+        <a href="../v0.2.0.md" class="md-tabs__link">
           
   
   
@@ -616,24 +616,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cypher Syntax Guide
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -641,7 +623,7 @@
   <span class="md-ellipsis">
     
   
-    Cypher Syntax Guide
+    OpenCypher Complete Syntax Quick Reference
   
 
     
@@ -650,208 +632,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-syntax-structure-and-core-expressions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Syntax Structure and Core Expressions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Syntax Structure and Core Expressions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#11-nodes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.1 Nodes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#12-relationships" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.2 Relationships
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#13-path-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.3 Path Patterns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-data-operations-crud-operation-examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Data Operations (CRUD Operation Examples)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Data Operations (CRUD Operation Examples)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#21-creating-data-create" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.1 Creating Data (CREATE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#22-querying-data-match-return" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.2 Querying Data (MATCH &amp; RETURN)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23-updating-data-set" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.3 Updating Data (SET)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#24-deleting-data-delete-remove" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.4 Deleting Data (DELETE / REMOVE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-expressions-and-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Expressions and Functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Expressions and Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#31-comparison-operators" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 Comparison Operators
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#32-parameterized-queries-parameterization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 Parameterized Queries (Parameterization)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-indexes-and-constraints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Indexes and Constraints
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-transaction-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Transaction Processing
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-usage-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Usage Notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -951,6 +731,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../v0.2.0.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    None
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../v0.1.1.md" class="md-nav__link">
         
   
@@ -999,197 +807,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-syntax-structure-and-core-expressions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Syntax Structure and Core Expressions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Syntax Structure and Core Expressions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#11-nodes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.1 Nodes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#12-relationships" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.2 Relationships
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#13-path-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.3 Path Patterns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-data-operations-crud-operation-examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Data Operations (CRUD Operation Examples)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Data Operations (CRUD Operation Examples)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#21-creating-data-create" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.1 Creating Data (CREATE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#22-querying-data-match-return" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.2 Querying Data (MATCH &amp; RETURN)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23-updating-data-set" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.3 Updating Data (SET)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#24-deleting-data-delete-remove" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.4 Deleting Data (DELETE / REMOVE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-expressions-and-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Expressions and Functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Expressions and Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#31-comparison-operators" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 Comparison Operators
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#32-parameterized-queries-parameterization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 Parameterized Queries (Parameterization)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-indexes-and-constraints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Indexes and Constraints
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-transaction-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Transaction Processing
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-usage-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Usage Notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1205,117 +822,520 @@
 
 
 
-<h1 id="cypher-syntax-guide">Cypher Syntax Guide<a class="headerlink" href="#cypher-syntax-guide" title="Permanent link">&para;</a></h1>
-<p>Cypher is currently the most popular, de facto standard query language for graph databases (originally invented by Neo4j and later open-sourced as OpenCypher). It is a <strong>declarative language</strong> whose greatest feature is its ASCII-art inspired visual text symbols for expressing graph patterns.</p>
-<p>This document provides detailed instructions on Cypher's basic syntax, keywords, and core operations supported by GoGraph, along with code examples.</p>
-<hr />
-<h2 id="1-syntax-structure-and-core-expressions">1. Syntax Structure and Core Expressions<a class="headerlink" href="#1-syntax-structure-and-core-expressions" title="Permanent link">&para;</a></h2>
-<p>Cypher uses very intuitive symbols to depict "nodes" and "relationships":</p>
-<h3 id="11-nodes">1.1 Nodes<a class="headerlink" href="#11-nodes" title="Permanent link">&para;</a></h3>
-<p>Use parentheses <code>()</code> to represent nodes (like a circle).
-- <code>()</code>: Anonymous node.
-- <code>(n)</code>: Binds the node to variable <code>n</code> for later reference.
-- <code>(n:User)</code>: A node with the <code>:User</code> label.
-- <code>(n:User {name: 'Alice', age: 30})</code>: A node with properties.</p>
-<h3 id="12-relationships">1.2 Relationships<a class="headerlink" href="#12-relationships" title="Permanent link">&para;</a></h3>
-<p>Use square brackets <code>[]</code> to represent relationships, combined with dashes and arrows <code>--&gt;</code> , <code>&lt;--</code>, <code>--</code> to indicate direction.
-- <code>--&gt;</code>: Represents an outgoing relationship pointing to the right.
-- <code>-[r]-&gt;</code>: Binds the relationship to variable <code>r</code>.
-- <code>-[r:KNOWS]-&gt;</code>: Specifies the relationship type as <code>:KNOWS</code>.
-- <code>-[r:KNOWS {since: 2022}]-&gt;</code>: A relationship with properties.</p>
-<h3 id="13-path-patterns">1.3 Path Patterns<a class="headerlink" href="#13-path-patterns" title="Permanent link">&para;</a></h3>
-<p>Combine nodes and relationships to form complete query paths:
-<code>(a:User)-[:KNOWS]-&gt;(b:User)-[:PURCHASED]-&gt;(p:Product)</code></p>
-<hr />
-<h2 id="2-data-operations-crud-operation-examples">2. Data Operations (CRUD Operation Examples)<a class="headerlink" href="#2-data-operations-crud-operation-examples" title="Permanent link">&para;</a></h2>
-<h3 id="21-creating-data-create">2.1 Creating Data (CREATE)<a class="headerlink" href="#21-creating-data-create" title="Permanent link">&para;</a></h3>
-<p><code>CREATE</code> is used to insert new nodes, labels, properties, and relationships into the graph.</p>
-<p><strong>Creating a single node:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="p">})</span>
-</code></pre></div></p>
-<p><strong>Creating a graph (nodes+relationships) in one go:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">}),</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">       </span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Bob&#39;</span><span class="p">}),</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">       </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="w"> </span><span class="p">{</span><span class="n">since</span><span class="p">:</span><span class="w"> </span><span class="m">2020</span><span class="p">}</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</code></pre></div></p>
-<h3 id="22-querying-data-match-return">2.2 Querying Data (MATCH &amp; RETURN)<a class="headerlink" href="#22-querying-data-match-return" title="Permanent link">&para;</a></h3>
-<p><code>MATCH</code> is used to declare the graph pattern you are looking for. It is typically used together with <code>WHERE</code> (conditions) and <code>RETURN</code> (results).</p>
-<p><strong>Query all nodes belonging to Person:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span>
-</code></pre></div></p>
-<p><strong>Conditional filtering and property return:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="m">18</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span>
-</code></pre></div></p>
-<p><strong>Traversal relationship query:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">})</span><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">KNOWS</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">since</span>
-</code></pre></div></p>
-<h3 id="23-updating-data-set">2.3 Updating Data (SET)<a class="headerlink" href="#23-updating-data-set" title="Permanent link">&para;</a></h3>
-<p><code>SET</code> is specifically used to update or add node properties, or overwrite labels.</p>
-<p><strong>Updating a specific node's properties:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">})</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">SET</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">31</span>
+<h1 id="opencypher-complete-syntax-quick-reference">OpenCypher Complete Syntax Quick Reference<a class="headerlink" href="#opencypher-complete-syntax-quick-reference" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Note: This quick reference is organized by CRUD operations, covering all core syntax, rules, functions, and examples of OpenCypher. It can be copied and saved as a .txt or .md file for convenient offline reference.</p>
+</blockquote>
+<h1 id="1-basic-syntax-rules">1. Basic Syntax Rules<a class="headerlink" href="#1-basic-syntax-rules" title="Permanent link">&para;</a></h1>
+<h2 id="1-case-sensitivity-and-identifiers">1. Case Sensitivity and Identifiers<a class="headerlink" href="#1-case-sensitivity-and-identifiers" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Keywords: Case-insensitive (MATCH / match / Match are equivalent)</p>
+</li>
+<li>
+<p>Identifiers: Variables, labels, relationship types, and property names are case-sensitive (e.g., :Person and :person are two different labels)</p>
+</li>
+<li>
+<p>Naming rules: Must start with a letter or underscore, can contain letters, numbers, underscores, $, and #</p>
+</li>
+<li>
+<p>Core reserved words: MATCH, WHERE, RETURN, CREATE, DELETE, SET, WITH, UNWIND, UNION, MERGE, REMOVE</p>
+</li>
+</ul>
+<h2 id="2-comment-syntax">2. Comment Syntax<a class="headerlink" href="#2-comment-syntax" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Single-line comments: // comment content (example: // Match all user nodes)</p>
+</li>
+<li>
+<p>Multi-line comments: /* comment content <em>/ (example: /</em> Batch create nodes and relationships for data initialization */)</p>
+</li>
+</ul>
+<h2 id="3-data-types">3. Data Types<a class="headerlink" href="#3-data-types" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type Category</th>
+<th>Specific Types</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scalar Types (Basic)</td>
+<td>INTEGER</td>
+<td>Positive and negative integers, no length limit</td>
+<td>10, -5, 100000</td>
+</tr>
+<tr>
+<td></td>
+<td>FLOAT</td>
+<td>Decimal numbers</td>
+<td>3.14, -0.5, 10.0</td>
+</tr>
+<tr>
+<td></td>
+<td>BOOLEAN</td>
+<td>Logical values, only two possible values</td>
+<td>true, false</td>
+</tr>
+<tr>
+<td></td>
+<td>STRING</td>
+<td>Text content, single or double quotes both work</td>
+<td>"Alice", 'TechCorp'</td>
+</tr>
+<tr>
+<td></td>
+<td>NULL</td>
+<td>Empty value, represents no data</td>
+<td>p.age IS NULL</td>
+</tr>
+<tr>
+<td>Temporal Types</td>
+<td>DATE</td>
+<td>Date only, format yyyy-MM-dd</td>
+<td>date(), date("2026-03-28")</td>
+</tr>
+<tr>
+<td></td>
+<td>DATETIME</td>
+<td>Date and time with timezone</td>
+<td>datetime(), datetime("2026-03-28T10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>TIME</td>
+<td>Time only, with timezone</td>
+<td>time(), time("10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>LOCALDATETIME</td>
+<td>Date and time without timezone</td>
+<td>localdatetime("2026-03-28T10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>LOCALTIME</td>
+<td>Time without timezone</td>
+<td>localtime("10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>DURATION</td>
+<td>Time interval</td>
+<td>duration({days:1, hours:2})</td>
+</tr>
+<tr>
+<td>Composite Types</td>
+<td>LIST</td>
+<td>Ordered, repeatable collection</td>
+<td>[1,2,3], ["Alice","Bob"]</td>
+</tr>
+<tr>
+<td></td>
+<td>MAP</td>
+<td>Key-value pair collection, keys are strings</td>
+<td>{name: "Alice", age: 30}</td>
+</tr>
+</tbody>
+</table>
+<h1 id="2-core-graph-element-syntax-basic">2. Core Graph Element Syntax (Basic)<a class="headerlink" href="#2-core-graph-element-syntax-basic" title="Permanent link">&para;</a></h1>
+<h2 id="1-nodes">1. Nodes<a class="headerlink" href="#1-nodes" title="Permanent link">&para;</a></h2>
+<p>Syntax format: (variable:label1:label2 {propertyKey1: propertyValue1, propertyKey2: propertyValue2})</p>
+<p>Note: Variable, labels, and properties are all optional. Multiple labels are separated by colons. Properties are a key-value pair collection.</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// 1. Empty node (no variable, no label, no properties)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">()</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">// 2. Node with variable (variable used for later reference)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">// 3. Node with single label (label used for classification)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">(:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">// 4. Node with multiple labels</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">(:</span><span class="n">Person</span><span class="p">:</span><span class="n">Employee</span><span class="p">:</span><span class="n">Manager</span><span class="p">)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1">// 5. Complete node (variable + label + properties)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;alice@example.com&quot;</span><span class="p">})</span>
 </code></pre></div>
-<em>Note: In GoGraph, if node <code>n</code> previously did not have an <code>age</code> property, this is a new addition; if it already existed, this is an overwrite modification.</em></p>
-<h3 id="24-deleting-data-delete-remove">2.4 Deleting Data (DELETE / REMOVE)<a class="headerlink" href="#24-deleting-data-delete-remove" title="Permanent link">&para;</a></h3>
-<p><code>DELETE</code> is used to delete entities (nodes and relationships) from the graph.
-<strong>Deleting a specific node and all its associated relationships:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">})</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">n</span>
+<h2 id="2-relationships">2. Relationships<a class="headerlink" href="#2-relationships" title="Permanent link">&para;</a></h2>
+<p>Syntax format: -[variable:relationshipType {propertyKey: propertyValue}]-&gt;</p>
+<p>Note: Direction is optional (-&gt; outgoing, &lt;-- incoming, -- undirected), variable is optional, relationship type is required (only single type), properties are optional</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// 1. Undirected relationship (no variable, no type, no properties)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="err">--</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// 2. Directed relationship (outgoing)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="err">-</span><span class="p">&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// 3. Directed relationship (incoming)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="o">&lt;--</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// 4. Relationship with type (core required)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// 5. Relationship with variable (variable used for later reference)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="o">-[</span><span class="n">r</span><span class="o">]-&gt;</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1">// 6. Complete relationship (variable + type + properties)</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="w"> </span><span class="p">{</span><span class="n">since</span><span class="p">:</span><span class="w"> </span><span class="m">2020</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;close&quot;</span><span class="p">}</span><span class="o">]-&gt;</span>
 </code></pre></div>
-<em>(Note: If without <code>DETACH</code> and the node still has relationships, deletion may fail or be in an undefined state)</em></p>
-<p><code>REMOVE</code> is used to remove specific labels or properties from a node, without deleting the node itself.
-<strong>Removing a node's labels and properties:</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Bob&#39;</span><span class="p">})</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">n</span><span class="p">:</span><span class="n">VIP</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span>
-</code></pre></div></p>
-<hr />
-<h2 id="3-expressions-and-functions">3. Expressions and Functions<a class="headerlink" href="#3-expressions-and-functions" title="Permanent link">&para;</a></h2>
-<p>In clauses like <code>WHERE</code> and <code>SET</code>, Cypher supports various expressions.</p>
-<h3 id="31-comparison-operators">3.1 Comparison Operators<a class="headerlink" href="#31-comparison-operators" title="Permanent link">&para;</a></h3>
-<p>Supports standard <code>=</code>, <code>!=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code> comparison operations.
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Product</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">price</span><span class="w"> </span><span class="p">&lt;=</span><span class="w"> </span><span class="m">99</span><span class="p">.</span><span class="m">9</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span>
-</code></pre></div></p>
-<h3 id="32-parameterized-queries-parameterization">3.2 Parameterized Queries (Parameterization)<a class="headerlink" href="#32-parameterized-queries-parameterization" title="Permanent link">&para;</a></h3>
-<p>To <strong>prevent injection attacks</strong> and <strong>improve query engine cache hit rates</strong>, it is recommended to use <code>$</code> to declare parameters:
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// Query statement</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">User</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="err">$</span><span class="n">minAge</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">name</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">// Map passed during API execution:</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1">// {&quot;minAge&quot;: 18}</span>
+<h2 id="3-patterns">3. Patterns<a class="headerlink" href="#3-patterns" title="Permanent link">&para;</a></h2>
+<p>Note: A combination of nodes and relationships, used to describe graph structure, is the core of clauses like MATCH and CREATE</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// 1. Simple path (two nodes + one relationship)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">// 2. Variable-length path (1 to 5 relationships, range can be adjusted)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="p">*</span><span class="m">1</span><span class="p">..</span><span class="m">5</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">// 3. Arbitrary-length path (no upper limit, use with caution to avoid performance issues)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FOLLOWS</span><span class="p">*</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1">// 4. Multiple pattern matching (multiple independent nodes/paths)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Company</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1">// 5. Path variable (saves complete path for later operations)</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div>
-<em>In GoGraph's latest architecture, the execution engine supports dynamically parsing parameter dictionaries and mapping them to graph comparison logic.</em></p>
-<hr />
-<h2 id="4-indexes-and-constraints">4. Indexes and Constraints<a class="headerlink" href="#4-indexes-and-constraints" title="Permanent link">&para;</a></h2>
-<p>In most graph databases, establishing indexes can greatly improve query speed.
-- <strong>Implicit Index Mechanism</strong>: In GoGraph's current implementation, when you <code>CREATE (n:User)</code>, the system underlying engine automatically maintains label (Label) inverted indexes and property (Property) indexes for you.
-- <strong>Index Scan Trigger Condition</strong>: When you execute <code>MATCH (n:User)</code>, the underlying engine automatically captures label constraints and performs O(K) complexity index scans instead of O(N) full table traversal.</p>
-<hr />
-<h2 id="5-transaction-processing">5. Transaction Processing<a class="headerlink" href="#5-transaction-processing" title="Permanent link">&para;</a></h2>
-<p>Each Cypher execution statement runs in an <strong>implicit atomic transaction</strong> by default.
-However, in practical engineering, you may need to combine multiple Cypher statements into one large transaction:</p>
-<div class="language-go highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Controlling transactions in a Go application:</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nx">tx</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">BeginTx</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span>
+<h1 id="3-crud-core-operation-syntax-key-points">3. CRUD Core Operation Syntax (Key Points)<a class="headerlink" href="#3-crud-core-operation-syntax-key-points" title="Permanent link">&para;</a></h1>
+<h2 id="1-read-querying-data">(1) Read: Querying Data<a class="headerlink" href="#1-read-querying-data" title="Permanent link">&para;</a></h2>
+<h3 id="1-match-pattern-matching-core-query-clause">1. MATCH: Pattern Matching (Core Query Clause)<a class="headerlink" href="#1-match-pattern-matching-core-query-clause" title="Permanent link">&para;</a></h3>
+<p>Purpose: Find nodes, relationships, or paths that match the specified pattern in the graph</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Example 1: Match all Person nodes</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// Example 2: Match Person nodes and their friend relationships</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// Example 3: Match path and save as variable</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">MATCH</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="p">*</span><span class="m">1</span><span class="p">..</span><span class="m">3</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">// Example 4: Match multiple patterns (Person and Company nodes, plus employment relationship)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-where-conditional-filtering">2. WHERE: Conditional Filtering<a class="headerlink" href="#2-where-conditional-filtering" title="Permanent link">&para;</a></h3>
+<p>Purpose: Filter results from MATCH or WITH, supports multiple condition combinations</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Example 1: Basic conditions (age greater than 18, city is Beijing)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// Example 2: String matching (name contains &quot;Li&quot;)</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="n">CONTAINS</span><span class="w"> </span><span class="s">&quot;Li&quot;</span><span class="w">  </span><span class="c1">// Contains (case-insensitive)</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">// WHERE p.name STARTS WITH &quot;A&quot;  // Starts with A</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">// WHERE p.name ENDS WITH &quot;e&quot;    // Ends with e</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">// Example 3: List matching (city in specified list)</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="o">[</span><span class="s">&quot;Beijing&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Guangzhou&quot;</span><span class="o">]</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="c1">// Example 4: Property existence (has email property)</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">EXISTS</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="p">)</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="c1">// Example 5: NULL value check</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="n">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span>
+</code></pre></div>
+<h3 id="3-return-return-results">3. RETURN: Return Results<a class="headerlink" href="#3-return-return-results" title="Permanent link">&para;</a></h3>
+<p>Purpose: Specify what data to return from the query, is the terminating clause, supports aliases, aggregation, and DISTINCT</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Example 1: Return specified properties of nodes</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">18</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1">// Example 2: Return with aliases (simplify output)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userName</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userAge</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1">// Example 3: Aggregate queries (count, average, etc.)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">COUNT</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">totalPerson</span><span class="p">,</span><span class="w">  </span><span class="c1">// Total count</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">       </span><span class="n">AVG</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avgAge</span><span class="p">,</span><span class="w">    </span><span class="c1">// Average age</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">       </span><span class="n">MIN</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">minAge</span><span class="p">,</span><span class="w">    </span><span class="c1">// Minimum age</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">       </span><span class="n">MAX</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">maxAge</span><span class="w">     </span><span class="c1">// Maximum age</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">// Example 4: DISTINCT return (avoid duplicate results)</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="k">RETURN</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">companyName</span><span class="w">  </span><span class="c1">// Return distinct company names</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1">// Example 5: Return path-related information</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="k">MATCH</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">nodes</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">allNodes</span><span class="p">,</span><span class="w">    </span><span class="c1">// All nodes in the path</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">       </span><span class="n">relationships</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">allRels</span><span class="p">,</span><span class="w">  </span><span class="c1">// All relationships in the path</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">       </span><span class="n">length</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pathLength</span><span class="w">  </span><span class="c1">// Path length (number of relationships)</span>
+</code></pre></div>
+<h3 id="4-with-intermediate-result-passing">4. WITH: Intermediate Result Passing<a class="headerlink" href="#4-with-intermediate-result-passing" title="Permanent link">&para;</a></h3>
+<p>Purpose: Process intermediate results and pass them to subsequent clauses (similar to SQL's HAVING, can be used for post-aggregation filtering)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Example: Query users with more than 5 friends</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">WITH</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">COUNT</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendCount</span><span class="w">  </span><span class="c1">// Intermediate result: user and their friend count</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">friendCount</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">5</span><span class="w">           </span><span class="c1">// Filter users with more than 5 friends</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">friendCount</span><span class="w">       </span><span class="c1">// Return final results</span>
+</code></pre></div>
+<h3 id="5-unwind-unfold-lists">5. UNWIND: Unfold Lists<a class="headerlink" href="#5-unwind-unfold-lists" title="Permanent link">&para;</a></h3>
+<p>Purpose: Expand a list into multiple rows for easier subsequent processing (often used for batch operations)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Example 1: Unfold a simple list</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">UNWIND</span><span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="o">]</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">num</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">doubleNum</span><span class="w">  </span><span class="c1">// Output each number doubled</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// Example 2: Unfold node property list</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">UNWIND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">hobbies</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">hobby</span><span class="w">  </span><span class="c1">// Assuming p.hobbies is a list [&quot;reading&quot;, &quot;travel&quot;]</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">hobby</span>
+</code></pre></div>
+<h3 id="6-order-by-limit-skip-sorting-and-pagination">6. ORDER BY / LIMIT / SKIP: Sorting and Pagination<a class="headerlink" href="#6-order-by-limit-skip-sorting-and-pagination" title="Permanent link">&para;</a></h3>
+<p>Purpose: Sort returned results, limit quantity, skip specified rows (used for paginated queries)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// Example: Paginated query (skip first 10, take 5, sorted by age descending, name ascending)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">ASC</span><span class="w">  </span><span class="c1">// First by age descending, then by name ascending</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">SKIP</span><span class="w"> </span><span class="m">10</span><span class="w">  </span><span class="c1">// Skip first 10</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">LIMIT</span><span class="w"> </span><span class="m">5</span><span class="w">  </span><span class="c1">// Take 5 results</span>
+</code></pre></div>
+<h3 id="7-union-union-all-result-combination">7. UNION / UNION ALL: Result Combination<a class="headerlink" href="#7-union-union-all-result-combination" title="Permanent link">&para;</a></h3>
+<p>Purpose: Combine results from multiple queries. UNION removes duplicates, UNION ALL keeps duplicates (both queries must return the same number of columns and compatible types)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// Example 1: UNION (deduplicated combination)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">UNION</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1">// Example 2: UNION ALL (keep duplicates, better performance)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+</code></pre></div>
+<h2 id="2-create-inserting-data">(2) Create: Inserting Data<a class="headerlink" href="#2-create-inserting-data" title="Permanent link">&para;</a></h2>
+<h3 id="1-create-direct-creation">1. CREATE: Direct Creation<a class="headerlink" href="#1-create-direct-creation" title="Permanent link">&para;</a></h3>
+<p>Purpose: Create nodes, relationships, or combinations of nodes and relationships (creates new data each time, even if duplicated)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Example 1: Create a single node</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">28</span><span class="p">,</span><span class="w"> </span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">})</span>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">// Execute the first step</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nx">tx</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="s">&quot;CREATE (n:Account {id: 1, balance: 100})&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">// Example 2: Create multiple nodes (separated by commas)</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p1</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Charlie&quot;</span><span class="p">}),</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TechCorp&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">address</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span><span class="p">})</span>
 <a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">// Execute the second step; if business failure occurs, you can Rollback()</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="nx">tx</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="s">&quot;MATCH (n:Account {id: 1}) SET n.balance = 50&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">// Example 3: Create node + relationship (create associated data at once)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="w"> </span><span class="p">{</span><span class="n">since</span><span class="p">:</span><span class="w"> </span><span class="m">2022</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Engineer&quot;</span><span class="p">}</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TechCorp&quot;</span><span class="p">})</span>
 <a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1">// Final commit</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="nx">tx</span><span class="p">.</span><span class="nx">Commit</span><span class="p">()</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1">// Example 4: Create node with multiple labels</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">:</span><span class="n">Student</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Eve&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">school</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing University&quot;</span><span class="p">})</span>
 </code></pre></div>
-<hr />
-<h2 id="6-usage-notes">6. Usage Notes<a class="headerlink" href="#6-usage-notes" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Relationship direction cannot be ambiguous</strong>: In <code>CREATE</code> statements, relationships must have a clear arrow direction (such as <code>-&gt;</code>). In <code>MATCH</code>, you can omit the arrow to ignore direction (GoGraph engine currently prioritizes exact direction matching).</li>
-<li><strong>Beware of Cartesian products</strong>: If not bridged through relationships, using multiple disconnected patterns <code>MATCH (a:Person), (b:Company)</code> may cause results to grow exponentially.</li>
-<li><strong>Prioritize explicit Labels</strong>: In large datasets, executing <code>MATCH (n) RETURN n</code> will slow down the entire database system. You should use label constraints <code>MATCH (n:SpecificLabel)</code> as much as possible to trigger graph indexes.</li>
-</ol>
+<h3 id="2-merge-match-or-create">2. MERGE: Match or Create<a class="headerlink" href="#2-merge-match-or-create" title="Permanent link">&para;</a></h3>
+<p>Purpose: Ensure the specified pattern exists—if it exists, match it; if not, create it (avoids duplicate creation, commonly used)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Example 1: Match or create node</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">MERGE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span><span class="w">  </span><span class="c1">// If a Person node with name=Dave exists, match it; otherwise create</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">ON</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">createdAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">timestamp</span><span class="p">()</span><span class="w">  </span><span class="c1">// Only executes on creation: set creation timestamp</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">ON</span><span class="w"> </span><span class="k">MATCH</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">updatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">timestamp</span><span class="p">()</span><span class="w">    </span><span class="c1">// Only executes on match: update timestamp</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">// Example 2: Match or create node + relationship</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">}),</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">})</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">MERGE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w">  </span><span class="c1">// If the relationship exists, match; otherwise create</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">ON</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">friendCount</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">COALESCE</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">friendCount</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="m">1</span><span class="w">  </span><span class="c1">// On relationship creation, update friend count</span>
+</code></pre></div>
+<h2 id="3-update-modifying-data">(3) Update: Modifying Data<a class="headerlink" href="#3-update-modifying-data" title="Permanent link">&para;</a></h2>
+<h3 id="1-set-addmodify-properties-labels">1. SET: Add/Modify Properties, Labels<a class="headerlink" href="#1-set-addmodify-properties-labels" title="Permanent link">&para;</a></h3>
+<p>Purpose: Add new properties to nodes/relationships, modify existing properties, or add labels to nodes</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// Example 1: Modify a single property</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">31</span><span class="w">  </span><span class="c1">// Modify age</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">// Example 2: Modify multiple properties</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;alice_new@example.com&quot;</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1">// Example 3: Batch set properties (using MAP for simplification)</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="err">+</span><span class="p">=</span><span class="w"> </span><span class="p">{</span><span class="n">phone</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;123456789&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">gender</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;female&quot;</span><span class="p">}</span><span class="w">  </span><span class="c1">// Batch add/modify properties</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="c1">// Example 4: Add a label to a node</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">:</span><span class="n">Employee</span><span class="w">  </span><span class="c1">// Add Employee label to Alice node</span>
+</code></pre></div>
+<h3 id="2-remove-delete-properties-labels">2. REMOVE: Delete Properties, Labels<a class="headerlink" href="#2-remove-delete-properties-labels" title="Permanent link">&para;</a></h3>
+<p>Purpose: Delete properties from nodes/relationships, or delete labels from nodes (cannot delete relationship types)</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// Example 1: Delete a single property</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">phone</span><span class="w">  </span><span class="c1">// Delete phone property</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1">// Example 2: Delete multiple properties (separated by commas)</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">phone</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">gender</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="c1">// Example 3: Delete a label from a node</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">p</span><span class="p">:</span><span class="n">Employee</span><span class="w">  </span><span class="c1">// Remove Employee label from Alice node</span>
+</code></pre></div>
+<h2 id="4-delete-deleting-data">(4) Delete: Deleting Data<a class="headerlink" href="#4-delete-deleting-data" title="Permanent link">&para;</a></h2>
+<p>Note: Before deleting a node, you must first delete all relationships of that node (otherwise an error occurs); DETACH DELETE can cascade delete the node and all its relationships</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// Example 1: Delete a relationship (first match the relationship, then delete)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">DELETE</span><span class="w"> </span><span class="n">r</span><span class="w">  </span><span class="c1">// Delete this friendship</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// Example 2: Delete a node (must delete relationships first, otherwise error)</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-[</span><span class="n">r</span><span class="o">]-&gt;</span><span class="p">()</span><span class="w">  </span><span class="c1">// Match all outgoing relationships of p</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="k">DELETE</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w">        </span><span class="c1">// Delete relationships first, then delete node</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1">// Example 3: Cascade delete (recommended, automatically deletes node and all relationships)</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">p</span><span class="w">  </span><span class="c1">// Delete node and all associated relationships at once</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="c1">// Example 4: Delete all matching nodes and relationships</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;OldCorp&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w">  </span><span class="c1">// Delete user, employment relationship, and company node</span>
+</code></pre></div>
+<h1 id="4-functions-and-expressions-common">4. Functions and Expressions (Common)<a class="headerlink" href="#4-functions-and-expressions-common" title="Permanent link">&para;</a></h1>
+<h2 id="1-aggregate-functions-used-in-return-with-aggregate-queries">1. Aggregate Functions (Used in RETURN / WITH aggregate queries)<a class="headerlink" href="#1-aggregate-functions-used-in-return-with-aggregate-queries" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>COUNT(expression): Count quantity (COUNT(*) counts all rows, COUNT(p) counts non-null nodes)</p>
+</li>
+<li>
+<p>SUM(expression): Sum (only applicable to numeric types)</p>
+</li>
+<li>
+<p>AVG(expression): Average (only applicable to numeric types)</p>
+</li>
+<li>
+<p>MIN(expression): Minimum value</p>
+</li>
+<li>
+<p>MAX(expression): Maximum value</p>
+</li>
+<li>
+<p>COLLECT(expression): Collect results into a list</p>
+</li>
+</ul>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Example: Aggregate function usage</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">company</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">       </span><span class="n">COUNT</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">employeeCount</span><span class="p">,</span><span class="w">  </span><span class="c1">// Number of employees at the company</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">       </span><span class="n">AVG</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avgEmployeeAge</span><span class="p">,</span><span class="w">  </span><span class="c1">// Average employee age</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">       </span><span class="k">COLLECT</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">employeeNames</span><span class="w">  </span><span class="c1">// List of employee names</span>
+</code></pre></div>
+<h2 id="2-scalar-functions-process-single-values">2. Scalar Functions (Process single values)<a class="headerlink" href="#2-scalar-functions-process-single-values" title="Permanent link">&para;</a></h2>
+<h3 id="1-mathematical-functions">(1) Mathematical Functions<a class="headerlink" href="#1-mathematical-functions" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">abs</span><span class="p">(</span><span class="err">-</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">5</span><span class="w">          </span><span class="c1">// Absolute value</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">ceil</span><span class="p">(</span><span class="m">3</span><span class="p">.</span><span class="m">14</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">4</span><span class="w">       </span><span class="c1">// Round up</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">floor</span><span class="p">(</span><span class="m">3</span><span class="p">.</span><span class="m">99</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">3</span><span class="w">      </span><span class="c1">// Round down</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">round</span><span class="p">(</span><span class="m">3</span><span class="p">.</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">4</span><span class="w">       </span><span class="c1">// Round to nearest</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">0</span><span class="p">.</span><span class="m">123</span><span class="p">...</span><span class="w">    </span><span class="c1">// Generate random number between 0 and 1</span>
+</code></pre></div>
+<h3 id="2-string-functions">(2) String Functions<a class="headerlink" href="#2-string-functions" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">length</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">5</span><span class="w">          </span><span class="c1">// String length</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">toUpper</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;ALICE&quot;</span><span class="w">   </span><span class="c1">// Convert to uppercase</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">toLower</span><span class="p">(</span><span class="s">&quot;ALICE&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;alice&quot;</span><span class="w">   </span><span class="c1">// Convert to lowercase</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="n">replace</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;Blice&quot;</span><span class="w">  </span><span class="c1">// Replace string</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">substring</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;lic&quot;</span><span class="w">  </span><span class="c1">// Extract substring (start index, length)</span>
+</code></pre></div>
+<h3 id="3-temporal-functions">(3) Temporal Functions<a class="headerlink" href="#3-temporal-functions" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">date</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">date</span><span class="p">(</span><span class="s">&quot;2026-03-28&quot;</span><span class="p">)</span><span class="w">        </span><span class="c1">// Current date</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">datetime</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">datetime</span><span class="p">(</span><span class="s">&quot;2026-03-28T10:30:00&quot;</span><span class="p">)</span><span class="w">  </span><span class="c1">// Current datetime</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">timestamp</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">1711585800000</span><span class="w">        </span><span class="c1">// Current timestamp (milliseconds)</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">duration</span><span class="p">({</span><span class="n">days</span><span class="p">:</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">hours</span><span class="p">:</span><span class="m">2</span><span class="p">})</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">duration</span><span class="p">({</span><span class="n">days</span><span class="p">:</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">hours</span><span class="p">:</span><span class="m">2</span><span class="p">})</span><span class="w">  </span><span class="c1">// Duration</span>
+</code></pre></div>
+<h3 id="4-graph-related-functions">(4) Graph-Related Functions<a class="headerlink" href="#4-graph-related-functions" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">id</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">123</span><span class="w">          </span><span class="c1">// Unique ID of node/relationship</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">labels</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="s">&quot;Person&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Employee&quot;</span><span class="o">]</span><span class="w">  </span><span class="c1">// All labels of a node</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;FRIENDS_WITH&quot;</span><span class="w">  </span><span class="c1">// Type of relationship</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">properties</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="p">}</span><span class="w">  </span><span class="c1">// All properties of node/relationship</span>
+</code></pre></div>
+<h2 id="3-list-functions-process-lists">3. List Functions (Process lists)<a class="headerlink" href="#3-list-functions-process-lists" title="Permanent link">&para;</a></h2>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">head</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">1</span><span class="w">          </span><span class="c1">// First element of list</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">last</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">3</span><span class="w">          </span><span class="c1">// Last element of list</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">tail</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="w">      </span><span class="c1">// List without first element</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">range</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="o">]</span><span class="w">   </span><span class="c1">// Generate list with specified range</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">reverse</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="o">]</span><span class="w"> </span><span class="c1">// Reverse list</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="n">size</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">3</span><span class="w">          </span><span class="c1">// List length</span>
+</code></pre></div>
+<h2 id="4-case-expressions-conditional-logic">4. CASE Expressions (Conditional Logic)<a class="headerlink" href="#4-case-expressions-conditional-logic" title="Permanent link">&para;</a></h2>
+<p>Purpose: Similar to if-else in programming languages, used to return different values based on conditions</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">CASE</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s">&#39;Minor&#39;</span><span class="w">    </span><span class="c1">// Age &lt; 18: Minor</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="m">60</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s">&#39;Adult&#39;</span><span class="w">  </span><span class="c1">// 18 ≤ Age &lt; 60: Adult</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="n">ELSE</span><span class="w"> </span><span class="s">&#39;Elderly&#39;</span><span class="w">                  </span><span class="c1">// Otherwise: Elderly</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ageGroup</span>
+</code></pre></div>
+<h1 id="5-advanced-features">5. Advanced Features<a class="headerlink" href="#5-advanced-features" title="Permanent link">&para;</a></h1>
+<h2 id="1-pattern-comprehension">1. Pattern Comprehension<a class="headerlink" href="#1-pattern-comprehension" title="Permanent link">&para;</a></h2>
+<p>Purpose: Directly collect pattern matching results into a list, simplifying queries</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1">// Example: Query each user&#39;s friend name list</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1">// Pattern comprehension: match p&#39;s friends, collect friend names into a list</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="o">[</span><span class="n">p_friend</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">name</span><span class="o">]</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="n">p_friend</span><span class="o">]</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendNames</span>
+</code></pre></div>
+<h2 id="2-indexes-and-constraints-optimize-performance-ensure-data-integrity">2. Indexes and Constraints (Optimize Performance, Ensure Data Integrity)<a class="headerlink" href="#2-indexes-and-constraints-optimize-performance-ensure-data-integrity" title="Permanent link">&para;</a></h2>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// (1) Create index (used to speed up queries, based on label + property)</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="w">  </span><span class="c1">// Create index on name property for Person label</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">address</span><span class="p">)</span><span class="w">  </span><span class="c1">// Create index on address property for Company label</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1">// (2) Create unique constraint (ensures property values are unique, prevents duplicates)</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="k">ASSERT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w">  </span><span class="c1">// Person&#39;s email must be unique</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span><span class="w"> </span><span class="k">ASSERT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w">  </span><span class="c1">// Company&#39;s name must be unique</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1">// (3) Delete index</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="n">DROP</span><span class="w"> </span><span class="n">INDEX</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="c1">// (4) Delete constraint</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="n">DROP</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="k">ASSERT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span>
+</code></pre></div>
+<h2 id="3-transaction-control-optional-not-supported-by-all-databases">3. Transaction Control (Optional, not supported by all databases)<a class="headerlink" href="#3-transaction-control-optional-not-supported-by-all-databases" title="Permanent link">&para;</a></h2>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1">// Begin transaction</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">BEGIN</span><span class="w"> </span><span class="n">TRANSACTION</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1">// Execute operations (create, modify, delete, etc.)</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Frank&quot;</span><span class="p">})</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Frank&quot;</span><span class="p">})</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">35</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="c1">// Commit transaction (confirm changes)</span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="n">COMMIT</span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="c1">// Rollback transaction (cancel changes)</span>
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="n">ROLLBACK</span>
+</code></pre></div>
+<h1 id="6-complete-query-examples-comprehensive-application">6. Complete Query Examples (Comprehensive Application)<a class="headerlink" href="#6-complete-query-examples-comprehensive-application" title="Permanent link">&para;</a></h1>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">// Example: Query friends of users over 30 in Beijing, and the companies where those friends work, paginated return</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">// Conditions: user age &gt; 30, city is Beijing</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="c1">// Intermediate results: user, friend info, company info, collect friends and company list</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="k">WITH</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">COLLECT</span><span class="p">({</span><span class="n">friendName</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">companyName</span><span class="p">:</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">position</span><span class="p">})</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendsCompanyInfo</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1">// Sort by user name ascending, skip first 5, take 10</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">ASC</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="k">SKIP</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="m">10</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="c1">// Return final results</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userName</span><span class="p">,</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="w">       </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userAge</span><span class="p">,</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="w">       </span><span class="n">friendsCompanyInfo</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendsAndCompanies</span>
+</code></pre></div>
+<h1 id="7-common-notes-and-considerations">7. Common Notes and Considerations<a class="headerlink" href="#7-common-notes-and-considerations" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p>Relationship types only support a single type; specifying multiple types simultaneously (such as <code>-[:FRIENDS_WITH:COLLEAGUE]-&gt;</code>) is invalid</p>
+</li>
+<li>
+<p>Variable-length path queries (<code>*</code>) should be used with caution, especially unbounded paths (such as <code>-[:KNOWS*]-&gt;</code>), as they can severely impact query performance</p>
+</li>
+<li>
+<p>When deleting a node, you must first delete all its relationships, or use DETACH DELETE for cascade deletion</p>
+</li>
+<li>
+<p>UNION requires both queries to return exactly the same number of columns with matching data types, otherwise an error occurs</p>
+</li>
+<li>
+<p>Indexes are only effective for label + property queries in MATCH and WHERE clauses; creating indexes reasonably can greatly improve query performance</p>
+</li>
+</ul>
 
 
 

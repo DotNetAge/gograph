@@ -31,7 +31,7 @@
     
     
       
-        <title>Cypher 查询语言语法说明 - GoGraph 开发文档</title>
+        <title>OpenCypher 完整语法速查表 - GoGraph 开发文档</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cypher" class="md-skip">
+        <a href="#opencypher" class="md-skip">
           跳转至
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Cypher 查询语言语法说明
+              OpenCypher 完整语法速查表
             
           </span>
         </div>
@@ -291,7 +291,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../v0.1.1.md" class="md-tabs__link">
+        <a href="../../v0.2.0.md" class="md-tabs__link">
           
   
   
@@ -616,24 +616,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cypher 查询语言语法说明
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -641,7 +623,7 @@
   <span class="md-ellipsis">
     
   
-    Cypher 查询语言语法说明
+    OpenCypher 完整语法速查表
   
 
     
@@ -650,208 +632,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="目录">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-syntax-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. 语法结构与核心表达 (Syntax &amp; Structure)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. 语法结构与核心表达 (Syntax &amp; Structure)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#11-nodes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.1 节点 (Nodes)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#12-relationships" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.2 关系 (Relationships)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#13-path-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.3 模式路径 (Path Patterns)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-crud" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. 数据操作 (CRUD 操作示例)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. 数据操作 (CRUD 操作示例)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#21-create" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.1 创建数据 (CREATE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#22-match-return" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.2 查询数据 (MATCH &amp; RETURN)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23-set" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.3 更新数据 (SET)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#24-delete-remove" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.4 删除数据 (DELETE / REMOVE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-expressions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. 表达式与函数 (Expressions)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. 表达式与函数 (Expressions)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#31" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 比较运算符
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#32-parameterization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 参数化查询 (Parameterization)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-indexes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. 索引与约束 (Indexes)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-transactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. 事务处理 (Transactions)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-usage-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. 使用注意事项 (Usage Notes)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -951,6 +731,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../v0.2.0.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    None
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../v0.1.1.md" class="md-nav__link">
         
   
@@ -999,197 +807,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-syntax-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. 语法结构与核心表达 (Syntax &amp; Structure)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. 语法结构与核心表达 (Syntax &amp; Structure)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#11-nodes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.1 节点 (Nodes)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#12-relationships" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.2 关系 (Relationships)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#13-path-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1.3 模式路径 (Path Patterns)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-crud" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. 数据操作 (CRUD 操作示例)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. 数据操作 (CRUD 操作示例)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#21-create" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.1 创建数据 (CREATE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#22-match-return" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.2 查询数据 (MATCH &amp; RETURN)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23-set" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.3 更新数据 (SET)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#24-delete-remove" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.4 删除数据 (DELETE / REMOVE)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-expressions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. 表达式与函数 (Expressions)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. 表达式与函数 (Expressions)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#31" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 比较运算符
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#32-parameterization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 参数化查询 (Parameterization)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-indexes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. 索引与约束 (Indexes)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-transactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. 事务处理 (Transactions)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-usage-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. 使用注意事项 (Usage Notes)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1205,117 +822,520 @@
 
 
 
-<h1 id="cypher">Cypher 查询语言语法说明<a class="headerlink" href="#cypher" title="Permanent link">&para;</a></h1>
-<p>Cypher 是目前最流行、事实上的图数据库标准查询语言（最初由 Neo4j 发明，后开源为 OpenCypher）。它是一种<strong>声明式语言</strong>，最大的特色是其受 ASCII-art 启发，用可视化的文本符号来表达图的模式（Pattern）。</p>
-<p>本文档将详细说明 Cypher 的基础语法、关键字及 GoGraph 支持的核心操作，并提供代码示例。</p>
-<hr />
-<h2 id="1-syntax-structure">1. 语法结构与核心表达 (Syntax &amp; Structure)<a class="headerlink" href="#1-syntax-structure" title="Permanent link">&para;</a></h2>
-<p>Cypher 使用非常直观的符号来描绘“节点”与“关系”：</p>
-<h3 id="11-nodes">1.1 节点 (Nodes)<a class="headerlink" href="#11-nodes" title="Permanent link">&para;</a></h3>
-<p>使用圆括号 <code>()</code> 来表示节点（就像一个圆圈）。
-- <code>()</code>：匿名节点。
-- <code>(n)</code>：将节点绑定到变量 <code>n</code>，后续可引用。
-- <code>(n:User)</code>：带有 <code>:User</code> 标签的节点。
-- <code>(n:User {name: 'Alice', age: 30})</code>：带有属性的节点。</p>
-<h3 id="12-relationships">1.2 关系 (Relationships)<a class="headerlink" href="#12-relationships" title="Permanent link">&para;</a></h3>
-<p>使用方括号 <code>[]</code> 表示关系，配合破折号和箭头 <code>--&gt;</code>、<code>&lt;--</code>、<code>--</code> 来表示方向。
-- <code>--&gt;</code>：表示指向右侧的外向关系。
-- <code>-[r]-&gt;</code>：将关系绑定到变量 <code>r</code>。
-- <code>-[r:KNOWS]-&gt;</code>：指定关系的类型为 <code>:KNOWS</code>。
-- <code>-[r:KNOWS {since: 2022}]-&gt;</code>：带有属性的关系。</p>
-<h3 id="13-path-patterns">1.3 模式路径 (Path Patterns)<a class="headerlink" href="#13-path-patterns" title="Permanent link">&para;</a></h3>
-<p>将节点和关系组合在一起，构成完整的查询路径：
-<code>(a:User)-[:KNOWS]-&gt;(b:User)-[:PURCHASED]-&gt;(p:Product)</code></p>
-<hr />
-<h2 id="2-crud">2. 数据操作 (CRUD 操作示例)<a class="headerlink" href="#2-crud" title="Permanent link">&para;</a></h2>
-<h3 id="21-create">2.1 创建数据 (CREATE)<a class="headerlink" href="#21-create" title="Permanent link">&para;</a></h3>
-<p><code>CREATE</code> 用于向图库中插入新的节点、标签、属性和关系。</p>
-<p><strong>创建单个节点：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="p">})</span>
-</code></pre></div></p>
-<p><strong>一次性创建图谱（节点+关系）：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">}),</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">       </span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Bob&#39;</span><span class="p">}),</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">       </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="w"> </span><span class="p">{</span><span class="n">since</span><span class="p">:</span><span class="w"> </span><span class="m">2020</span><span class="p">}</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</code></pre></div></p>
-<h3 id="22-match-return">2.2 查询数据 (MATCH &amp; RETURN)<a class="headerlink" href="#22-match-return" title="Permanent link">&para;</a></h3>
-<p><code>MATCH</code> 用于声明你要寻找的图模式。它通常与 <code>WHERE</code>（条件）和 <code>RETURN</code>（返回）连用。</p>
-<p><strong>查询所有属于 Person 的节点：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span>
-</code></pre></div></p>
-<p><strong>条件过滤与属性返回：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="m">18</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span>
-</code></pre></div></p>
-<p><strong>遍历关系查询：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">})</span><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">KNOWS</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">since</span>
-</code></pre></div></p>
-<h3 id="23-set">2.3 更新数据 (SET)<a class="headerlink" href="#23-set" title="Permanent link">&para;</a></h3>
-<p><code>SET</code> 专门用于更新、新增节点的属性或覆盖标签。</p>
-<p><strong>修改特定节点的属性：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">})</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">SET</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">31</span>
+<h1 id="opencypher">OpenCypher 完整语法速查表<a class="headerlink" href="#opencypher" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>说明：本速查表按 CRUD 操作分类，包含 OpenCypher 所有核心语法、规则、函数及示例，可直接复制保存为 .txt 或 .md 文件，离线查阅便捷。</p>
+</blockquote>
+<h1 id="_1">一、基础语法规则<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 大小写与标识符<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>关键字：不区分大小写（MATCH / match / Match 完全等价）</p>
+</li>
+<li>
+<p>标识符：变量、标签、关系类型、属性名，区分大小写（如 :Person 和 :person 是两个不同标签）</p>
+</li>
+<li>
+<p>命名规则：以字母、下划线开头，可包含字母、数字、下划线、$、#</p>
+</li>
+<li>
+<p>核心保留字：MATCH、WHERE、RETURN、CREATE、DELETE、SET、WITH、UNWIND、UNION、MERGE、REMOVE</p>
+</li>
+</ul>
+<h2 id="2">2. 注释语法<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>单行注释：// 注释内容（示例：// 匹配所有用户节点）</p>
+</li>
+<li>
+<p>多行注释：/* 注释内容 <em>/（示例：/</em> 批量创建节点和关系，用于初始化数据 */）</p>
+</li>
+</ul>
+<h2 id="3">3. 数据类型<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>类型分类</th>
+<th>具体类型</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标量类型（基础值）</td>
+<td>INTEGER（整数）</td>
+<td>正负整数，无长度限制</td>
+<td>10、-5、100000</td>
+</tr>
+<tr>
+<td></td>
+<td>FLOAT（浮点数）</td>
+<td>带小数的数值</td>
+<td>3.14、-0.5、10.0</td>
+</tr>
+<tr>
+<td></td>
+<td>BOOLEAN（布尔值）</td>
+<td>逻辑值，仅两个可选值</td>
+<td>true、false</td>
+</tr>
+<tr>
+<td></td>
+<td>STRING（字符串）</td>
+<td>文本内容，单引号、双引号均可</td>
+<td>"Alice"、'TechCorp'</td>
+</tr>
+<tr>
+<td></td>
+<td>NULL</td>
+<td>空值，表示无数据</td>
+<td>p.age IS NULL</td>
+</tr>
+<tr>
+<td>时间类型</td>
+<td>DATE（日期）</td>
+<td>仅日期，格式 yyyy-MM-dd</td>
+<td>date()、date("2026-03-28")</td>
+</tr>
+<tr>
+<td></td>
+<td>DATETIME（日期时间）</td>
+<td>带时区的日期时间</td>
+<td>datetime()、datetime("2026-03-28T10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>TIME（时间）</td>
+<td>仅时间，带时区</td>
+<td>time()、time("10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>LOCALDATETIME（本地日期时间）</td>
+<td>不带时区的日期时间</td>
+<td>localdatetime("2026-03-28T10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>LOCALTIME（本地时间）</td>
+<td>不带时区的时间</td>
+<td>localtime("10:30:00")</td>
+</tr>
+<tr>
+<td></td>
+<td>DURATION（时长）</td>
+<td>时间间隔</td>
+<td>duration({days:1, hours:2})</td>
+</tr>
+<tr>
+<td>复合类型</td>
+<td>LIST（列表）</td>
+<td>有序、可重复的集合</td>
+<td>[1,2,3]、["Alice","Bob"]</td>
+</tr>
+<tr>
+<td></td>
+<td>MAP（映射）</td>
+<td>键值对集合，键为字符串</td>
+<td>{name: "Alice", age: 30}</td>
+</tr>
+</tbody>
+</table>
+<h1 id="_2">二、核心图元素语法（基础）<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<h2 id="1-node">1. 节点（Node）<a class="headerlink" href="#1-node" title="Permanent link">&para;</a></h2>
+<p>语法格式：(变量:标签1:标签2 {属性键1: 属性值1, 属性键2: 属性值2})</p>
+<p>说明：变量、标签、属性均为可选，多标签用冒号分隔，属性为键值对集合</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// 1. 空节点（无变量、无标签、无属性）</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">()</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">// 2. 带变量的节点（变量用于后续引用）</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">// 3. 带单个标签的节点（标签用于分类）</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">(:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">// 4. 带多个标签的节点</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">(:</span><span class="n">Person</span><span class="p">:</span><span class="n">Employee</span><span class="p">:</span><span class="n">Manager</span><span class="p">)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1">// 5. 完整节点（变量+标签+属性）</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;alice@example.com&quot;</span><span class="p">})</span>
 </code></pre></div>
-<em>注意：在 GoGraph 中，如果 <code>n</code> 之前没有 <code>age</code> 属性，则为新增；如果已有，则为覆盖修改。</em></p>
-<h3 id="24-delete-remove">2.4 删除数据 (DELETE / REMOVE)<a class="headerlink" href="#24-delete-remove" title="Permanent link">&para;</a></h3>
-<p><code>DELETE</code> 用于删除图中的实体（节点和关系）。
-<strong>删除特定节点及与之相关的全部关系：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Alice&#39;</span><span class="p">})</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">n</span>
+<h2 id="2-relationship">2. 关系（Relationship）<a class="headerlink" href="#2-relationship" title="Permanent link">&para;</a></h2>
+<p>语法格式：-[变量:关系类型 {属性键: 属性值}]-&gt;</p>
+<p>说明：方向可选（-&gt;出、&lt;--入、--无向），变量可选，关系类型必选（仅单个类型），属性可选</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// 1. 无向关系（无变量、无类型、无属性）</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="err">--</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// 2. 有向关系（出关系）</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="err">-</span><span class="p">&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// 3. 有向关系（入关系）</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="o">&lt;--</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// 4. 带类型的关系（核心必写）</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// 5. 带变量的关系（变量用于后续引用）</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="o">-[</span><span class="n">r</span><span class="o">]-&gt;</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1">// 6. 完整关系（变量+类型+属性）</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="w"> </span><span class="p">{</span><span class="n">since</span><span class="p">:</span><span class="w"> </span><span class="m">2020</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;close&quot;</span><span class="p">}</span><span class="o">]-&gt;</span>
 </code></pre></div>
-<em>(注：如果不带 <code>DETACH</code> 且该节点还有关系，删除可能会失败或处于未定义状态)</em></p>
-<p><code>REMOVE</code> 用于移除节点的特定标签或属性，而不删除节点本身。
-<strong>移除节点的标签和属性：</strong>
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Bob&#39;</span><span class="p">})</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">n</span><span class="p">:</span><span class="n">VIP</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span>
-</code></pre></div></p>
-<hr />
-<h2 id="3-expressions">3. 表达式与函数 (Expressions)<a class="headerlink" href="#3-expressions" title="Permanent link">&para;</a></h2>
-<p>在 <code>WHERE</code> 和 <code>SET</code> 等子句中，Cypher 支持多种表达式。</p>
-<h3 id="31">3.1 比较运算符<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
-<p>支持标准的 <code>=</code>、<code>!=</code>、<code>&gt;</code>、<code>&gt;=</code>、<code>&lt;</code>、<code>&lt;=</code> 比较操作。
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Product</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">price</span><span class="w"> </span><span class="p">&lt;=</span><span class="w"> </span><span class="m">99</span><span class="p">.</span><span class="m">9</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span>
-</code></pre></div></p>
-<h3 id="32-parameterization">3.2 参数化查询 (Parameterization)<a class="headerlink" href="#32-parameterization" title="Permanent link">&para;</a></h3>
-<p>为了<strong>防止注入攻击</strong>并<strong>提高查询引擎的缓存命中率</strong>，推荐使用 <code>$</code> 声明参数：
-<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// 查询语句</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">User</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="err">$</span><span class="n">minAge</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">name</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">// 通过 API 执行时传入的 Map:</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1">// {&quot;minAge&quot;: 18}</span>
+<h2 id="3-pattern">3. 模式（Pattern）<a class="headerlink" href="#3-pattern" title="Permanent link">&para;</a></h2>
+<p>说明：节点与关系的组合，用于描述图结构，是 MATCH、CREATE 等子句的核心</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// 1. 简单路径（两个节点+一条关系）</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">// 2. 变长路径（1到5层关系，范围可调整）</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="p">*</span><span class="m">1</span><span class="p">..</span><span class="m">5</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">// 3. 任意长度路径（无上限，慎用，避免性能问题）</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FOLLOWS</span><span class="p">*</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1">// 4. 多模式匹配（多个独立节点/路径）</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Company</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1">// 5. 路径变量（保存完整路径，用于后续操作）</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div>
-<em>在 GoGraph 的最新架构中，执行引擎支持动态解析参数字典并映射至图比较逻辑。</em></p>
-<hr />
-<h2 id="4-indexes">4. 索引与约束 (Indexes)<a class="headerlink" href="#4-indexes" title="Permanent link">&para;</a></h2>
-<p>在大多数图数据库中，建立索引能极大提升查询速度。
-- <strong>隐式索引机制</strong>：在 GoGraph 的当前实现中，当您 <code>CREATE (n:User)</code> 时，系统底层引擎会自动为您维护标签（Label）倒排索引和属性（Property）索引。
-- <strong>Index Scan 触发条件</strong>：当您执行 <code>MATCH (n:User)</code> 时，底层引擎会自动捕获标签约束，走 O(K) 复杂度的索引扫描，而非 O(N) 的全表逐个遍历。</p>
-<hr />
-<h2 id="5-transactions">5. 事务处理 (Transactions)<a class="headerlink" href="#5-transactions" title="Permanent link">&para;</a></h2>
-<p>Cypher 的每一条执行语句默认都运行在一个<strong>隐式原子事务</strong>中。
-但在实际工程中，您可能需要将多个 Cypher 组合在一个大事务中：</p>
-<div class="language-go highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// 在 Go 应用程序中控制事务：</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nx">tx</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">BeginTx</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span>
+<h1 id="crud">三、CRUD 核心操作语法（重点）<a class="headerlink" href="#crud" title="Permanent link">&para;</a></h1>
+<h2 id="read">（一）查询（Read）：查找数据<a class="headerlink" href="#read" title="Permanent link">&para;</a></h2>
+<h3 id="1-match">1. MATCH：模式匹配（核心查询子句）<a class="headerlink" href="#1-match" title="Permanent link">&para;</a></h3>
+<p>作用：查找图中匹配指定模式的节点、关系或路径</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// 示例1：匹配所有 Person 节点</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// 示例2：匹配 Person 节点及其朋友关系</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// 示例3：匹配路径并保存为变量</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">MATCH</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">KNOWS</span><span class="p">*</span><span class="m">1</span><span class="p">..</span><span class="m">3</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">// 示例4：匹配多个模式（Person 和 Company 节点，及雇佣关系）</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-where">2. WHERE：条件过滤<a class="headerlink" href="#2-where" title="Permanent link">&para;</a></h3>
+<p>作用：对 MATCH 或 WITH 的结果进行筛选，支持多条件组合</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// 示例1：基础条件（年龄大于18，城市为北京）</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// 示例2：字符串匹配（姓名包含&quot;Li&quot;）</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="n">CONTAINS</span><span class="w"> </span><span class="s">&quot;Li&quot;</span><span class="w">  </span><span class="c1">// 包含（不区分大小写）</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">// WHERE p.name STARTS WITH &quot;A&quot;  // 以A开头</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">// WHERE p.name ENDS WITH &quot;e&quot;    // 以e结尾</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">// 示例3：列表匹配（城市在指定列表中）</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="o">[</span><span class="s">&quot;Beijing&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Guangzhou&quot;</span><span class="o">]</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="c1">// 示例4：属性存在性（存在 email 属性）</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">EXISTS</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="p">)</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="c1">// 示例5：空值判断</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="n">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span>
+</code></pre></div>
+<h3 id="3-return">3. RETURN：返回结果<a class="headerlink" href="#3-return" title="Permanent link">&para;</a></h3>
+<p>作用：指定查询返回的数据，是查询的结束子句，支持别名、聚合、去重</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// 示例1：返回节点的指定属性</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">18</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1">// 示例2：返回别名（简化输出）</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userName</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userAge</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1">// 示例3：聚合查询（统计、平均值等）</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">COUNT</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">totalPerson</span><span class="p">,</span><span class="w">  </span><span class="c1">// 总人数</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">       </span><span class="n">AVG</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avgAge</span><span class="p">,</span><span class="w">    </span><span class="c1">// 平均年龄</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">       </span><span class="n">MIN</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">minAge</span><span class="p">,</span><span class="w">    </span><span class="c1">// 最小年龄</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">       </span><span class="n">MAX</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">maxAge</span><span class="w">     </span><span class="c1">// 最大年龄</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">// 示例4：去重返回（避免重复结果）</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="k">RETURN</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">companyName</span><span class="w">  </span><span class="c1">// 去重返回公司名称</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1">// 示例5：返回路径相关信息</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="k">MATCH</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">nodes</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">allNodes</span><span class="p">,</span><span class="w">    </span><span class="c1">// 路径中的所有节点</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">       </span><span class="n">relationships</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">allRels</span><span class="p">,</span><span class="w">  </span><span class="c1">// 路径中的所有关系</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">       </span><span class="n">length</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pathLength</span><span class="w">  </span><span class="c1">// 路径长度（关系数量）</span>
+</code></pre></div>
+<h3 id="4-with">4. WITH：中间结果传递<a class="headerlink" href="#4-with" title="Permanent link">&para;</a></h3>
+<p>作用：处理中间结果，将结果传递给后续子句（类似 SQL 的 HAVING，可用于聚合后过滤）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// 示例：查询朋友数大于5的用户</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">WITH</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">COUNT</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendCount</span><span class="w">  </span><span class="c1">// 中间结果：用户及其朋友数</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">friendCount</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">5</span><span class="w">           </span><span class="c1">// 过滤朋友数大于5的用户</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">friendCount</span><span class="w">       </span><span class="c1">// 返回最终结果</span>
+</code></pre></div>
+<h3 id="5-unwind">5. UNWIND：展开列表<a class="headerlink" href="#5-unwind" title="Permanent link">&para;</a></h3>
+<p>作用：将列表拆分为多行，便于后续处理（常用于批量操作）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// 示例1：展开简单列表</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">UNWIND</span><span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="o">]</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">num</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">doubleNum</span><span class="w">  </span><span class="c1">// 输出每个数字的2倍</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// 示例2：展开节点属性列表</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">UNWIND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">hobbies</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">hobby</span><span class="w">  </span><span class="c1">// 假设 p.hobbies 是列表 [&quot;reading&quot;, &quot;travel&quot;]</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">hobby</span>
+</code></pre></div>
+<h3 id="6-order-by-limit-skip">6. ORDER BY / LIMIT / SKIP：排序与分页<a class="headerlink" href="#6-order-by-limit-skip" title="Permanent link">&para;</a></h3>
+<p>作用：对返回结果排序、限制数量、跳过指定行数（用于分页查询）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// 示例：分页查询（跳过前10条，取5条，按年龄降序、姓名升序）</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">ASC</span><span class="w">  </span><span class="c1">// 先按年龄降序，再按姓名升序</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">SKIP</span><span class="w"> </span><span class="m">10</span><span class="w">  </span><span class="c1">// 跳过前10条</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">LIMIT</span><span class="w"> </span><span class="m">5</span><span class="w">  </span><span class="c1">// 取5条结果</span>
+</code></pre></div>
+<h3 id="7-union-union-all">7. UNION / UNION ALL：结果合并<a class="headerlink" href="#7-union-union-all" title="Permanent link">&para;</a></h3>
+<p>作用：合并多个查询的结果，UNION 去重，UNION ALL 不去重（要求两个查询返回列数、类型一致）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// 示例1：UNION（去重合并）</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">UNION</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1">// 示例2：UNION ALL（不去重合并，性能更优）</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">name</span>
+</code></pre></div>
+<h2 id="create">（二）创建（Create）：新增数据<a class="headerlink" href="#create" title="Permanent link">&para;</a></h2>
+<h3 id="1-create">1. CREATE：直接创建<a class="headerlink" href="#1-create" title="Permanent link">&para;</a></h3>
+<p>作用：创建节点、关系或节点+关系的组合（每次执行都会创建新数据，即使重复）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// 示例1：创建单个节点</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">28</span><span class="p">,</span><span class="w"> </span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">})</span>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">// 执行第一步</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nx">tx</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="s">&quot;CREATE (n:Account {id: 1, balance: 100})&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">// 示例2：创建多个节点（用逗号分隔）</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p1</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Charlie&quot;</span><span class="p">}),</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TechCorp&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">address</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span><span class="p">})</span>
 <a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">// 执行第二步，如果发生业务失败可以 Rollback()</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="nx">tx</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="s">&quot;MATCH (n:Account {id: 1}) SET n.balance = 50&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">// 示例3：创建节点+关系（一次性创建关联数据）</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="w"> </span><span class="p">{</span><span class="n">since</span><span class="p">:</span><span class="w"> </span><span class="m">2022</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Engineer&quot;</span><span class="p">}</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TechCorp&quot;</span><span class="p">})</span>
 <a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1">// 最终提交</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="nx">tx</span><span class="p">.</span><span class="nx">Commit</span><span class="p">()</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1">// 示例4：创建带多标签的节点</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">:</span><span class="n">Student</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Eve&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">school</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Beijing University&quot;</span><span class="p">})</span>
 </code></pre></div>
-<hr />
-<h2 id="6-usage-notes">6. 使用注意事项 (Usage Notes)<a class="headerlink" href="#6-usage-notes" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>关系方向不能含糊</strong>：在 <code>CREATE</code> 语句中，关系必须具备明确的箭头指向（如 <code>-&gt;</code>）。而在 <code>MATCH</code> 中，您可以省略箭头表示忽略方向（GoGraph 引擎目前优先遵循精确的方向匹配）。</li>
-<li><strong>警惕笛卡尔积</strong>：如果没有通过关系进行桥接，使用多个断开的模式 <code>MATCH (a:Person), (b:Company)</code> 可能会导致返回的结果成倍数爆炸。</li>
-<li><strong>优先明确 Label</strong>：在大型数据集中，执行 <code>MATCH (n) RETURN n</code> 会拖慢整个数据库系统，应该尽可能使用标签约束 <code>MATCH (n:SpecificLabel)</code> 来触发图索引。</li>
-</ol>
+<h3 id="2-merge">2. MERGE：匹配或创建<a class="headerlink" href="#2-merge" title="Permanent link">&para;</a></h3>
+<p>作用：确保指定模式存在——若存在则匹配，若不存在则创建（避免重复创建，常用）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// 示例1：匹配或创建节点</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">MERGE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span><span class="w">  </span><span class="c1">// 若存在 name=Dave 的 Person 节点，直接匹配；否则创建</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">ON</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">createdAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">timestamp</span><span class="p">()</span><span class="w">  </span><span class="c1">// 仅创建时执行：设置创建时间戳</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">ON</span><span class="w"> </span><span class="k">MATCH</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">updatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">timestamp</span><span class="p">()</span><span class="w">    </span><span class="c1">// 仅匹配时执行：更新时间戳</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">// 示例2：匹配或创建节点+关系</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">}),</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">})</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">MERGE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w">  </span><span class="c1">// 若关系存在，匹配；否则创建</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">ON</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">friendCount</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">COALESCE</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">friendCount</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="m">1</span><span class="w">  </span><span class="c1">// 创建关系时，更新朋友数</span>
+</code></pre></div>
+<h2 id="update">（三）更新（Update）：修改数据<a class="headerlink" href="#update" title="Permanent link">&para;</a></h2>
+<h3 id="1-set">1. SET：添加/修改属性、标签<a class="headerlink" href="#1-set" title="Permanent link">&para;</a></h3>
+<p>作用：为节点/关系添加新属性、修改已有属性，或为节点添加标签</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// 示例1：修改单个属性</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">31</span><span class="w">  </span><span class="c1">// 修改年龄</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">// 示例2：修改多个属性</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Shanghai&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;alice_new@example.com&quot;</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1">// 示例3：批量设置属性（用 MAP 简化）</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="err">+</span><span class="p">=</span><span class="w"> </span><span class="p">{</span><span class="n">phone</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;123456789&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">gender</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;female&quot;</span><span class="p">}</span><span class="w">  </span><span class="c1">// 批量添加/修改属性</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="c1">// 示例4：为节点添加标签</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">:</span><span class="n">Employee</span><span class="w">  </span><span class="c1">// 为 Alice 节点添加 Employee 标签</span>
+</code></pre></div>
+<h3 id="2-remove">2. REMOVE：删除属性、标签<a class="headerlink" href="#2-remove" title="Permanent link">&para;</a></h3>
+<p>作用：删除节点/关系的属性，或删除节点的标签（不能删除关系类型）</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// 示例1：删除单个属性</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">phone</span><span class="w">  </span><span class="c1">// 删除 phone 属性</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1">// 示例2：删除多个属性（用逗号分隔）</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">phone</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">gender</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="c1">// 示例3：删除节点的标签</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="k">REMOVE</span><span class="w"> </span><span class="n">p</span><span class="p">:</span><span class="n">Employee</span><span class="w">  </span><span class="c1">// 删除 Alice 节点的 Employee 标签</span>
+</code></pre></div>
+<h2 id="delete">（四）删除（Delete）：删除数据<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h2>
+<p>注意：删除节点前，必须先删除该节点的所有关系（否则报错）；DETACH DELETE 可级联删除节点及所有关系</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// 示例1：删除关系（先匹配关系，再删除）</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">})</span><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bob&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">DELETE</span><span class="w"> </span><span class="n">r</span><span class="w">  </span><span class="c1">// 删除该朋友关系</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// 示例2：删除节点（需先删除关系，否则报错）</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-[</span><span class="n">r</span><span class="o">]-&gt;</span><span class="p">()</span><span class="w">  </span><span class="c1">// 匹配 p 的所有出关系</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="k">DELETE</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w">        </span><span class="c1">// 先删除关系，再删除节点</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1">// 示例3：级联删除（推荐，自动删除节点及所有关系）</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dave&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">p</span><span class="w">  </span><span class="c1">// 一次性删除节点和所有关联关系</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="c1">// 示例4：删除所有匹配的节点和关系</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="n">r</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;OldCorp&quot;</span><span class="p">})</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w">  </span><span class="c1">// 删除用户、雇佣关系、公司节点</span>
+</code></pre></div>
+<h1 id="_3">四、函数与表达式（常用）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h1>
+<h2 id="1-return-with">1. 聚合函数（用于 RETURN / WITH 聚合查询）<a class="headerlink" href="#1-return-with" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>COUNT(表达式)：统计数量（COUNT(*) 统计所有行，COUNT(p) 统计非空节点）</p>
+</li>
+<li>
+<p>SUM(表达式)：求和（仅适用于数值类型）</p>
+</li>
+<li>
+<p>AVG(表达式)：求平均值（仅适用于数值类型）</p>
+</li>
+<li>
+<p>MIN(表达式)：求最小值</p>
+</li>
+<li>
+<p>MAX(表达式)：求最大值</p>
+</li>
+<li>
+<p>COLLECT(表达式)：将结果收集为列表</p>
+</li>
+</ul>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// 示例：聚合函数使用</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">company</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">       </span><span class="n">COUNT</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">employeeCount</span><span class="p">,</span><span class="w">  </span><span class="c1">// 公司员工数</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">       </span><span class="n">AVG</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">avgEmployeeAge</span><span class="p">,</span><span class="w">  </span><span class="c1">// 员工平均年龄</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">       </span><span class="k">COLLECT</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">employeeNames</span><span class="w">  </span><span class="c1">// 员工姓名列表</span>
+</code></pre></div>
+<h2 id="2_1">2. 标量函数（处理单个值）<a class="headerlink" href="#2_1" title="Permanent link">&para;</a></h2>
+<h3 id="1_1">（1）数学函数<a class="headerlink" href="#1_1" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">abs</span><span class="p">(</span><span class="err">-</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">5</span><span class="w">          </span><span class="c1">// 绝对值</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">ceil</span><span class="p">(</span><span class="m">3</span><span class="p">.</span><span class="m">14</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">4</span><span class="w">       </span><span class="c1">// 向上取整</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">floor</span><span class="p">(</span><span class="m">3</span><span class="p">.</span><span class="m">99</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">3</span><span class="w">      </span><span class="c1">// 向下取整</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">round</span><span class="p">(</span><span class="m">3</span><span class="p">.</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">4</span><span class="w">       </span><span class="c1">// 四舍五入</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">0</span><span class="p">.</span><span class="m">123</span><span class="p">...</span><span class="w">    </span><span class="c1">// 生成0-1之间的随机数</span>
+</code></pre></div>
+<h3 id="2_2">（2）字符串函数<a class="headerlink" href="#2_2" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">length</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">5</span><span class="w">          </span><span class="c1">// 字符串长度</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">toUpper</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;ALICE&quot;</span><span class="w">   </span><span class="c1">// 转为大写</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">toLower</span><span class="p">(</span><span class="s">&quot;ALICE&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;alice&quot;</span><span class="w">   </span><span class="c1">// 转为小写</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="n">replace</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;Blice&quot;</span><span class="w">  </span><span class="c1">// 替换字符串</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">substring</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;lic&quot;</span><span class="w">  </span><span class="c1">// 截取子串（起始索引，长度）</span>
+</code></pre></div>
+<h3 id="3_1">（3）时间函数<a class="headerlink" href="#3_1" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">date</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">date</span><span class="p">(</span><span class="s">&quot;2026-03-28&quot;</span><span class="p">)</span><span class="w">        </span><span class="c1">// 当前日期</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">datetime</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">datetime</span><span class="p">(</span><span class="s">&quot;2026-03-28T10:30:00&quot;</span><span class="p">)</span><span class="w">  </span><span class="c1">// 当前日期时间</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">timestamp</span><span class="p">()</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">1711585800000</span><span class="w">        </span><span class="c1">// 当前时间戳（毫秒）</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">duration</span><span class="p">({</span><span class="n">days</span><span class="p">:</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">hours</span><span class="p">:</span><span class="m">2</span><span class="p">})</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">duration</span><span class="p">({</span><span class="n">days</span><span class="p">:</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">hours</span><span class="p">:</span><span class="m">2</span><span class="p">})</span><span class="w">  </span><span class="c1">// 时长</span>
+</code></pre></div>
+<h3 id="4">（4）图相关函数<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">id</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">123</span><span class="w">          </span><span class="c1">// 节点/关系的唯一ID</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">labels</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="s">&quot;Person&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Employee&quot;</span><span class="o">]</span><span class="w">  </span><span class="c1">// 节点的所有标签</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="s">&quot;FRIENDS_WITH&quot;</span><span class="w">  </span><span class="c1">// 关系的类型</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">properties</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="p">}</span><span class="w">  </span><span class="c1">// 节点/关系的所有属性</span>
+</code></pre></div>
+<h2 id="3_2">3. 列表函数（处理列表）<a class="headerlink" href="#3_2" title="Permanent link">&para;</a></h2>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">head</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">1</span><span class="w">          </span><span class="c1">// 列表第一个元素</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">last</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">3</span><span class="w">          </span><span class="c1">// 列表最后一个元素</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">tail</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="w">      </span><span class="c1">// 列表去掉第一个元素后的部分</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">range</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="o">]</span><span class="w">   </span><span class="c1">// 生成指定范围的列表</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">reverse</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">[</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="o">]</span><span class="w"> </span><span class="c1">// 反转列表</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="n">size</span><span class="p">(</span><span class="o">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="m">3</span><span class="w">          </span><span class="c1">// 列表长度</span>
+</code></pre></div>
+<h2 id="4-case">4. CASE 表达式（条件判断）<a class="headerlink" href="#4-case" title="Permanent link">&para;</a></h2>
+<p>作用：类似编程语言的 if-else，用于根据条件返回不同值</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">CASE</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s">&#39;Minor&#39;</span><span class="w">    </span><span class="c1">// 年龄&lt;18：未成年</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="m">60</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="s">&#39;Adult&#39;</span><span class="w">  </span><span class="c1">// 18≤年龄&lt;60：成年</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="n">ELSE</span><span class="w"> </span><span class="s">&#39;Elderly&#39;</span><span class="w">                  </span><span class="c1">// 其他：老年</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ageGroup</span>
+</code></pre></div>
+<h1 id="_4">五、高级特性（进阶）<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h1>
+<h2 id="1-pattern-comprehension">1. 模式理解（Pattern Comprehension）<a class="headerlink" href="#1-pattern-comprehension" title="Permanent link">&para;</a></h2>
+<p>作用：将模式匹配的结果直接收集为列表，简化查询</p>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1">// 示例：查询每个用户的朋友姓名列表</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1">// 模式理解：匹配 p 的朋友，收集朋友姓名为列表</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="o">[</span><span class="n">p_friend</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">name</span><span class="o">]</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="n">p_friend</span><span class="o">]</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendNames</span>
+</code></pre></div>
+<h2 id="2_3">2. 索引与约束（优化性能、保证数据完整性）<a class="headerlink" href="#2_3" title="Permanent link">&para;</a></h2>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// （1）创建索引（用于加速查询，基于标签+属性）</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="w">  </span><span class="c1">// 为 Person 标签的 name 属性创建索引</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">address</span><span class="p">)</span><span class="w">  </span><span class="c1">// 为 Company 标签的 address 属性创建索引</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1">// （2）创建唯一约束（保证属性值唯一，避免重复）</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="k">ASSERT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w">  </span><span class="c1">// Person 的 email 唯一</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span><span class="w"> </span><span class="k">ASSERT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w">  </span><span class="c1">// Company 的 name 唯一</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1">// （3）删除索引</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="n">DROP</span><span class="w"> </span><span class="n">INDEX</span><span class="w"> </span><span class="n">FOR</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="c1">// （4）删除约束</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="n">DROP</span><span class="w"> </span><span class="n">CONSTRAINT</span><span class="w"> </span><span class="n">ON</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="w"> </span><span class="k">ASSERT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">UNIQUE</span>
+</code></pre></div>
+<h2 id="3_3">3. 事务控制（可选，部分数据库支持）<a class="headerlink" href="#3_3" title="Permanent link">&para;</a></h2>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1">// 开启事务</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">BEGIN</span><span class="w"> </span><span class="n">TRANSACTION</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1">// 执行操作（创建、修改、删除等）</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Frank&quot;</span><span class="p">})</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Frank&quot;</span><span class="p">})</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">35</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="c1">// 提交事务（确认修改）</span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="n">COMMIT</span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="c1">// 回滚事务（取消修改）</span>
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="n">ROLLBACK</span>
+</code></pre></div>
+<h1 id="_5">六、完整查询示例（综合运用）<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h1>
+<div class="language-cypher highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">// 示例：查询30岁以上北京用户的朋友，及其朋友所在的公司，分页返回</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">FRIENDS_WITH</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">:</span><span class="n">Person</span><span class="p">)</span><span class="o">-[</span><span class="p">:</span><span class="n">WORKS_FOR</span><span class="o">]-&gt;</span><span class="p">(</span><span class="n">c</span><span class="p">:</span><span class="n">Company</span><span class="p">)</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">// 条件过滤：用户年龄&gt;30，城市为北京</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="n">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">city</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Beijing&quot;</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="c1">// 中间结果：用户、朋友信息、公司信息，收集朋友及公司列表</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="k">WITH</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">COLLECT</span><span class="p">({</span><span class="n">friendName</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">companyName</span><span class="p">:</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">position</span><span class="p">})</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendsCompanyInfo</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1">// 按用户姓名升序排序，跳过前5条，取10条</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">ASC</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="k">SKIP</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="m">10</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="c1">// 返回最终结果</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userName</span><span class="p">,</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="w">       </span><span class="n">p</span><span class="p">.</span><span class="n">age</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">userAge</span><span class="p">,</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="w">       </span><span class="n">friendsCompanyInfo</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">friendsAndCompanies</span>
+</code></pre></div>
+<h1 id="_6">七、常见注意事项<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p>关系类型仅支持单个，不能同时指定多个类型（如 -[:FRIENDS_WITH:COLLEAGUE]-&gt; 是错误的）</p>
+</li>
+<li>
+<p>变长路径查询（<em>）慎用，尤其是无上限的路径（如 -[:KNOWS</em>]-&gt;），会严重影响查询性能</p>
+</li>
+<li>
+<p>删除节点时，必须先删除其所有关系，或使用 DETACH DELETE 级联删除</p>
+</li>
+<li>
+<p>UNION 要求两个查询返回的列数、数据类型完全一致，否则报错</p>
+</li>
+<li>
+<p>索引仅对 MATCH、WHERE 中涉及的标签+属性查询有效，合理创建索引可大幅提升查询性能</p>
+</li>
+</ul>
 
 
 

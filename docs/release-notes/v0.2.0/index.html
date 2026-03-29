@@ -18,7 +18,7 @@
         
           <link rel="alternate" href="./" hreflang="en">
         
-          <link rel="alternate" href="../../zh/release-notes/v0.1.1/" hreflang="zh">
+          <link rel="alternate" href="../../zh/release-notes/v0.2.0/" hreflang="zh">
         
       
       
@@ -27,7 +27,7 @@
     
     
       
-        <title>v0.1.1 - GoGraph Documentation</title>
+        <title>v0.2.0 - GoGraph Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v011" class="md-skip">
+        <a href="#v020" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v0.1.1
+              v0.2.0
             
           </span>
         </div>
@@ -139,7 +139,7 @@
           </li>
         
           <li class="md-select__item">
-            <a href="../../zh/release-notes/v0.1.1/" hreflang="zh" class="md-select__link">
+            <a href="../../zh/release-notes/v0.2.0/" hreflang="zh" class="md-select__link">
               中文
             </a>
           </li>
@@ -793,22 +793,34 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#cypher-parser-limitation-status" class="md-nav__link">
+  <a href="#v020-2026-03-29" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cypher Parser Limitation Status
+        [v0.2.0] - 2026-03-29
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Cypher Parser Limitation Status">
+    <nav class="md-nav" aria-label="[v0.2.0] - 2026-03-29">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-where-clause-string-comparison-limitation" class="md-nav__link">
+  <a href="#added" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. WHERE Clause String Comparison Limitation
+        Added
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Added">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parser-refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parser Refactoring
       
     </span>
   </a>
@@ -816,10 +828,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-undirected-relationship-support" class="md-nav__link">
+  <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Undirected Relationship Support
+        Testing
       
     </span>
   </a>
@@ -827,10 +839,38 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-variable-length-path-support" class="md-nav__link">
+  <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Variable Length Path Support
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Optimization
       
     </span>
   </a>
@@ -838,10 +878,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#test-coverage" class="md-nav__link">
+  <a href="#resource-management" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Test Coverage
+        Resource Management
       
     </span>
   </a>
@@ -849,10 +889,176 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#future-optimization-suggestions" class="md-nav__link">
+  <a href="#api-improvements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Future Optimization Suggestions
+        API Improvements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Breaking Changes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Breaking Changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-structure-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opencypher-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenCypher Compliance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v011-2025-03-28" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [v0.1.1] - 2025-03-28
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.1.1] - 2025-03-28">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v010-2025-03-27" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [v0.1.0] - 2025-03-27
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.1.0] - 2025-03-27">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
       
     </span>
   </a>
@@ -881,104 +1087,254 @@
 
 
 
-<h1 id="v011">v0.1.1<a class="headerlink" href="#v011" title="Permanent link">&para;</a></h1>
-<h2 id="cypher-parser-limitation-status">Cypher Parser Limitation Status<a class="headerlink" href="#cypher-parser-limitation-status" title="Permanent link">&para;</a></h2>
-<h3 id="1-where-clause-string-comparison-limitation">1. WHERE Clause String Comparison Limitation<a class="headerlink" href="#1-where-clause-string-comparison-limitation" title="Permanent link">&para;</a></h3>
-<p><strong>Status</strong>: ✅ <strong>Resolved</strong></p>
-<p>Original Issue: String parameter comparison had issues and required filtering at the application layer</p>
-<p>Solution:
-- Added complete string comparison operator support in the <code>EvaluateExpression</code> function in <code>matchers/match.go</code>
-- Now supports all comparison operators: <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code>
-- Test coverage: 63.4% (EvaluateExpression function)</p>
-<h3 id="2-undirected-relationship-support">2. Undirected Relationship Support<a class="headerlink" href="#2-undirected-relationship-support" title="Permanent link">&para;</a></h3>
-<p><strong>Status</strong>: ✅ <strong>Resolved</strong></p>
-<p>Original Issue: Unsupported undirected relationships, requiring separate queries for outgoing and incoming edges</p>
-<p>Solution:
-- Extended direction checking logic in <code>matchers/match.go</code>
-- Supports three direction modes:
-  - <code>RelDirOutgoing</code> (<code>-&gt;</code>): Matches only outgoing relationships
-  - <code>RelDirIncoming</code> (<code>&lt;-</code>): Matches only incoming relationships
-  - <code>RelDirBoth</code> (<code>-</code>): Matches bidirectional relationships (starting from the source node)</p>
-<h3 id="3-variable-length-path-support">3. Variable Length Path Support<a class="headerlink" href="#3-variable-length-path-support" title="Permanent link">&para;</a></h3>
-<p><strong>Status</strong>: ✅ <strong>Implemented (Parser + Matcher Framework)</strong></p>
-<p>Original Issue: <code>[r*1..d]</code> syntax not supported, requiring multi-layer traversal implementation</p>
-<p>Solution:
-- <strong>Parser Extension</strong> (<code>parser.go</code>):
-  - Added <code>parseHopRange()</code> method supporting the following syntax:
-    - <code>*min..max</code> - Range paths (e.g., <code>[r*1..3]</code>)
-    - <code>*exact</code> - Exact hop count (e.g., <code>[r*3]</code>)
-    - <code>*min..</code> - Minimum hops (e.g., <code>[r*2..]</code>)
-    - <code>*..max</code> - Maximum hops (e.g., <code>[r*..5]</code>)
-  - Syntax validation: prohibits min &gt; max, prohibits max = 0</p>
+<h1 id="v020">v0.2.0<a class="headerlink" href="#v020" title="Permanent link">&para;</a></h1>
+<p>All notable changes to the GoGraph project will be documented in this file.</p>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
+and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<h2 id="v020-2026-03-29">[v0.2.0] - 2026-03-29<a class="headerlink" href="#v020-2026-03-29" title="Permanent link">&para;</a></h2>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<h4 id="parser-refactoring">Parser Refactoring<a class="headerlink" href="#parser-refactoring" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Matcher Framework</strong> (<code>matchers/variable_length.go</code>):</li>
-<li>Implemented BFS-based multi-hop path finding algorithm</li>
-<li>Built-in cycle detection mechanism (via visited set)</li>
-<li>Supports minHops/maxHops constraints</li>
-<li>Integrated into <code>Matcher.Execute</code> function</li>
+<li><strong>New Lexer</strong> (<code>pkg/cypher/lexer/</code>)</li>
+<li>Complete OpenCypher lexical analysis implementation</li>
+<li>Support for all keywords, operators, and literals</li>
+<li>Improved error reporting with line/column position information</li>
+<li>
+<p>Support for single-line and multi-line comments</p>
+</li>
+<li>
+<p><strong>New Parser</strong> (<code>pkg/cypher/parser/</code>)</p>
+</li>
+<li>Recursive descent parser implementation</li>
+<li>Full OpenCypher syntax support</li>
+<li>Correct operator precedence handling</li>
+<li>
+<p>Parameterized query support (<code>$param</code> syntax)</p>
+</li>
+<li>
+<p><strong>AST Refactoring</strong> (<code>pkg/cypher/ast/</code>)</p>
+</li>
+<li>Modular AST node definitions</li>
+<li>Visitor pattern support (<code>visitor.go</code>)</li>
+<li>
+<p>Complete position tracking</p>
+</li>
+<li>
+<p><strong>Observability Support</strong> (<code>pkg/cypher/observability*.go</code>)</p>
+</li>
+<li>Tracing interface</li>
+<li>Metrics interface</li>
+<li>
+<p>No-op default implementations</p>
+</li>
+<li>
+<p><strong>Context Management</strong> (<code>pkg/cypher/context/</code>)</p>
+</li>
+<li>Query execution context</li>
+<li>
+<p>Variable scope management</p>
+</li>
+<li>
+<p><strong>Utility Functions</strong> (<code>pkg/cypher/utils/</code>)</p>
+</li>
+<li><code>ExprToValue()</code> - Expression to value conversion</li>
+<li><code>ExprToString()</code> - Expression to string conversion</li>
 </ul>
-<h3 id="test-coverage">Test Coverage<a class="headerlink" href="#test-coverage" title="Permanent link">&para;</a></h3>
+<h4 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h4>
+<ul>
+<li>OpenCypher compliance test suite (<code>compliance_test.go</code>)</li>
+<li>Boundary condition tests (<code>boundary_test.go</code>)</li>
+<li>Lexer tests</li>
+<li>Parser tests</li>
+</ul>
+<h4 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h4>
+<ul>
+<li>OpenCypher syntax reference (<code>opencypher.md</code>)</li>
+<li>Compliance test report (<code>COMPLIANCE_REPORT.md</code>)</li>
+<li>Code audit report (<code>CODE_AUDIT_REPORT.md</code>)</li>
+<li>Code quality report (<code>CODE_QUALITY_REPORT.md</code>)</li>
+</ul>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<h4 id="architecture-optimization">Architecture Optimization<a class="headerlink" href="#architecture-optimization" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Executor Refactoring</strong> (<code>executor.go</code>)</li>
+<li>Extracted <code>withTx</code> common method for unified transaction handling</li>
+<li>Extracted <code>handleMatchDelete</code> method to eliminate duplicate code</li>
+<li>
+<p>Reduced code lines by approximately 60 lines</p>
+</li>
+<li>
+<p><strong>Creator Optimization</strong> (<code>creators/create.go</code>)</p>
+</li>
+<li>Replaced duplicate code with utility functions</li>
+<li>
+<p>Improved MERGE statement handling</p>
+</li>
+<li>
+<p><strong>Modifier Optimization</strong> (<code>modifiers/update.go</code>)</p>
+</li>
+<li>Replaced duplicate code with utility functions</li>
+<li>
+<p>Unified expression conversion logic</p>
+</li>
+<li>
+<p><strong>Matcher Optimization</strong> (<code>matchers/match.go</code>)</p>
+</li>
+<li>Replaced duplicate code with utility functions</li>
+<li>Improved variable-length path queries</li>
+</ul>
+<h4 id="resource-management">Resource Management<a class="headerlink" href="#resource-management" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Adjacency List Fix</strong> (<code>graph/adjacency.go</code>)</li>
+<li>Fixed iterator resource leak issue</li>
+<li>Used defer to ensure proper resource release</li>
+</ul>
+<h4 id="api-improvements">API Improvements<a class="headerlink" href="#api-improvements" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Database Interface</strong> (<code>api/db.go</code>)</li>
+<li>Uses new parser entry point</li>
+<li>Improved transaction handling flow</li>
+</ul>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fixed iterator not properly closed in <code>GetRelatedNodes</code> causing resource leak</li>
+<li>Fixed undirected relationship query support</li>
+<li>Fixed variable-length path query issues</li>
+<li>Fixed <code>GetNode</code> returning incorrect ID value</li>
+<li>Fixed int vs int64 type mismatch issues</li>
+</ul>
+<h3 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
+<h4 id="file-structure-changes">File Structure Changes<a class="headerlink" href="#file-structure-changes" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Removed old parser implementation:</li>
+<li><code>pkg/cypher/parser.go</code> → <code>pkg/cypher/parser/</code></li>
+<li>
+<p><code>pkg/cypher/ast/ast.go</code> → <code>pkg/cypher/ast/</code> (multiple files)</p>
+</li>
+<li>
+<p>Removed old test files:</p>
+</li>
+<li><code>pkg/cypher/parser_test.go</code></li>
+<li><code>pkg/cypher/executor_test.go</code></li>
+<li><code>pkg/cypher/creators/create_test.go</code></li>
+<li><code>pkg/cypher/matchers/match_test.go</code></li>
+<li><code>pkg/cypher/modifiers/update_test.go</code></li>
+</ul>
+<h4 id="api-changes">API Changes<a class="headerlink" href="#api-changes" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p>Parser entry point change:
+  <div class="language-go highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Old version</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/DotNetAge/gograph/pkg/cypher&quot;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nx">ast</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cypher</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">// New version</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/DotNetAge/gograph/pkg/cypher&quot;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nx">ast</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cypher</span><span class="p">.</span><span class="nx">NewParser</span><span class="p">(</span><span class="nx">query</span><span class="p">).</span><span class="nx">Parse</span><span class="p">()</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>AST structure changes:</p>
+</li>
+<li>Node types split from single file to multiple modular files</li>
+<li>Added visitor pattern interface</li>
+</ul>
+<h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Old parser implementation (<code>pkg/cypher/parser.go</code>)</li>
+<li>Old AST definition (<code>pkg/cypher/ast/ast.go</code>)</li>
+<li>Deprecated test files</li>
+<li>V2-related naming and files</li>
+</ul>
+<h3 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Eliminated approximately 140 lines of duplicate code</li>
+<li>Unified transaction handling logic reduces memory allocations</li>
+<li>Lexer uses <code>strings.Builder</code> for optimized string concatenation</li>
+<li>Iterator resource management optimization prevents memory leaks</li>
+</ul>
+<h3 id="test-statistics">Test Statistics<a class="headerlink" href="#test-statistics" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
 <th>Module</th>
-<th>Coverage</th>
-<th>Target</th>
+<th>Test Files</th>
+<th>Test Cases</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>pkg/cypher/matchers</code></td>
-<td><strong>73.5%</strong></td>
-<td>90%+</td>
+<td>lexer</td>
+<td>1</td>
+<td>30+</td>
 </tr>
 <tr>
-<td><code>pkg/cypher/parser</code></td>
-<td><strong>76.6%</strong></td>
-<td>90%+</td>
+<td>parser</td>
+<td>4</td>
+<td>200+</td>
 </tr>
 <tr>
-<td><code>pkg/cypher</code> (overall)</td>
-<td><strong>76.6%</strong></td>
-<td>-</td>
+<td>cypher</td>
+<td>2</td>
+<td>50+</td>
 </tr>
 <tr>
-<td><code>pkg/graph</code></td>
-<td><strong>87.6%</strong></td>
-<td>90%+</td>
-</tr>
-<tr>
-<td><code>pkg/storage</code></td>
-<td><strong>94.2%</strong></td>
-<td>90%+</td>
-</tr>
-<tr>
-<td><strong>Overall</strong></td>
-<td><strong>78.3%</strong></td>
-<td>70%+</td>
+<td>graph</td>
+<td>1</td>
+<td>40+</td>
 </tr>
 </tbody>
 </table>
-<h3 id="future-optimization-suggestions">Future Optimization Suggestions<a class="headerlink" href="#future-optimization-suggestions" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Improve Test Coverage to 90%+</strong></li>
-<li>Add more edge case tests for <code>EvaluateExpression</code></li>
-<li>
-<p>Add more pattern combination tests for <code>Execute</code></p>
-</li>
-<li>
-<p><strong>Variable Length Path RETURN Aggregation</strong></p>
-</li>
-<li>Current implementation returns the last hop node</li>
-<li>
-<p>Need to support returning complete paths (collecting all intermediate nodes and relationships)</p>
-</li>
-<li>
-<p><strong>Performance Optimization</strong></p>
-</li>
-<li>Batch node loading to reduce storage I/O</li>
-<li>Optional path length indexing</li>
-</ol>
+<h3 id="opencypher-compliance">OpenCypher Compliance<a class="headerlink" href="#opencypher-compliance" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Count</th>
+<th>Percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅ Supported</td>
+<td>45</td>
+<td>88.2%</td>
+</tr>
+<tr>
+<td>⚠️ Partial</td>
+<td>5</td>
+<td>9.8%</td>
+</tr>
+<tr>
+<td>❌ Unsupported</td>
+<td>1</td>
+<td>2.0%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="v011-2025-03-28">[v0.1.1] - 2025-03-28<a class="headerlink" href="#v011-2025-03-28" title="Permanent link">&para;</a></h2>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Undirected relationship query support</li>
+<li>Variable-length path query support</li>
+<li>Chinese and English documentation</li>
+</ul>
+<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fixed formula calculation issues</li>
+<li>Fixed variable-length query issues</li>
+</ul>
+<hr />
+<h2 id="v010-2025-03-27">[v0.1.0] - 2025-03-27<a class="headerlink" href="#v010-2025-03-27" title="Permanent link">&para;</a></h2>
+<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Basic Cypher query support</li>
+<li>MATCH/CREATE/SET/DELETE statements</li>
+<li>Pebble storage backend</li>
+<li>Transaction support</li>
+<li>Command-line tool</li>
+</ul>
 
 
 
