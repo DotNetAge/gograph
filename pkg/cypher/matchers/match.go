@@ -1,3 +1,24 @@
+// Package matchers provides pattern matching functionality for Cypher queries.
+// It implements the MATCH clause execution by traversing the graph and finding
+// nodes and relationships that match the specified patterns.
+//
+// The matcher supports:
+//   - Node pattern matching with labels and properties
+//   - Relationship pattern matching with types and directions
+//   - Path traversal through the graph
+//   - WHERE clause filtering
+//   - Property comparisons
+//
+// Example:
+//
+//	matcher := matchers.NewMatcher(store, index)
+//	rows, columns, err := matcher.ExecuteMatch(matchStmt, params)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	for _, row := range rows {
+//	    fmt.Println(row)
+//	}
 package matchers
 
 import (
@@ -10,15 +31,45 @@ import (
 	"github.com/DotNetAge/gograph/pkg/storage"
 )
 
+// Matcher executes pattern matching for Cypher MATCH queries.
+// It traverses the graph to find nodes and relationships that match
+// the specified patterns.
 type Matcher struct {
+	// Store is the underlying storage database.
 	Store *storage.DB
+
+	// Index provides efficient lookups for nodes and relationships.
 	Index *graph.Index
 }
 
+// NewMatcher creates a new Matcher instance.
+//
+// Parameters:
+//   - store: The storage database
+//   - index: The graph index for efficient lookups
+//
+// Returns a new Matcher instance.
+//
+// Example:
+//
+//	matcher := matchers.NewMatcher(store, index)
 func NewMatcher(store *storage.DB, index *graph.Index) *Matcher {
 	return &Matcher{Store: store, Index: index}
 }
 
+// ExecuteMatch executes a MATCH statement and returns the matched rows.
+//
+// Parameters:
+//   - stmt: The MATCH statement AST node
+//   - params: Query parameters for parameterized queries
+//
+// Returns the matched rows, column names, and any error encountered.
+//
+// Example:
+//
+//	rows, columns, err := matcher.ExecuteMatch(matchStmt, map[string]interface{}{
+//	    "name": "Alice",
+//	})
 func (m *Matcher) ExecuteMatch(stmt *ast.MatchStmt, params map[string]interface{}) (rows []map[string]interface{}, columns []string, err error) {
 	var matchedPaths []map[string]interface{}
 
@@ -82,6 +133,7 @@ func (m *Matcher) ExecuteMatch(stmt *ast.MatchStmt, params map[string]interface{
 	return rows, columns, nil
 }
 
+// executeMatchClause executes a single MATCH clause.
 func (m *Matcher) executeMatchClause(clause *ast.MatchClause, params map[string]interface{}) ([]map[string]interface{}, error) {
 	if clause.Pattern == nil {
 		return nil, nil
@@ -114,6 +166,7 @@ func (m *Matcher) executeMatchClause(clause *ast.MatchClause, params map[string]
 	return matchedPaths, nil
 }
 
+// executePath executes a path pattern and returns all matching paths.
 func (m *Matcher) executePath(path *ast.PathExpr, params map[string]interface{}) ([]map[string]interface{}, error) {
 	if len(path.Nodes) == 0 {
 		return nil, nil
@@ -145,6 +198,7 @@ func (m *Matcher) executePath(path *ast.PathExpr, params map[string]interface{})
 	return matchedPaths, nil
 }
 
+// findNodes finds all nodes matching the given node pattern.
 func (m *Matcher) findNodes(nodePattern *ast.NodePattern, params map[string]interface{}) []*graph.Node {
 	var nodes []*graph.Node
 
@@ -182,6 +236,7 @@ func (m *Matcher) findNodes(nodePattern *ast.NodePattern, params map[string]inte
 	return nodes
 }
 
+// nodeMatchesProperties checks if a node matches the given labels and properties.
 func (m *Matcher) nodeMatchesProperties(node *graph.Node, labels []string, props map[string]ast.Expr, params map[string]interface{}) bool {
 	for _, label := range labels {
 		found := false
@@ -209,6 +264,7 @@ func (m *Matcher) nodeMatchesProperties(node *graph.Node, labels []string, props
 	return true
 }
 
+// traversePath traverses the graph from the start node following the path pattern.
 func (m *Matcher) traversePath(start *graph.Node, path *ast.PathExpr, relIndex int, visited map[string]bool) []map[string]interface{} {
 	if relIndex >= len(path.Relationships) {
 		p := make(map[string]interface{})
@@ -316,6 +372,14 @@ func (m *Matcher) traversePath(start *graph.Node, path *ast.PathExpr, relIndex i
 	return results
 }
 
+// EvaluateExpression evaluates a WHERE clause expression against a path.
+//
+// Parameters:
+//   - path: The matched path containing nodes and relationships
+//   - expr: The expression to evaluate
+//   - params: Query parameters
+//
+// Returns true if the expression evaluates to true for the given path.
 func (m *Matcher) EvaluateExpression(path map[string]interface{}, expr ast.Expr, params map[string]interface{}) bool {
 	comp, ok := expr.(*ast.BinaryExpr)
 	if !ok {
@@ -371,6 +435,7 @@ func (m *Matcher) EvaluateExpression(path map[string]interface{}, expr ast.Expr,
 	return m.compareValues(leftVal, rightVal, comp.Operator)
 }
 
+// compareValues compares two values using the given operator.
 func (m *Matcher) compareValues(left, right interface{}, op string) bool {
 	leftFloat, leftIsFloat := ToFloat64(left)
 	rightFloat, rightIsFloat := ToFloat64(right)
@@ -413,6 +478,7 @@ func (m *Matcher) compareValues(left, right interface{}, op string) bool {
 	return false
 }
 
+// fillRow fills a result row with values from the matched path.
 func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, path map[string]interface{}) {
 	switch expr := item.Expr.(type) {
 	case *ast.PropertyAccessExpr:
@@ -443,6 +509,7 @@ func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, 
 	}
 }
 
+// getColumnName returns the column name for a RETURN item.
 func (m *Matcher) getColumnName(item *ast.ReturnItemExpr) string {
 	if item.Alias != "" {
 		return item.Alias
@@ -461,10 +528,12 @@ func (m *Matcher) getColumnName(item *ast.ReturnItemExpr) string {
 	return ""
 }
 
+// exprToValue converts an expression to its value.
 func (m *Matcher) exprToValue(expr ast.Expr, params map[string]interface{}) interface{} {
 	return utils.ExprToValue(expr, params)
 }
 
+// propertyMatches checks if a property value matches the expected value.
 func (m *Matcher) propertyMatches(prop graph.PropertyValue, expected interface{}) bool {
 	switch prop.Type() {
 	case graph.PropertyTypeString:
@@ -485,6 +554,12 @@ func (m *Matcher) propertyMatches(prop graph.PropertyValue, expected interface{}
 	return false
 }
 
+// PropertyToInterface converts a PropertyValue to a Go interface{}.
+//
+// Parameters:
+//   - prop: The PropertyValue to convert
+//
+// Returns the property value as a Go interface{}.
 func (m *Matcher) PropertyToInterface(prop graph.PropertyValue) interface{} {
 	switch prop.Type() {
 	case graph.PropertyTypeString:
@@ -504,6 +579,18 @@ func init() {
 	_ = strings.Builder{}
 }
 
+// ToFloat64 converts a value to float64.
+//
+// Parameters:
+//   - v: The value to convert
+//
+// Returns the float64 value and true if conversion succeeded.
+//
+// Example:
+//
+//	if f, ok := ToFloat64(42); ok {
+//	    fmt.Println(f) // 42.0
+//	}
 func ToFloat64(v interface{}) (float64, bool) {
 	switch val := v.(type) {
 	case float64:
@@ -526,6 +613,18 @@ func ToFloat64(v interface{}) (float64, bool) {
 	return 0, false
 }
 
+// ToInt64 converts a value to int64.
+//
+// Parameters:
+//   - v: The value to convert
+//
+// Returns the int64 value and true if conversion succeeded.
+//
+// Example:
+//
+//	if i, ok := ToInt64(42.5); ok {
+//	    fmt.Println(i) // 42
+//	}
 func ToInt64(v interface{}) (int64, bool) {
 	switch val := v.(type) {
 	case int:
@@ -544,6 +643,14 @@ func ToInt64(v interface{}) (int64, bool) {
 	return 0, false
 }
 
+// NewMatcherForMerge creates a new Matcher for MERGE operations.
+// This is an alias for NewMatcher.
+//
+// Parameters:
+//   - store: The storage database
+//   - index: The graph index for efficient lookups
+//
+// Returns a new Matcher instance.
 func NewMatcherForMerge(store *storage.DB, index *graph.Index) *Matcher {
 	return &Matcher{Store: store, Index: index}
 }

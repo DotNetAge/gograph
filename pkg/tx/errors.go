@@ -4,6 +4,9 @@ package tx
 import "errors"
 
 var (
-	ErrTransactionClosed   = errors.New("transaction closed")
-	ErrReadOnlyTransaction = errors.New("read only transaction")
+	// ErrTransactionCommitted is returned when attempting to use a committed transaction.
+	ErrTransactionCommitted = errors.New("transaction already committed")
+
+	// ErrTransactionRolledBack is returned when attempting to use a rolled back transaction.
+	ErrTransactionRolledBack = errors.New("transaction already rolled back")
 )

@@ -1,17 +1,41 @@
 package ast
 
+// Visitor is the interface for visiting AST nodes.
+// Implementations can perform operations on nodes during the walk.
 type Visitor interface {
+	// Visit is called for each node in the AST.
+	// It returns the visitor to use for child nodes, or nil to skip children.
+	// An error can be returned to stop the walk.
 	Visit(node Node) (w Visitor, err error)
 }
 
+// Walker walks an AST and calls the visitor for each node.
 type Walker struct {
 	visitor Visitor
 }
 
+// NewWalker creates a new Walker with the given visitor.
+//
+// Parameters:
+//   - v: The visitor to use during the walk
+//
+// Returns a new Walker instance.
 func NewWalker(v Visitor) *Walker {
 	return &Walker{visitor: v}
 }
 
+// Walk walks the AST starting from the given node, calling the visitor for each node.
+//
+// Parameters:
+//   - v: The visitor to use
+//   - node: The root node to start walking from
+//
+// Returns an error if the walk is stopped early.
+//
+// Example:
+//
+//	visitor := &myVisitor{}
+//	err := ast.Walk(visitor, query)
 func Walk(v Visitor, node Node) error {
 	if node == nil {
 		return nil
@@ -20,11 +44,18 @@ func Walk(v Visitor, node Node) error {
 	return walker.Walk(node)
 }
 
+// Walk walks the AST starting from the given node.
+// It implements the visitor pattern for the AST.
+//
+// Parameters:
+//   - node: The node to walk
+//
+// Returns an error if the walk encounters an error.
 func (w *Walker) Walk(node Node) error {
 	if node == nil {
 		return nil
 	}
-	
+
 	v, err := w.visitor.Visit(node)
 	if err != nil {
 		return err
@@ -32,7 +63,7 @@ func (w *Walker) Walk(node Node) error {
 	if v == nil {
 		return nil
 	}
-	
+
 	switch n := node.(type) {
 	case *Query:
 		for _, stmt := range n.Statements {
@@ -255,6 +286,6 @@ func (w *Walker) Walk(node Node) error {
 			}
 		}
 	}
-	
+
 	return nil
 }

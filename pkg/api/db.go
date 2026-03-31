@@ -19,6 +19,31 @@ var ErrDBClosed = errors.New("database is closed")
 // DB represents a graph database instance. It provides methods for executing
 // Cypher queries and managing transactions. A DB instance is safe for
 // concurrent use by multiple goroutines.
+//
+// DB manages the lifecycle of the underlying storage and provides a high-level
+// interface for graph operations. It handles query parsing, execution, and
+// result formatting.
+//
+// Example:
+//
+//	db, err := api.Open("/path/to/db")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	defer db.Close()
+//
+//	// Execute queries
+//	result, err := db.Exec(ctx, "CREATE (n:Person {name: 'Alice'})")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//
+//	// Query data
+//	rows, err := db.Query(ctx, "MATCH (n:Person) RETURN n.name")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	defer rows.Close()
 type DB struct {
 	store    *storage.DB
 	executor *cypher.Executor
@@ -28,10 +53,21 @@ type DB struct {
 }
 
 // DBOption configures optional parameters for database operations.
+// It is used with the Open function to customize database behavior.
 type DBOption func(*DB)
 
 // WithObservability enables observability features for the database executor,
 // allowing tracing and metrics collection during query execution.
+//
+// Parameters:
+//   - o: The Observability instance to use
+//
+// Returns a DBOption that can be passed to Open.
+//
+// Example:
+//
+//	obs := cypher.NewObservability()
+//	db, err := api.Open("/path/to/db", api.WithObservability(obs))
 func WithObservability(o *cypher.Observability) DBOption {
 	return func(db *DB) {
 		db.obs = o
@@ -41,6 +77,21 @@ func WithObservability(o *cypher.Observability) DBOption {
 // Open opens a database at the specified path and returns a DB instance.
 // The path is used as the storage location for the underlying Pebble database.
 // Optional DBOption functions can be provided to configure the database.
+//
+// Parameters:
+//   - path: The directory path where the database files will be stored
+//   - opts: Optional configuration options
+//
+// Returns a new DB instance or an error if the database cannot be opened.
+//
+// Example:
+//
+//	// Open with default options
+//	db, err := api.Open("/var/lib/gograph/mydb")
+//
+//	// Open with observability
+//	obs := cypher.NewObservability()
+//	db, err := api.Open("/var/lib/gograph/mydb", api.WithObservability(obs))
 func Open(path string, opts ...DBOption) (*DB, error) {
 	store, err := storage.Open(path)
 	if err != nil {
@@ -58,7 +109,17 @@ func Open(path string, opts ...DBOption) (*DB, error) {
 }
 
 // Close closes the database and releases all associated resources.
-// It returns an error if the database is already closed.
+// Any pending operations will be completed before closing.
+//
+// Returns an error if the database is already closed.
+//
+// Example:
+//
+//	db, err := api.Open("/path/to/db")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	defer db.Close()
 func (db *DB) Close() error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
@@ -72,6 +133,30 @@ func (db *DB) Close() error {
 // Exec executes a Cypher query that modifies data (CREATE, SET, DELETE, REMOVE)
 // and returns a Result containing the count of affected nodes and relationships.
 // The query can include optional positional parameters passed as arguments.
+//
+// Parameters:
+//   - ctx: Context for cancellation and timeouts
+//   - cypherQuery: The Cypher query string to execute
+//   - args: Optional query parameters. If the first argument is a map[string]interface{},
+//     it is used as the parameter map.
+//
+// Returns a Result containing affected counts, or an error if the query fails.
+//
+// Example:
+//
+//	// Simple create
+//	result, err := db.Exec(ctx, "CREATE (n:Person {name: 'Alice'})")
+//
+//	// With parameters
+//	result, err := db.Exec(ctx,
+//	    "CREATE (n:Person {name: $name, age: $age})",
+//	    map[string]interface{}{
+//	        "name": "Alice",
+//	        "age": 30,
+//	    },
+//	)
+//
+//	fmt.Printf("Created %d nodes\n", result.NodesCreated)
 func (db *DB) Exec(ctx context.Context, cypherQuery string, args ...interface{}) (Result, error) {
 	db.mu.RLock()
 	if db.closed {
@@ -99,6 +184,31 @@ func (db *DB) Exec(ctx context.Context, cypherQuery string, args ...interface{})
 // Query executes a Cypher query that returns rows of data (MATCH ... RETURN)
 // and returns a Rows iterator for scanning the results.
 // The query can include optional positional parameters passed as arguments.
+//
+// Parameters:
+//   - ctx: Context for cancellation and timeouts
+//   - cypherQuery: The Cypher query string to execute
+//   - args: Optional query parameters. If the first argument is a map[string]interface{},
+//     it is used as the parameter map.
+//
+// Returns a Rows iterator for scanning results, or an error if the query fails.
+//
+// Example:
+//
+//	rows, err := db.Query(ctx, "MATCH (n:Person) RETURN n.name, n.age")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	defer rows.Close()
+//
+//	for rows.Next() {
+//	    var name string
+//	    var age int
+//	    if err := rows.Scan(&name, &age); err != nil {
+//	        log.Fatal(err)
+//	    }
+//	    fmt.Printf("Name: %s, Age: %d\n", name, age)
+//	}
 func (db *DB) Query(ctx context.Context, cypherQuery string, args ...interface{}) (*Rows, error) {
 	db.mu.RLock()
 	if db.closed {
@@ -130,6 +240,32 @@ func (db *DB) Query(ctx context.Context, cypherQuery string, args ...interface{}
 // BeginTx starts a new transaction with the specified options.
 // If opts is nil, a read-write transaction is started.
 // A transaction allows grouping multiple operations into a single atomic unit.
+//
+// Parameters:
+//   - ctx: Context for cancellation and timeouts
+//   - opts: Transaction options. Pass nil for default read-write transaction.
+//
+// Returns a new Tx transaction object, or an error if the transaction cannot be started.
+//
+// Example:
+//
+//	// Begin a transaction
+//	tx, err := db.BeginTx(ctx, nil)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//
+//	// Perform operations
+//	_, err = tx.Exec("CREATE (n:Person {name: 'Alice'})")
+//	if err != nil {
+//	    tx.Rollback()
+//	    log.Fatal(err)
+//	}
+//
+//	// Commit
+//	if err := tx.Commit(); err != nil {
+//	    log.Fatal(err)
+//	}
 func (db *DB) BeginTx(ctx context.Context, opts *TxOptions) (*Tx, error) {
 	db.mu.RLock()
 	defer db.mu.RUnlock()
@@ -152,15 +288,62 @@ func (db *DB) BeginTx(ctx context.Context, opts *TxOptions) (*Tx, error) {
 }
 
 // IsClosed returns true if the database has been closed.
+//
+// Example:
+//
+//	if !db.IsClosed() {
+//	    db.Close()
+//	}
 func (db *DB) IsClosed() bool {
 	db.mu.RLock()
 	defer db.mu.RUnlock()
 	return db.closed
 }
 
+// Store returns the underlying storage database.
+// This is primarily for advanced use cases and testing.
+func (db *DB) Store() *storage.DB {
+	return db.store
+}
+
+// Lock acquires a write lock on the database.
+// This is used internally for synchronization.
+func (db *DB) Lock() {
+	db.mu.Lock()
+}
+
+// Unlock releases the write lock on the database.
+// This is used internally for synchronization.
+func (db *DB) Unlock() {
+	db.mu.Unlock()
+}
+
+// RLock acquires a read lock on the database.
+// This is used internally for synchronization.
+func (db *DB) RLock() {
+	db.mu.RLock()
+}
+
+// RUnlock releases the read lock on the database.
+// This is used internally for synchronization.
+func (db *DB) RUnlock() {
+	db.mu.RUnlock()
+}
+
+// IsClosedLocked returns true if the database is closed.
+// This should only be called while holding a lock.
+func (db *DB) IsClosedLocked() bool {
+	return db.closed
+}
+
 // extractParams extracts query parameters from argument list.
 // If the first argument is a map[string]interface{}, it is used as the
 // parameter map; otherwise, returns nil.
+//
+// Parameters:
+//   - args: The argument list to extract parameters from
+//
+// Returns a map of parameter names to values, or nil if no parameters found.
 func extractParams(args []interface{}) map[string]interface{} {
 	if len(args) == 0 {
 		return nil
@@ -181,6 +364,31 @@ type TxOptions struct {
 // Tx represents a database transaction. It provides methods for executing
 // Cypher queries within a transaction. A transaction is safe for concurrent
 // use by multiple goroutines, though serial execution is recommended.
+//
+// Transactions provide ACID guarantees:
+//   - Atomicity: All operations succeed or all fail
+//   - Consistency: Database remains in a consistent state
+//   - Isolation: Transactions don't interfere with each other
+//   - Durability: Committed changes persist
+//
+// Example:
+//
+//	tx, err := db.BeginTx(ctx, nil)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	defer func() {
+//	    if err != nil {
+//	        tx.Rollback()
+//	    }
+//	}()
+//
+//	// Perform multiple operations
+//	_, err = tx.Exec("CREATE (n:Person {name: 'Alice'})")
+//	_, err = tx.Exec("CREATE (n:Person {name: 'Bob'})")
+//
+//	// Commit all operations
+//	err = tx.Commit()
 type Tx struct {
 	db     *DB
 	ctx    context.Context
@@ -192,6 +400,21 @@ type Tx struct {
 // Exec executes a Cypher query within the transaction and returns a Result
 // containing the count of affected nodes and relationships.
 // The query can include optional positional parameters passed as arguments.
+//
+// Parameters:
+//   - cypherQuery: The Cypher query string to execute
+//   - args: Optional query parameters
+//
+// Returns a Result containing affected counts, or an error if the query fails
+// or the transaction is closed.
+//
+// Example:
+//
+//	result, err := tx.Exec("CREATE (n:Person {name: 'Alice'})")
+//	if err != nil {
+//	    tx.Rollback()
+//	    log.Fatal(err)
+//	}
 func (tx *Tx) Exec(cypherQuery string, args ...interface{}) (Result, error) {
 	tx.mu.Lock()
 	defer tx.mu.Unlock()
@@ -200,7 +423,7 @@ func (tx *Tx) Exec(cypherQuery string, args ...interface{}) (Result, error) {
 	}
 
 	params := extractParams(args)
-	
+
 	p := cypher.NewParser(cypherQuery)
 	ast, err := p.Parse()
 	if err != nil {
@@ -218,6 +441,28 @@ func (tx *Tx) Exec(cypherQuery string, args ...interface{}) (Result, error) {
 // Query executes a Cypher query within the transaction and returns a Rows
 // iterator for scanning the results.
 // The query can include optional positional parameters passed as arguments.
+//
+// Parameters:
+//   - cypherQuery: The Cypher query string to execute
+//   - args: Optional query parameters
+//
+// Returns a Rows iterator for scanning results, or an error if the query fails
+// or the transaction is closed.
+//
+// Example:
+//
+//	rows, err := tx.Query("MATCH (n:Person) RETURN n.name")
+//	if err != nil {
+//	    tx.Rollback()
+//	    log.Fatal(err)
+//	}
+//	defer rows.Close()
+//
+//	for rows.Next() {
+//	    var name string
+//	    rows.Scan(&name)
+//	    fmt.Println(name)
+//	}
 func (tx *Tx) Query(cypherQuery string, args ...interface{}) (*Rows, error) {
 	tx.mu.Lock()
 	defer tx.mu.Unlock()
@@ -246,7 +491,15 @@ func (tx *Tx) Query(cypherQuery string, args ...interface{}) (*Rows, error) {
 }
 
 // Commit commits the transaction, making all changes permanent.
+// After commit, the transaction cannot be used anymore.
+//
 // Returns an error if the transaction is already closed or if the commit fails.
+//
+// Example:
+//
+//	if err := tx.Commit(); err != nil {
+//	    log.Fatal(err)
+//	}
 func (tx *Tx) Commit() error {
 	tx.mu.Lock()
 	defer tx.mu.Unlock()
@@ -259,6 +512,15 @@ func (tx *Tx) Commit() error {
 
 // Rollback aborts the transaction and discards all changes.
 // If the transaction is already closed, Rollback returns nil.
+// Rollback is safe to call multiple times.
+//
+// Example:
+//
+//	defer func() {
+//	    if err != nil {
+//	        tx.Rollback()
+//	    }
+//	}()
 func (tx *Tx) Rollback() error {
 	tx.mu.Lock()
 	defer tx.mu.Unlock()

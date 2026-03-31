@@ -7,24 +7,74 @@ import (
 )
 
 // Direction represents the direction of a relationship in a graph.
+// It is used when traversing relationships to specify which direction
+// to follow from a starting node.
+//
+// The three possible directions are:
+//   - DirectionOutgoing: From start node to end node (->)
+//   - DirectionIncoming: From end node to start node (<-)
+//   - DirectionBoth: Both directions (-)
+//
+// Example:
+//
+//	// Query outgoing relationships
+//	related, _ := adjacencyList.GetRelatedNodes(nodeID, "KNOWS", DirectionOutgoing)
+//
+//	// Query incoming relationships
+//	related, _ := adjacencyList.GetRelatedNodes(nodeID, "FOLLOWS", DirectionIncoming)
+//
+//	// Query relationships in both directions
+//	related, _ := adjacencyList.GetRelatedNodes(nodeID, "CONNECTED", DirectionBoth)
 type Direction string
 
 const (
+	// DirectionOutgoing represents relationships going out from a node.
+	// In Cypher syntax, this is represented as "->".
 	DirectionOutgoing Direction = "outgoing"
+
+	// DirectionIncoming represents relationships coming into a node.
+	// In Cypher syntax, this is represented as "<-".
 	DirectionIncoming Direction = "incoming"
-	DirectionBoth     Direction = "both"
+
+	// DirectionBoth represents relationships in either direction.
+	// In Cypher syntax, this is represented as "-".
+	DirectionBoth Direction = "both"
 )
 
 var _ fmt.Stringer = DirectionOutgoing
 
 // String returns the string representation of the direction.
+// This implements the fmt.Stringer interface.
+//
+// Returns "outgoing", "incoming", or "both".
+//
+// Example:
+//
+//	fmt.Println(DirectionOutgoing) // Output: outgoing
 func (d Direction) String() string {
 	return string(d)
 }
 
 // ParseDirection parses a direction string and returns the corresponding Direction.
-// Supported formats: "outgoing", "->", "out" for outgoing;
-// "incoming", "<-", "in" for incoming; "both", "-" for both.
+// It supports multiple formats for each direction:
+//
+//   - Outgoing: "outgoing", "->", "out"
+//   - Incoming: "incoming", "<-", "in"
+//   - Both: "both", "-"
+//
+// Parameters:
+//   - s: The direction string to parse
+//
+// Returns the Direction constant and nil error on success, or DirectionOutgoing
+// and an error if the string cannot be parsed.
+//
+// Example:
+//
+//	dir, err := graph.ParseDirection("->")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	fmt.Println(dir) // Output: outgoing
 func ParseDirection(s string) (Direction, error) {
 	switch strings.ToLower(s) {
 	case "outgoing", "->", "out":

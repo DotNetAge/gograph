@@ -1,3 +1,25 @@
+// Package lexer provides lexical analysis for Cypher query strings.
+// It tokenizes input strings into a stream of tokens that can be
+// consumed by the parser.
+//
+// The lexer supports:
+//   - Identifiers and keywords
+//   - Numbers (integers and floats)
+//   - Strings (single and double quoted)
+//   - Operators (+, -, *, /, %, ^, =, !=, <, <=, >, >=)
+//   - Delimiters (parentheses, braces, brackets, commas, etc.)
+//   - Comments (single-line // and multi-line /* */)
+//
+// Basic Usage:
+//
+//	l := lexer.New("MATCH (n:Person) RETURN n.name")
+//	tokens, err := l.Tokenize()
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	for _, tok := range tokens {
+//	    fmt.Printf("%s: %s\n", tok.Type, tok.Value)
+//	}
 package lexer
 
 import (
@@ -6,16 +28,28 @@ import (
 	"unicode"
 )
 
+// Lexer tokenizes Cypher query strings into a stream of tokens.
 type Lexer struct {
-	input    string
-	pos      int
-	line     int
-	column   int
-	tokens   []Token
-	errors   []error
-	lastTok  *Token
+	input   string      // Input string to tokenize
+	pos     int         // Current position in input
+	line    int         // Current line number
+	column  int         // Current column number
+	tokens  []Token     // Accumulated tokens
+	errors  []error     // Accumulated errors
+	lastTok *Token      // Last token produced
 }
 
+// New creates a new Lexer for the given input string.
+//
+// Parameters:
+//   - input: The Cypher query string to tokenize
+//
+// Returns a new Lexer instance.
+//
+// Example:
+//
+//	l := lexer.New("MATCH (n:Person) RETURN n.name")
+//	tokens, err := l.Tokenize()
 func New(input string) *Lexer {
 	return &Lexer{
 		input:  strings.TrimSpace(input),
@@ -24,6 +58,18 @@ func New(input string) *Lexer {
 	}
 }
 
+// Tokenize processes the entire input and returns all tokens.
+// It returns an error if any lexical errors are encountered.
+//
+// Returns the slice of tokens and any error encountered.
+//
+// Example:
+//
+//	l := lexer.New("MATCH (n:Person) RETURN n.name")
+//	tokens, err := l.Tokenize()
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
 func (l *Lexer) Tokenize() ([]Token, error) {
 	for !l.atEnd() {
 		l.skipWhitespace()
@@ -55,6 +101,7 @@ func (l *Lexer) Tokenize() ([]Token, error) {
 	return l.tokens, nil
 }
 
+// nextToken reads and returns the next token from the input.
 func (l *Lexer) nextToken() (Token, error) {
 	ch := l.peek()
 
@@ -143,6 +190,7 @@ func (l *Lexer) nextToken() (Token, error) {
 	}
 }
 
+// readNumber reads a numeric literal (integer or float).
 func (l *Lexer) readNumber() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -188,6 +236,7 @@ func (l *Lexer) readNumber() (Token, error) {
 	}, nil
 }
 
+// readString reads a string literal (single or double quoted).
 func (l *Lexer) readString() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -251,6 +300,7 @@ func (l *Lexer) readString() (Token, error) {
 	}, nil
 }
 
+// readIdentifier reads an identifier or keyword.
 func (l *Lexer) readIdentifier() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -286,6 +336,7 @@ func (l *Lexer) readIdentifier() (Token, error) {
 	}, nil
 }
 
+// readParameter reads a parameter reference (e.g., $name).
 func (l *Lexer) readParameter() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -304,6 +355,7 @@ func (l *Lexer) readParameter() (Token, error) {
 	}, nil
 }
 
+// readDashOrArrow reads a dash or right arrow (->).
 func (l *Lexer) readDashOrArrow() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -331,6 +383,7 @@ func (l *Lexer) readDashOrArrow() (Token, error) {
 	}, nil
 }
 
+// readLessOrArrow reads a less-than sign or left arrow (<-).
 func (l *Lexer) readLessOrArrow() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -369,6 +422,7 @@ func (l *Lexer) readLessOrArrow() (Token, error) {
 	}, nil
 }
 
+// readGreater reads a greater-than sign or greater-than-or-equal (>=).
 func (l *Lexer) readGreater() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -396,6 +450,7 @@ func (l *Lexer) readGreater() (Token, error) {
 	}, nil
 }
 
+// readEqual reads an equal sign.
 func (l *Lexer) readEqual() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -412,6 +467,7 @@ func (l *Lexer) readEqual() (Token, error) {
 	}, nil
 }
 
+// readNotEqual reads a not-equal sign (!=).
 func (l *Lexer) readNotEqual() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -439,6 +495,7 @@ func (l *Lexer) readNotEqual() (Token, error) {
 	}, fmt.Errorf("unexpected character '!' at line %d, column %d", startLine, startCol)
 }
 
+// readPlusOrPlusEq reads a plus sign or plus-equal (+=).
 func (l *Lexer) readPlusOrPlusEq() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -466,6 +523,7 @@ func (l *Lexer) readPlusOrPlusEq() (Token, error) {
 	}, nil
 }
 
+// readDotOrRange reads a dot or range operator (..).
 func (l *Lexer) readDotOrRange() (Token, error) {
 	startLine := l.line
 	startCol := l.column
@@ -493,6 +551,7 @@ func (l *Lexer) readDotOrRange() (Token, error) {
 	}, nil
 }
 
+// skipWhitespace skips over whitespace characters.
 func (l *Lexer) skipWhitespace() {
 	for !l.atEnd() && unicode.IsSpace(rune(l.peek())) {
 		if l.peek() == '\n' {
@@ -503,6 +562,7 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
+// skipComment skips over single-line and multi-line comments.
 func (l *Lexer) skipComment() {
 	if l.peek() == '/' && l.peekNext() == '/' {
 		for !l.atEnd() && l.peek() != '\n' {
@@ -529,10 +589,12 @@ func (l *Lexer) skipComment() {
 	}
 }
 
+// atEnd returns true if the lexer has reached the end of input.
 func (l *Lexer) atEnd() bool {
 	return l.pos >= len(l.input)
 }
 
+// peek returns the current character without consuming it.
 func (l *Lexer) peek() byte {
 	if l.atEnd() {
 		return 0
@@ -540,6 +602,7 @@ func (l *Lexer) peek() byte {
 	return l.input[l.pos]
 }
 
+// peekNext returns the next character without consuming it.
 func (l *Lexer) peekNext() byte {
 	if l.pos+1 >= len(l.input) {
 		return 0
@@ -547,6 +610,7 @@ func (l *Lexer) peekNext() byte {
 	return l.input[l.pos+1]
 }
 
+// advance consumes and returns the current character.
 func (l *Lexer) advance() {
 	if !l.atEnd() {
 		l.pos++
@@ -554,14 +618,17 @@ func (l *Lexer) advance() {
 	}
 }
 
+// isDigit returns true if the character is a digit.
 func isDigit(ch byte) bool {
 	return ch >= '0' && ch <= '9'
 }
 
+// isLetter returns true if the character is a letter.
 func isLetter(ch byte) bool {
 	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
 }
 
+// isStringQuote returns true if the character is a string quote.
 func isStringQuote(ch byte) bool {
 	return ch == '\'' || ch == '"'
 }
