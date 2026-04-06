@@ -72,7 +72,7 @@ func NewCreator(store *storage.DB) *Creator {
 //	nodes, rels, err := creator.ExecuteCreate(tx, createStmt, map[string]interface{}{
 //	    "name": "Alice",
 //	})
-func (c *Creator) ExecuteCreate(t *tx.Transaction, stmt *ast.CreateStmt, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
+func (c *Creator) ExecuteCreate(t tx.Tx, stmt *ast.CreateStmt, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
 	if stmt.Pattern == nil {
 		return 0, 0, nil
 	}
@@ -94,7 +94,7 @@ func (c *Creator) ExecuteCreate(t *tx.Transaction, stmt *ast.CreateStmt, params 
 }
 
 // createPath creates nodes and relationships for a single path pattern.
-func (c *Creator) createPath(t *tx.Transaction, path *ast.PathExpr, params map[string]interface{}) (nodes, rels int, err error) {
+func (c *Creator) createPath(t tx.Tx, path *ast.PathExpr, params map[string]interface{}) (nodes, rels int, err error) {
 	if len(path.Nodes) == 0 {
 		return 0, 0, nil
 	}
@@ -194,7 +194,7 @@ func (c *Creator) createPath(t *tx.Transaction, path *ast.PathExpr, params map[s
 // Example:
 //
 //	nodes, rels, err := creator.ExecuteMerge(tx, mergeStmt, params)
-func (c *Creator) ExecuteMerge(t *tx.Transaction, stmt *ast.MergeStmt, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
+func (c *Creator) ExecuteMerge(t tx.Tx, stmt *ast.MergeStmt, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
 	if stmt.Pattern == nil {
 		return 0, 0, nil
 	}
