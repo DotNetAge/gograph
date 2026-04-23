@@ -9,4 +9,5 @@ const (
 	PropertyTypeInt    PropertyType = "int"
 	PropertyTypeFloat  PropertyType = "float"
 	PropertyTypeBool   PropertyType = "bool"
+	PropertyTypeList   PropertyType = "list"
 )

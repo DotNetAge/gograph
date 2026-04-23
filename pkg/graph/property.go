@@ -3,10 +3,12 @@ package graph
 
 import (
 	"fmt"
+	"math"
 	"strconv"
+	"strings"
 )
 
-// PropertyValue represents a typed property value that can hold string, int, float, or bool.
+// PropertyValue represents a typed property value that can hold string, int, float, bool, or a list of values.
 // It uses a union-style structure where only one field is populated at a time.
 // Use the New*Property constructors to create PropertyValue instances.
 //
@@ -15,21 +17,24 @@ import (
 //   - Integer values (int64)
 //   - Floating point values (float64)
 //   - Boolean values
+//   - List values ([]PropertyValue) — can hold any mix of scalar types
 //
 // Example:
 //
 //	// Create different types of property values
 //	name := graph.NewStringProperty("Alice")
 //	age := graph.NewIntProperty(30)
-//	balance := graph.NewFloatProperty(1234.56)
-//	active := graph.NewBoolProperty(true)
+//	tags := graph.NewListProperty([]graph.PropertyValue{
+//	    graph.NewStringProperty("go"),
+//	    graph.NewIntProperty(1),
+//	})
 //
 //	// Check the type
 //	switch name.Type() {
 //	case graph.PropertyTypeString:
 //	    fmt.Println("It's a string")
-//	case graph.PropertyTypeInt:
-//	    fmt.Println("It's an integer")
+//	case graph.PropertyTypeList:
+//	    fmt.Println("It's a list")
 //	}
 type PropertyValue struct {
 	// String holds the value if this is a string property.
@@ -43,6 +48,9 @@ type PropertyValue struct {
 
 	// Bool holds the value if this is a boolean property.
 	Bool *bool
+
+	// List holds a heterogeneous list of PropertyValue items.
+	List []PropertyValue
 }
 
 // NewStringProperty creates a PropertyValue holding a string.
@@ -101,6 +109,12 @@ func NewBoolProperty(v bool) PropertyValue {
 	return PropertyValue{Bool: &v}
 }
 
+// NewListProperty creates a PropertyValue holding a list of PropertyValue items.
+// The list can contain any mix of scalar types (string, int, float, bool).
+func NewListProperty(items []PropertyValue) PropertyValue {
+	return PropertyValue{List: items}
+}
+
 // Type returns the type of the property value.
 // It checks which field is populated and returns the corresponding type.
 // If no field is populated, it returns PropertyTypeString as a default.
@@ -123,6 +137,9 @@ func (p PropertyValue) Type() PropertyType {
 	}
 	if p.Bool != nil {
 		return PropertyTypeBool
+	}
+	if p.List != nil {
+		return PropertyTypeList
 	}
 	return PropertyTypeString
 }
@@ -187,6 +204,54 @@ func (p PropertyValue) BoolValue() bool {
 	return false
 }
 
+// ListValue returns the list of PropertyValue items, or nil if not a list type.
+func (p PropertyValue) ListValue() []PropertyValue {
+	if p.List != nil {
+		return p.List
+	}
+	return nil
+}
+
+// InterfaceValue converts a PropertyValue to a Go interface{} value.
+// String returns string, Int returns int (or int64 if out of range),
+// Float returns float64, Bool returns bool, List returns []interface{}.
+func (p PropertyValue) InterfaceValue() interface{} {
+	switch p.Type() {
+	case PropertyTypeString:
+		if p.String != nil {
+			return *p.String
+		}
+		return nil
+	case PropertyTypeInt:
+		if p.Int != nil {
+			if *p.Int >= math.MinInt && *p.Int <= math.MaxInt {
+				return int(*p.Int)
+			}
+			return *p.Int
+		}
+		return nil
+	case PropertyTypeFloat:
+		if p.Float != nil {
+			return *p.Float
+		}
+		return nil
+	case PropertyTypeBool:
+		if p.Bool != nil {
+			return *p.Bool
+		}
+		return nil
+	case PropertyTypeList:
+		items := p.List
+		result := make([]interface{}, len(items))
+		for i, item := range items {
+			result[i] = item.InterfaceValue()
+		}
+		return result
+	default:
+		return nil
+	}
+}
+
 // ToPropertyValue converts a Go value to a PropertyValue.
 // It supports the following types:
 //   - string: Stored as PropertyTypeString
@@ -219,6 +284,44 @@ func ToPropertyValue(v interface{}) PropertyValue {
 		return NewFloatProperty(val)
 	case bool:
 		return NewBoolProperty(val)
+	case []PropertyValue:
+		return NewListProperty(val)
+	case []string:
+		items := make([]PropertyValue, len(val))
+		for i, s := range val {
+			items[i] = NewStringProperty(s)
+		}
+		return NewListProperty(items)
+	case []interface{}:
+		items := make([]PropertyValue, len(val))
+		for i, item := range val {
+			items[i] = ToPropertyValue(item)
+		}
+		return NewListProperty(items)
+	case []int:
+		items := make([]PropertyValue, len(val))
+		for i, n := range val {
+			items[i] = NewIntProperty(int64(n))
+		}
+		return NewListProperty(items)
+	case []int64:
+		items := make([]PropertyValue, len(val))
+		for i, n := range val {
+			items[i] = NewIntProperty(n)
+		}
+		return NewListProperty(items)
+	case []float64:
+		items := make([]PropertyValue, len(val))
+		for i, f := range val {
+			items[i] = NewFloatProperty(f)
+		}
+		return NewListProperty(items)
+	case []bool:
+		items := make([]PropertyValue, len(val))
+		for i, b := range val {
+			items[i] = NewBoolProperty(b)
+		}
+		return NewListProperty(items)
 	default:
 		return NewStringProperty(fmt.Sprintf("%v", v))
 	}
@@ -244,6 +347,12 @@ func EncodePropertyValue(v PropertyValue) string {
 			return "1"
 		}
 		return "0"
+	case PropertyTypeList:
+		parts := make([]string, len(v.List))
+		for i, item := range v.List {
+			parts[i] = EncodePropertyValue(item)
+		}
+		return strings.Join(parts, ",")
 	default:
 		return v.StringValue()
 	}

@@ -381,10 +381,18 @@ func (m *Matcher) traversePath(start *graph.Node, path *ast.PathExpr, relIndex i
 //
 // Returns true if the expression evaluates to true for the given path.
 func (m *Matcher) EvaluateExpression(path map[string]interface{}, expr ast.Expr, params map[string]interface{}) bool {
-	comp, ok := expr.(*ast.BinaryExpr)
-	if !ok {
+	switch e := expr.(type) {
+	case *ast.BinaryExpr:
+		return m.evaluateBinaryExpr(path, e, params)
+	case *ast.InExpr:
+		return m.evaluateInExpr(path, e, params)
+	default:
 		return true
 	}
+}
+
+// evaluateBinaryExpr evaluates a binary comparison expression (e.g., n.name = "Alice").
+func (m *Matcher) evaluateBinaryExpr(path map[string]interface{}, comp *ast.BinaryExpr, params map[string]interface{}) bool {
 
 	var leftVal interface{}
 	var leftProp string
@@ -478,7 +486,93 @@ func (m *Matcher) compareValues(left, right interface{}, op string) bool {
 	return false
 }
 
-// fillRow fills a result row with values from the matched path.
+// evaluateInExpr evaluates an IN expression (e.g., $chunkID IN n.source_chunk_ids).
+// It supports checking membership of a scalar value in either a string slice property
+// or a list literal.
+func (m *Matcher) evaluateInExpr(path map[string]interface{}, inExpr *ast.InExpr, params map[string]interface{}) bool {
+	leftVal := m.resolveExprValue(path, inExpr.Left, params)
+	if leftVal == nil {
+		return false
+	}
+
+	rightVal := m.resolveExprValue(path, inExpr.Right, params)
+	if rightVal == nil {
+		return false
+	}
+
+	leftStr := fmt.Sprintf("%v", leftVal)
+
+	switch rv := rightVal.(type) {
+	case []string:
+		for _, item := range rv {
+			if item == leftStr {
+				return true
+			}
+		}
+		return false
+	case string:
+		// Property serialized as comma-separated string (legacy fallback)
+		for _, item := range strings.Split(rv, ",") {
+			if strings.TrimSpace(item) == leftStr {
+				return true
+			}
+		}
+		return false
+	case []interface{}:
+		for _, item := range rv {
+			if fmt.Sprintf("%v", item) == leftStr {
+				return true
+			}
+		}
+		return false
+	}
+
+	return false
+}
+
+// resolveExprValue resolves an ast.Expr to a Go value using the path and params.
+func (m *Matcher) resolveExprValue(path map[string]interface{}, expr ast.Expr, params map[string]interface{}) interface{} {
+	switch e := expr.(type) {
+	case *ast.PropertyAccessExpr:
+		if ident, ok := e.Target.(*ast.Ident); ok {
+			if obj, ok := path[ident.Name]; ok {
+				switch o := obj.(type) {
+				case *graph.Node:
+					if prop, exists := o.Properties[e.Property]; exists {
+						return m.PropertyToInterface(prop)
+					}
+				case *graph.Relationship:
+					if prop, exists := o.Properties[e.Property]; exists {
+						return m.PropertyToInterface(prop)
+					}
+				}
+			}
+		}
+	case *ast.Ident:
+		if obj, ok := path[e.Name]; ok {
+			return obj
+		}
+	case *ast.Param:
+		return params[e.Name]
+	case *ast.ParamExpr:
+		return params[e.Name]
+	case *ast.StringLit:
+		return e.Value
+	case *ast.IntegerLit:
+		return e.Value
+	case *ast.FloatLit:
+		return e.Value
+	case *ast.BoolLit:
+		return e.Value
+	case *ast.ListExpr:
+		var items []interface{}
+		for _, item := range e.Elements {
+			items = append(items, m.resolveExprValue(path, item, params))
+		}
+		return items
+	}
+	return nil
+}
 func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, path map[string]interface{}) {
 	switch expr := item.Expr.(type) {
 	case *ast.PropertyAccessExpr:
@@ -555,24 +649,9 @@ func (m *Matcher) propertyMatches(prop graph.PropertyValue, expected interface{}
 }
 
 // PropertyToInterface converts a PropertyValue to a Go interface{}.
-//
-// Parameters:
-//   - prop: The PropertyValue to convert
-//
-// Returns the property value as a Go interface{}.
+// Delegates to graph.PropertyValue.InterfaceValue().
 func (m *Matcher) PropertyToInterface(prop graph.PropertyValue) interface{} {
-	switch prop.Type() {
-	case graph.PropertyTypeString:
-		return prop.StringValue()
-	case graph.PropertyTypeInt:
-		return prop.IntValue()
-	case graph.PropertyTypeFloat:
-		return prop.FloatValue()
-	case graph.PropertyTypeBool:
-		return prop.BoolValue()
-	default:
-		return nil
-	}
+	return prop.InterfaceValue()
 }
 
 func init() {

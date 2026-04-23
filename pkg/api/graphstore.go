@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/DotNetAge/gograph/pkg/graph"
 	"github.com/DotNetAge/gograph/pkg/storage"
@@ -251,4 +252,140 @@ func (gs *GraphStore) GetNeighbors(nodeID string, depth int, limit int) ([]*Neig
 	}
 
 	return results, nil
+}
+
+// GetNeighborsByTypes returns neighbors of a node filtered by specific relationship types.
+// This is more efficient than filtering after GetNeighbors because it uses adjacency
+// list prefix scanning instead of loading all relationships.
+//
+// Parameters:
+//   - nodeID: The ID of the starting node
+//   - depth: The maximum traversal depth (1 = direct neighbors only)
+//   - limit: Maximum number of results (0 = unlimited)
+//   - relTypes: Only follow edges matching these relationship types (empty = all types)
+func (gs *GraphStore) GetNeighborsByTypes(nodeID string, depth int, limit int, relTypes []string) ([]*NeighborResult, error) {
+	gs.db.RLock()
+	defer gs.db.RUnlock()
+	if gs.db.IsClosedLocked() {
+		return nil, ErrDBClosed
+	}
+
+	if nodeID == "" {
+		return nil, ErrInvalidNodeID
+	}
+
+	var results []*NeighborResult
+	visited := make(map[string]bool)
+	visited[nodeID] = true
+
+	currentLevel := []string{nodeID}
+	count := 0
+
+	for d := 0; d < depth; d++ {
+		var nextLevel []string
+
+		for _, currentID := range currentLevel {
+			var relIDs []string
+			var err error
+
+			if len(relTypes) > 0 {
+				relIDs, err = gs.getRelatedByTypes(currentID, relTypes)
+			} else {
+				relIDs, err = gs.adj.GetAllRelated(currentID)
+			}
+			if err != nil {
+				continue
+			}
+
+			for _, relID := range relIDs {
+				relData, err := gs.store.Get(storage.RelKey(relID))
+				if err != nil {
+					continue
+				}
+
+				var rel graph.Relationship
+				if err := storage.Unmarshal(relData, &rel); err != nil {
+					continue
+				}
+
+				var neighborID string
+				if rel.StartNodeID == currentID {
+					neighborID = rel.EndNodeID
+				} else if rel.EndNodeID == currentID {
+					neighborID = rel.StartNodeID
+				} else {
+					continue
+				}
+
+				if visited[neighborID] {
+					continue
+				}
+
+				visited[neighborID] = true
+
+				nodeData, err := gs.store.Get(storage.NodeKey(neighborID))
+				if err != nil {
+					continue
+				}
+
+				var neighborNode graph.Node
+				if err := storage.Unmarshal(nodeData, &neighborNode); err != nil {
+					continue
+				}
+
+				results = append(results, &NeighborResult{
+					Node: &neighborNode,
+					Edge: &rel,
+				})
+				count++
+
+				if limit > 0 && count >= limit {
+					return results, nil
+				}
+
+				nextLevel = append(nextLevel, neighborID)
+			}
+		}
+
+		currentLevel = nextLevel
+		if len(currentLevel) == 0 {
+			break
+		}
+	}
+
+	return results, nil
+}
+
+// getRelatedByTypes returns relationship IDs for the given node filtered by relationship types.
+func (gs *GraphStore) getRelatedByTypes(nodeID string, relTypes []string) ([]string, error) {
+	var relIDs []string
+
+	for _, relType := range relTypes {
+		for _, dir := range []string{"out", "in"} {
+			prefix := storage.AdjKeyPrefixNodeAndTypeAndDir(nodeID, relType, dir)
+			prefixStr := string(prefix)
+			iter, err := gs.store.NewIter(nil)
+			if err != nil {
+				return nil, err
+			}
+
+			func() {
+				defer iter.Close()
+				for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
+					key := string(iter.Key())
+					if !strings.HasPrefix(key, prefixStr) {
+						break
+					}
+					// Key format: adj:{nodeID}:{relType}:{dir}:{relID}
+					// Extract relID from remainder after prefix
+					remainder := strings.TrimPrefix(key, prefixStr)
+					if remainder != "" {
+						relIDs = append(relIDs, remainder)
+					}
+				}
+			}()
+		}
+	}
+
+	return relIDs, nil
 }
