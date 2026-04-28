@@ -5,7 +5,7 @@
  * Modify this file to customize the generated wrappers.
  */
 
-%module(directors="1") gograph
+%module gograph
 
 /* Enable CGO support */
 %{
@@ -14,10 +14,6 @@
 
 /* Include the C header file */
 %include "gograph_c.h"
-
-/* Configure Go package */
-%goheader("package binding")
-%gopackage("binding")
 
 /* ============================================================================
  * Type Maps - Customize type conversions

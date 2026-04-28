@@ -137,7 +137,7 @@ typedef void* TransactionHandle;
  * @param error 输出错误信息（可为 NULL）
  * @return DatabaseHandle 数据库句柄，失败返回 NULL
  */
-DatabaseHandle gograph_database_new(const char* db_path, ErrorInfo* error);
+DatabaseHandle database_new(char* db_path, ErrorInfo* error);
 
 /**
  * @brief 打开已存在的数据库
@@ -146,7 +146,7 @@ DatabaseHandle gograph_database_new(const char* db_path, ErrorInfo* error);
  * @param error 输出错误信息
  * @return DatabaseHandle 数据库句柄，失败返回 NULL
  */
-DatabaseHandle gograph_database_open(const char* db_path, ErrorInfo* error);
+DatabaseHandle database_open(char* db_path, ErrorInfo* error);
 
 /**
  * @brief 关闭数据库
@@ -154,14 +154,14 @@ DatabaseHandle gograph_database_open(const char* db_path, ErrorInfo* error);
  * @param handle 数据库句柄
  * @return int 错误码
  */
-int gograph_database_close(DatabaseHandle handle);
+int database_close(DatabaseHandle handle);
 
 /**
  * @brief 释放数据库句柄
  * 
  * @param handle 数据库句柄
  */
-void gograph_database_free(DatabaseHandle handle);
+void database_free(DatabaseHandle handle);
 
 /* ============================================================================
  * 事务管理 API
@@ -175,7 +175,7 @@ void gograph_database_free(DatabaseHandle handle);
  * @param error 输出错误信息
  * @return TransactionHandle 事务句柄，失败返回 NULL
  */
-TransactionHandle gograph_transaction_begin(
+TransactionHandle transaction_begin(
     DatabaseHandle db_handle,
     bool read_only,
     ErrorInfo* error
@@ -188,7 +188,7 @@ TransactionHandle gograph_transaction_begin(
  * @param error 输出错误信息
  * @return int 错误码
  */
-int gograph_transaction_commit(TransactionHandle tx_handle, ErrorInfo* error);
+int transaction_commit(TransactionHandle tx_handle, ErrorInfo* error);
 
 /**
  * @brief 回滚事务
@@ -196,14 +196,14 @@ int gograph_transaction_commit(TransactionHandle tx_handle, ErrorInfo* error);
  * @param tx_handle 事务句柄
  * @return int 错误码
  */
-int gograph_transaction_rollback(TransactionHandle tx_handle);
+int transaction_rollback(TransactionHandle tx_handle);
 
 /**
  * @brief 释放事务句柄
  * 
  * @param tx_handle 事务句柄
  */
-void gograph_transaction_free(TransactionHandle tx_handle);
+void transaction_free(TransactionHandle tx_handle);
 
 /* ============================================================================
  * Cypher 查询 API
@@ -222,7 +222,7 @@ void gograph_transaction_free(TransactionHandle tx_handle);
  * @example
  * ```c
  * QueryResult result;
- * int ret = gograph_cypher_execute(
+ * int ret = cypher_execute(
  *     tx,
  *     "MATCH (n) RETURN n LIMIT 10",
  *     NULL,
@@ -231,10 +231,10 @@ void gograph_transaction_free(TransactionHandle tx_handle);
  * );
  * ```
  */
-int gograph_cypher_execute(
+int cypher_execute(
     TransactionHandle tx_handle,
-    const char* query,
-    const char* params,
+    char* query,
+    char* params,
     QueryResult* result,
     ErrorInfo* error
 );
@@ -249,10 +249,10 @@ int gograph_cypher_execute(
  * @param error 输出错误信息
  * @return int 错误码
  */
-int gograph_node_create(
+int node_create(
     TransactionHandle tx_handle,
-    const char* label,
-    const char* properties,
+    char* label,
+    char* properties,
     uint64_t* node_id,
     ErrorInfo* error
 );
@@ -266,7 +266,7 @@ int gograph_node_create(
  * @param error 输出错误信息
  * @return int 错误码
  */
-int gograph_node_get(
+int node_get(
     TransactionHandle tx_handle,
     uint64_t node_id,
     Node* node,
@@ -281,7 +281,7 @@ int gograph_node_get(
  * @param error 输出错误信息
  * @return int 错误码
  */
-int gograph_node_delete(
+int node_delete(
     TransactionHandle tx_handle,
     uint64_t node_id,
     ErrorInfo* error
@@ -299,12 +299,12 @@ int gograph_node_delete(
  * @param error 输出错误信息
  * @return int 错误码
  */
-int gograph_relationship_create(
+int relationship_create(
     TransactionHandle tx_handle,
-    const char* rel_type,
+    char* rel_type,
     uint64_t start_node_id,
     uint64_t end_node_id,
-    const char* properties,
+    char* properties,
     uint64_t* rel_id,
     ErrorInfo* error
 );
@@ -318,7 +318,7 @@ int gograph_relationship_create(
  * @param error 输出错误信息
  * @return int 错误码
  */
-int gograph_relationship_get(
+int relationship_get(
     TransactionHandle tx_handle,
     uint64_t rel_id,
     Relationship* rel,
@@ -334,42 +334,42 @@ int gograph_relationship_get(
  * 
  * @param result 查询结果
  */
-void gograph_query_result_free(QueryResult* result);
+void query_result_free(QueryResult* result);
 
 /**
  * @brief 释放节点
  * 
  * @param node 节点结构
  */
-void gograph_node_free(Node* node);
+void node_free(Node* node);
 
 /**
  * @brief 释放关系
  * 
  * @param rel 关系结构
  */
-void gograph_relationship_free(Relationship* rel);
+void relationship_free(Relationship* rel);
 
 /**
  * @brief 释放路径
  * 
  * @param path 路径结构
  */
-void gograph_path_free(Path* path);
+void path_free(Path* path);
 
 /**
  * @brief 释放值
  * 
  * @param value 值结构
  */
-void gograph_value_free(Value* value);
+void value_free(Value* value);
 
 /**
  * @brief 释放错误信息
  * 
  * @param error 错误信息结构
  */
-void gograph_error_free(ErrorInfo* error);
+void error_free(ErrorInfo* error);
 
 #ifdef __cplusplus
 }

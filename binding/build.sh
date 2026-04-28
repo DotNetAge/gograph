@@ -69,7 +69,7 @@ build_go_lib() {
     print_info "Building Go static library..."
     
     cd binding
-    go build -buildmode=c-archive -o libgograph_c.a ./...
+    go build -buildmode=c-archive -o libgograph_c.a ./cmd
     
     if [ $? -eq 0 ]; then
         print_info "✓ Go static library built: binding/libgograph_c.a"
@@ -95,17 +95,17 @@ generate_swig_wrapper() {
                 cd ..
                 return
             fi
-            swig -cgo -python -py3 -o gograph_wrap.cxx gograph.i
+            swig -python -o gograph_wrap.cxx gograph.i
             print_info "✓ Python wrapper generated: gograph/gograph_wrap.cxx"
             ;;
         
         java)
-            swig -cgo -java -package org.gograph.binding -o gograph_wrap.cxx gograph.i
+            swig -java -package org.gograph.binding -o gograph_wrap.cxx gograph.i
             print_info "✓ Java wrapper generated: gograph/gograph_wrap.cxx"
             ;;
         
         csharp)
-            swig -cgo -csharp -namespace GoGraph.Binding -o gograph_wrap.cxx gograph.i
+            swig -csharp -namespace GoGraph.Binding -o gograph_wrap.cxx gograph.i
             print_info "✓ C# wrapper generated: gograph/gograph_wrap.cxx"
             ;;
         
@@ -131,7 +131,7 @@ build_python_module() {
     
     # 获取 Python 配置
     PYTHON_INCLUDE=$(python3-config --includes 2>/dev/null || echo "-I/usr/include/python3.9")
-    PYTHON_LIBS=$(python3-config --ldflags 2>/dev/null || echo "-lpython3.9")
+    PYTHON_LIBS=$(python3-config --ldflags --embed 2>/dev/null || echo "-lpython3.9")
     
     # 编译共享库
     g++ -fPIC -shared \

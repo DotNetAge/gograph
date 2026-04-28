@@ -6,3 +6,14 @@ test.db/
 default.db/
 coverage.html
 dist/
+
+# Binding build artifacts
+binding/_obj/
+binding/__pycache__/
+binding/build/
+binding/gograph/__pycache__/
+binding/gograph.egg-info/
+binding/_gograph.so
+binding/libgograph_c.a
+binding/gograph_wrap.cxx
+binding/gograph.py

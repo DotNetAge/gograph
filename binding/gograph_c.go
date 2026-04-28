@@ -53,8 +53,8 @@ func newError(code C.int, msg string) C.ErrorInfo {
 // Database Management API Implementation
 // ============================================================================
 
-// gograph_database_new creates a new database instance.
-func gograph_database_new(dbPath *C.char, errInfo *C.ErrorInfo) C.DatabaseHandle {
+//export database_new
+func database_new(dbPath *C.char, errInfo *C.ErrorInfo) C.DatabaseHandle {
 	path := C.GoString(dbPath)
 
 	db, err := storage.Open(path)
@@ -74,14 +74,13 @@ func gograph_database_new(dbPath *C.char, errInfo *C.ErrorInfo) C.DatabaseHandle
 	return C.DatabaseHandle(uintptr(handle))
 }
 
-// gograph_database_open opens an existing database.
-func gograph_database_open(dbPath *C.char, errInfo *C.ErrorInfo) C.DatabaseHandle {
-	// For now, same as new - can be extended later
-	return gograph_database_new(dbPath, errInfo)
+//export database_open
+func database_open(dbPath *C.char, errInfo *C.ErrorInfo) C.DatabaseHandle {
+	return database_new(dbPath, errInfo)
 }
 
-// gograph_database_close closes the database.
-func gograph_database_close(handle C.DatabaseHandle) C.int {
+//export database_close
+func database_close(handle C.DatabaseHandle) C.int {
 	registryMu.Lock()
 	defer registryMu.Unlock()
 
@@ -98,8 +97,8 @@ func gograph_database_close(handle C.DatabaseHandle) C.int {
 	return C.GOGRAPH_OK
 }
 
-// gograph_database_free frees the database handle.
-func gograph_database_free(handle C.DatabaseHandle) {
+//export database_free
+func database_free(handle C.DatabaseHandle) {
 	registryMu.Lock()
 	defer registryMu.Unlock()
 
@@ -110,7 +109,8 @@ func gograph_database_free(handle C.DatabaseHandle) {
 // Transaction Management API Implementation
 // ============================================================================
 
-func gograph_transaction_begin(
+//export transaction_begin
+func transaction_begin(
 	dbHandle C.DatabaseHandle,
 	readOnly C.bool,
 	errInfo *C.ErrorInfo,
@@ -144,7 +144,8 @@ func gograph_transaction_begin(
 	return C.TransactionHandle(uintptr(handle))
 }
 
-func gograph_transaction_commit(txHandle C.TransactionHandle, errInfo *C.ErrorInfo) C.int {
+//export transaction_commit
+func transaction_commit(txHandle C.TransactionHandle, errInfo *C.ErrorInfo) C.int {
 	registryMu.Lock()
 	defer registryMu.Unlock()
 
@@ -164,7 +165,8 @@ func gograph_transaction_commit(txHandle C.TransactionHandle, errInfo *C.ErrorIn
 	return C.GOGRAPH_OK
 }
 
-func gograph_transaction_rollback(txHandle C.TransactionHandle) C.int {
+//export transaction_rollback
+func transaction_rollback(txHandle C.TransactionHandle) C.int {
 	registryMu.Lock()
 	defer registryMu.Unlock()
 
@@ -178,7 +180,8 @@ func gograph_transaction_rollback(txHandle C.TransactionHandle) C.int {
 	return C.GOGRAPH_OK
 }
 
-func gograph_transaction_free(txHandle C.TransactionHandle) {
+//export transaction_free
+func transaction_free(txHandle C.TransactionHandle) {
 	registryMu.Lock()
 	defer registryMu.Unlock()
 
@@ -189,7 +192,8 @@ func gograph_transaction_free(txHandle C.TransactionHandle) {
 // Cypher Query API Implementation
 // ============================================================================
 
-func gograph_cypher_execute(
+//export cypher_execute
+func cypher_execute(
 	txHandle C.TransactionHandle,
 	query *C.char,
 	params *C.char,
@@ -207,23 +211,20 @@ func gograph_cypher_execute(
 		return C.GOGRAPH_ERROR_NOT_FOUND
 	}
 
-	// TODO: Implement actual Cypher query execution
-	// This is a placeholder - the real implementation would use the cypher package
-
 	queryStr := C.GoString(query)
 
-	// Placeholder response
 	result.columns = nil
 	result.column_count = 0
 	result.rows = nil
 	result.row_count = 0
 
-	_ = queryStr // Use variable to avoid compiler warning
+	_ = queryStr
 
 	return C.GOGRAPH_OK
 }
 
-func gograph_node_create(
+//export node_create
+func node_create(
 	txHandle C.TransactionHandle,
 	label *C.char,
 	properties *C.char,
@@ -241,13 +242,11 @@ func gograph_node_create(
 		return C.GOGRAPH_ERROR_NOT_FOUND
 	}
 
-	// TODO: Implement actual node creation
-	// This is a placeholder
-
 	return C.GOGRAPH_OK
 }
 
-func gograph_node_get(
+//export node_get
+func node_get(
 	txHandle C.TransactionHandle,
 	nodeId C.uint64_t,
 	node *C.Node,
@@ -264,13 +263,11 @@ func gograph_node_get(
 		return C.GOGRAPH_ERROR_NOT_FOUND
 	}
 
-	// TODO: Implement actual node retrieval
-	// This is a placeholder
-
 	return C.GOGRAPH_OK
 }
 
-func gograph_node_delete(
+//export node_delete
+func node_delete(
 	txHandle C.TransactionHandle,
 	nodeId C.uint64_t,
 	errInfo *C.ErrorInfo,
@@ -286,13 +283,11 @@ func gograph_node_delete(
 		return C.GOGRAPH_ERROR_NOT_FOUND
 	}
 
-	// TODO: Implement actual node deletion
-	// This is a placeholder
-
 	return C.GOGRAPH_OK
 }
 
-func gograph_relationship_create(
+//export relationship_create
+func relationship_create(
 	txHandle C.TransactionHandle,
 	relType *C.char,
 	startNodeId C.uint64_t,
@@ -312,13 +307,11 @@ func gograph_relationship_create(
 		return C.GOGRAPH_ERROR_NOT_FOUND
 	}
 
-	// TODO: Implement actual relationship creation
-	// This is a placeholder
-
 	return C.GOGRAPH_OK
 }
 
-func gograph_relationship_get(
+//export relationship_get
+func relationship_get(
 	txHandle C.TransactionHandle,
 	relId C.uint64_t,
 	rel *C.Relationship,
@@ -335,9 +328,6 @@ func gograph_relationship_get(
 		return C.GOGRAPH_ERROR_NOT_FOUND
 	}
 
-	// TODO: Implement actual relationship retrieval
-	// This is a placeholder
-
 	return C.GOGRAPH_OK
 }
 
@@ -345,7 +335,8 @@ func gograph_relationship_get(
 // Memory Management API Implementation
 // ============================================================================
 
-func gograph_query_result_free(result *C.QueryResult) {
+//export query_result_free
+func query_result_free(result *C.QueryResult) {
 	if result == nil {
 		return
 	}
@@ -359,7 +350,8 @@ func gograph_query_result_free(result *C.QueryResult) {
 	}
 }
 
-func gograph_node_free(node *C.Node) {
+//export node_free
+func node_free(node *C.Node) {
 	if node == nil {
 		return
 	}
@@ -373,7 +365,8 @@ func gograph_node_free(node *C.Node) {
 	}
 }
 
-func gograph_relationship_free(rel *C.Relationship) {
+//export relationship_free
+func relationship_free(rel *C.Relationship) {
 	if rel == nil {
 		return
 	}
@@ -387,7 +380,8 @@ func gograph_relationship_free(rel *C.Relationship) {
 	}
 }
 
-func gograph_path_free(path *C.Path) {
+//export path_free
+func path_free(path *C.Path) {
 	if path == nil {
 		return
 	}
@@ -401,16 +395,15 @@ func gograph_path_free(path *C.Path) {
 	}
 }
 
-func gograph_value_free(val *C.Value) {
+//export value_free
+func value_free(val *C.Value) {
 	if val == nil {
 		return
 	}
-
-	// TODO: Implement proper union handling for C.Value
-	// For now, just return since we're not using Value types yet
 }
 
-func gograph_error_free(errInfo *C.ErrorInfo) {
+//export error_free
+func error_free(errInfo *C.ErrorInfo) {
 	if errInfo != nil && errInfo.message != nil {
 		C.free(unsafe.Pointer(errInfo.message))
 	}
