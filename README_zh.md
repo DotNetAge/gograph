@@ -28,11 +28,26 @@
 探索 GoGraph 最快的方式是使用其命令行界面（CLI）。
 
 **macOS / Linux (Homebrew):**
+
 ```bash
-brew install dotnetage/tap/gograph
+brew tap dotnetage/gograph
+brew install gograph
+```
+
+**Linux**
+
+```bash
+# Linux x86_64
+curl -L https://github.com/DotNetAge/gograph/releases/download/v0.2.2/gograph-v0.2.2-linux-amd64.tar.gz -o gograph.tar.gz
+tar -xzf gograph.tar.gz
+sudo cp gograph-v0.2.2-linux-amd64/gograph /usr/local/bin/
+
+# Test
+gograph --version
 ```
 
 **运行交互式 Shell (TUI):**
+
 ```bash
 # 不带参数直接运行，将自动打开并进入默认数据库 (default.db)
 gograph

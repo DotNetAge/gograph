@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            ext: ''
+          - os: ubuntu-latest
+            goos: linux
+            goarch: arm64
+            ext: ''
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            ext: ''
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            ext: ''
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            ext: '.exe'
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6.3.0
+        with:
+          go-version: '1.25.1'
+          cache: true
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          OUTPUT_NAME="gograph-${VERSION}-${GOOS}-${GOARCH}${matrix.ext}"
+          
+          go build -ldflags="-s -w -X github.com/DotNetAge/gograph/cmd/gograph.Version=${VERSION}" -o "${OUTPUT_NAME}" ./cmd/gograph
+          
+          echo "Built: ${OUTPUT_NAME}"
+          ls -la "${OUTPUT_NAME}"
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: gograph ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          files: |
+            gograph-*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-binding:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6.3.0
+        with:
+          go-version: '1.25.1'
+          cache: true
+
+      - name: Build Go static library
+        run: |
+          cd binding
+          go build -buildmode=c-archive -o libgograph_c.a ./cmd
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install SWIG
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y swig
+
+      - name: Generate SWIG wrapper
+        working-directory: binding
+        run: |
+          swig -python -o gograph_wrap.cxx gograph.i
+
+      - name: Build Python extension
+        working-directory: binding
+        run: |
+          g++ -fPIC -shared \
+            gograph_wrap.cxx \
+            -o _gograph.so \
+            $(python3 -m py_compile --print path)/../include/python3.12 \
+            -L. -lgograph_c \
+            $(python3-config --ldflags --embed) \
+            -lpthread
+
+      - name: Upload Python binding
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: gograph ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          files: |
+            binding/_gograph.so
+            binding/gograph.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

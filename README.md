@@ -25,14 +25,30 @@ It allows Go developers to execute Cypher queries (the standard graph query lang
 ## ⚡ Quick Start
 
 ### 1. Install CLI (Recommended)
+
 The fastest way to explore GoGraph is via the CLI.
 
 **macOS / Linux (Homebrew):**
+
 ```bash
-brew install dotnetage/tap/gograph
+brew tap dotnetage/gograph
+brew install gograph
+```
+
+**Linux**
+
+```bash
+# Linux x86_64
+curl -L https://github.com/DotNetAge/gograph/releases/download/v0.2.2/gograph-v0.2.2-linux-amd64.tar.gz -o gograph.tar.gz
+tar -xzf gograph.tar.gz
+sudo cp gograph-v0.2.2-linux-amd64/gograph /usr/local/bin/
+
+# Test
+gograph --version
 ```
 
 **Run TUI (Interactive Shell):**
+
 ```bash
 # Simply run without arguments to open default.db in interactive mode
 gograph

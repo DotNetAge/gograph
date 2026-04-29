@@ -56,7 +56,8 @@ The fastest way to explore CypherDB is via the CLI.
 **macOS / Linux (Homebrew):**
 
 ```bash
-brew install dotnetage/tap/gograph
+brew tap dotnetage/gograph
+brew install gograph
 ```
 
 **Run TUI (Interactive Shell):**
