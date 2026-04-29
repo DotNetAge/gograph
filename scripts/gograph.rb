@@ -1,26 +1,26 @@
 class Gograph < Formula
   desc "Pure Go embedded graph database"
   homepage "https://github.com/DotNetAge/gograph"
-  version "v0.2.0"
+  version "v0.2.2"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.0/gograph-v0.2.0-darwin-arm64.tar.gz"
-      sha256 "53e676ecc084de771e5deec75e96962bd11654b5085302ba00ee5585d2e50adb"
+      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.2/gograph-v0.2.2-darwin-arm64.tar.gz"
+      sha256 "3fc84325ae1197394ef8d70d9d38d6c018d8d01fd2a40d2fc0b4d3da236a5fb5"
     else
-      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.0/gograph-v0.2.0-darwin-amd64.tar.gz"
-      sha256 "3e4771b1fc148e68ec1d3ec3eda1c5a5bb1b086de9d61292086ff7be2de06b48"
+      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.2/gograph-v0.2.2-darwin-amd64.tar.gz"
+      sha256 "34e42cd431fa57a4658780f53fef49cbf5cceff894973d72f8673c53f319d094"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.0/gograph-v0.2.0-linux-arm64.tar.gz"
-      sha256 "bacd8831cd55093e257a79f1fc82dc5b906e8049d50d20ea86de0635e7a6de76"
+      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.2/gograph-v0.2.2-linux-arm64.tar.gz"
+      sha256 "ff14d7d80513be1338fbaaedbcd19efddbdfe80b3929549b072cfd89b8e18707"
     else
-      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.0/gograph-v0.2.0-linux-amd64.tar.gz"
-      sha256 "d93665425264cfd25319d5cb8f1cd67c76fae55011e1c07060d18f7cab475d6d"
+      url "https://github.com/DotNetAge/gograph/releases/download/v0.2.2/gograph-v0.2.2-linux-amd64.tar.gz"
+      sha256 "4032f31b68584a5b60723748a3899bca478e5eff285e38b0664747715a865866"
     end
   end
 

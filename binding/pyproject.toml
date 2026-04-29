@@ -3,12 +3,10 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gograph"
-version = "0.1.0"
-description = "GoGraph - A high-performance graph database"
-authors = [
-  { name="GoGraph Team", email="support@gograph.io" }
-]
+name = "cypherdb"
+version = "0.2.3"
+description = "CypherDB is a lightweight, zero-dependency, embedded graph database written entirely in Go. Think of it as SQLite for Graph Databases"
+authors = [{ name = "Ray", email = "ray@rayainfo.cn" }]
 readme = "README.md"
 license = { text = "MIT" }
 classifiers = [

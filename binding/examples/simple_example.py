@@ -39,7 +39,7 @@ def main():
         # 1. 创建数据库
         print("Step 1: Creating database...")
         db_path = b"gograph_example.db".decode('utf-8')
-        db_handle = gograph.gograph_database_new(db_path, error)
+        db_handle = gograph.database_new(db_path, error)
         
         if db_handle is None:
             print(f"Failed to create database: {error.message}")

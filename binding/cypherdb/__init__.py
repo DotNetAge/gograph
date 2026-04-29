@@ -1,14 +1,14 @@
 """
-GoGraph - A high-performance graph database
-==========================================
+CypherDB - A high-performance graph database
+=============================================
 
-GoGraph is a graph database built with Go, providing Python bindings
+CypherDB is a graph database built with Go, providing Python bindings
 for seamless integration with Python applications.
 
 Quick Start:
 ------------
->>> import gograph
->>> db = gograph.Database("test.db")
+>>> import cypherdb
+>>> db = cypherdb.Database("test.db")
 >>> with db.transaction() as tx:
 ...     node_id = tx.create_node("Person", {"name": "Alice"})
 ...     print(f"Created node: {node_id}")
@@ -18,9 +18,9 @@ from ._gograph import *
 from .database import Database
 from .transaction import Transaction
 
-__version__ = "0.1.0"
-__author__ = "GoGraph Team"
-__email__ = "support@gograph.io"
+__version__ = "0.2.3"
+__author__ = "Ray"
+__email__ = "ray@rayainfo.cn"
 
 __all__ = [
     # Core types

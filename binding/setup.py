@@ -1,7 +1,7 @@
 """
-GoGraph Python Binding Setup
+CypherDB Python Binding Setup
 
-This setup.py builds a Python package for GoGraph, a high-performance graph database.
+This setup.py builds a Python package for CypherDB, a high-performance graph database.
 """
 
 import os
@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 class CustomBuildExt(build_ext):
     """Custom build extension to copy pre-built shared library"""
@@ -29,9 +29,9 @@ class CustomBuildExt(build_ext):
                 print(f"Copied pre-built {src_path} to {target_path}")
 
 setup(
-    name="gograph",
+    name="cypherdb",
     version=__version__,
-    description="GoGraph is a lightweight, zero-dependency, embedded graph database written entirely in Go. Think of it as SQLite for Graph Databases",
+    description="CypherDB is a lightweight, zero-dependency, embedded graph database written entirely in Go and Python bindings. Think of it as SQLite for Graph Databases",
     long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",
     author="Ray",
@@ -40,7 +40,7 @@ setup(
     packages=find_packages(),
     ext_modules=[
         Extension(
-            "gograph._gograph",
+            "cypherdb._gograph",
             sources=[],  # Pre-built shared library
         )
     ],
