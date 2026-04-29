@@ -25,6 +25,7 @@
 ## ⚡ 快速开始 (Quick Start)
 
 ### 1. 安装命令行工具 (推荐)
+
 探索 GoGraph 最快的方式是使用其命令行界面（CLI）。
 
 **macOS / Linux (Homebrew):**
@@ -54,7 +55,9 @@ gograph
 ```
 
 ### 2. 作为 Go 库使用
+
 在您的 Go 项目中引入 GoGraph：
+
 ```bash
 go get github.com/DotNetAge/gograph
 ```
