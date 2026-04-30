@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cypherdb"
-version = "0.2.3"
+version = "0.3.0"
 description = "CypherDB is a lightweight, zero-dependency, embedded graph database written entirely in Go. Think of it as SQLite for Graph Databases"
 authors = [{ name = "Ray", email = "ray@rayainfo.cn" }]
 readme = "README.md"
