@@ -1,13 +1,11 @@
 package graph
 
 import (
+	"strings"
 	"testing"
 )
 
 func TestNewNode(t *testing.T) {
-	// Set a known counter value for testing
-	SetIDCounter(0)
-
 	// Test creating a node with labels and properties
 	labels := []string{"User", "Admin"}
 	properties := map[string]interface{}{
@@ -19,9 +17,9 @@ func TestNewNode(t *testing.T) {
 
 	node := NewNode(labels, properties)
 
-	// Check that the node has the correct ID
-	if node.ID != "node:b1" {
-		t.Errorf("expected 'node:b1', got %s", node.ID)
+	// Check that the node has a valid ID (prefix:ULID format)
+	if !strings.HasPrefix(node.ID, "node:") {
+		t.Errorf("expected ID to start with 'node:', got %s", node.ID)
 	}
 
 	// Check that the node has the correct labels
@@ -92,18 +90,15 @@ func TestNewNode(t *testing.T) {
 }
 
 func TestNewNodeWithNoProperties(t *testing.T) {
-	// Set a known counter value for testing
-	SetIDCounter(100)
-
-	// Test creating a node with no properties
+	// Test creating a node with labels but no properties
 	labels := []string{"User"}
 	properties := map[string]interface{}{}
 
 	node := NewNode(labels, properties)
 
-	// Check that the node has the correct ID
-	if node.ID != "node:x1" {
-		t.Errorf("expected 'node:x1', got %s", node.ID)
+	// Check that the node has a valid ID
+	if !strings.HasPrefix(node.ID, "node:") {
+		t.Errorf("expected ID to start with 'node:', got %s", node.ID)
 	}
 
 	// Check that the node has the correct labels
@@ -122,9 +117,6 @@ func TestNewNodeWithNoProperties(t *testing.T) {
 }
 
 func TestNewNodeWithNoLabels(t *testing.T) {
-	// Set a known counter value for testing
-	SetIDCounter(200)
-
 	// Test creating a node with no labels
 	labels := []string{}
 	properties := map[string]interface{}{
@@ -133,9 +125,9 @@ func TestNewNodeWithNoLabels(t *testing.T) {
 
 	node := NewNode(labels, properties)
 
-	// Check that the node has the correct ID
-	if node.ID != "node:t1" {
-		t.Errorf("expected 'node:t1', got %s", node.ID)
+	// Check that the node has a valid ID
+	if !strings.HasPrefix(node.ID, "node:") {
+		t.Errorf("expected ID to start with 'node:', got %s", node.ID)
 	}
 
 	// Check that the node has no labels

@@ -23,6 +23,7 @@ package matchers
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/DotNetAge/gograph/pkg/cypher/ast"
@@ -71,6 +72,14 @@ func NewMatcher(store *storage.DB, index *graph.Index) *Matcher {
 //	    "name": "Alice",
 //	})
 func (m *Matcher) ExecuteMatch(stmt *ast.MatchStmt, params map[string]interface{}) (rows []map[string]interface{}, columns []string, err error) {
+	return m.ExecuteMatchWithContext(stmt, params, nil)
+}
+
+func (m *Matcher) ExecuteMatchWithContext(stmt *ast.MatchStmt, params map[string]interface{}, contextRows []map[string]interface{}) (rows []map[string]interface{}, columns []string, err error) {
+	if contextRows != nil && len(contextRows) > 0 {
+		return m.executeMatchWithUnwindContext(stmt, params, contextRows)
+	}
+
 	var matchedPaths []map[string]interface{}
 
 	for _, clause := range stmt.Clauses {
@@ -106,6 +115,14 @@ func (m *Matcher) ExecuteMatch(stmt *ast.MatchStmt, params map[string]interface{
 		matchedPaths = filteredPaths
 	}
 
+	if returnExpr != nil && m.hasAggregation(returnExpr.Items) {
+		pathsForAgg := make([]map[string]interface{}, len(matchedPaths))
+		for i, p := range matchedPaths {
+			pathsForAgg[i] = p
+		}
+		return m.computeAggregation(pathsForAgg, returnExpr)
+	}
+
 	for _, path := range matchedPaths {
 		row := make(map[string]interface{})
 		if returnExpr != nil {
@@ -130,7 +147,336 @@ func (m *Matcher) ExecuteMatch(stmt *ast.MatchStmt, params map[string]interface{
 		}
 	}
 
+	if returnExpr != nil {
+		if returnExpr.OrderBy != nil && len(rows) > 0 {
+			rows = m.sortRows(rows, returnExpr.OrderBy, params)
+		}
+
+		skip := 0
+		if returnExpr.Skip != nil {
+			skip = int(m.resolveIntValue(returnExpr.Skip, params))
+			if skip < 0 {
+				skip = 0
+			}
+			if skip > len(rows) {
+				skip = len(rows)
+			}
+		}
+
+		if skip > 0 {
+			rows = rows[skip:]
+		}
+
+		if returnExpr.Limit != nil {
+			limit := int(m.resolveIntValue(returnExpr.Limit, params))
+			if limit > 0 && limit < len(rows) {
+				rows = rows[:limit]
+			}
+		}
+	}
+
 	return rows, columns, nil
+}
+
+func (m *Matcher) executeMatchWithUnwindContext(stmt *ast.MatchStmt, params map[string]interface{}, contextRows []map[string]interface{}) (rows []map[string]interface{}, columns []string, err error) {
+	var allMatchedPaths []map[string]interface{}
+	var returnExpr *ast.ReturnExpr
+
+	for _, clause := range stmt.Clauses {
+		switch c := clause.(type) {
+		case *ast.WhereExpr:
+		case *ast.ReturnExpr:
+			returnExpr = c
+		}
+	}
+
+	for _, ctxRow := range contextRows {
+		mergedParams := make(map[string]interface{})
+		for k, v := range params {
+			mergedParams[k] = v
+		}
+		for k, v := range ctxRow {
+			mergedParams[k] = v
+		}
+
+		for _, clause := range stmt.Clauses {
+			switch c := clause.(type) {
+			case *ast.MatchClause:
+				paths, pathErr := m.executeMatchClauseWithContext(c, mergedParams, ctxRow)
+				if pathErr != nil {
+					return nil, nil, pathErr
+				}
+				allMatchedPaths = append(allMatchedPaths, paths...)
+			}
+		}
+	}
+
+	if returnExpr != nil && m.hasAggregation(returnExpr.Items) {
+		pathsForAgg := make([]map[string]interface{}, len(allMatchedPaths))
+		for i, p := range allMatchedPaths {
+			pathsForAgg[i] = p
+		}
+		return m.computeAggregation(pathsForAgg, returnExpr)
+	}
+
+	if returnExpr != nil {
+		for i := range returnExpr.Items {
+			columns = append(columns, m.getColumnName(returnExpr.Items[i]))
+		}
+	}
+
+	for _, path := range allMatchedPaths {
+		row := make(map[string]interface{})
+		if returnExpr != nil {
+			for i := range returnExpr.Items {
+				m.fillRow(row, returnExpr.Items[i], path)
+			}
+		} else {
+			for k, v := range path {
+				row[k] = v
+			}
+		}
+		rows = append(rows, row)
+	}
+
+	return rows, columns, nil
+}
+
+func (m *Matcher) executeMatchClauseWithContext(clause *ast.MatchClause, params map[string]interface{}, ctxRow map[string]interface{}) ([]map[string]interface{}, error) {
+	if clause.Pattern == nil {
+		return nil, nil
+	}
+
+	var matchedPaths []map[string]interface{}
+
+	for _, part := range clause.Pattern.Parts {
+		if part.Path == nil {
+			continue
+		}
+
+		paths, err := m.executePathWithContext(part.Path, params, ctxRow)
+		if err != nil {
+			return nil, err
+		}
+		matchedPaths = append(matchedPaths, paths...)
+	}
+
+	if clause.Where != nil {
+		var filteredPaths []map[string]interface{}
+		for _, path := range matchedPaths {
+			if m.EvaluateExpressionWithContext(path, clause.Where.Expr, params, ctxRow) {
+				filteredPaths = append(filteredPaths, path)
+			}
+		}
+		matchedPaths = filteredPaths
+	}
+
+	return matchedPaths, nil
+}
+
+func (m *Matcher) executePathWithContext(path *ast.PathExpr, params map[string]interface{}, ctxRow map[string]interface{}) ([]map[string]interface{}, error) {
+	if len(path.Nodes) == 0 {
+		return nil, nil
+	}
+
+	var matchedPaths []map[string]interface{}
+
+	if len(path.Relationships) == 0 {
+		node := path.Nodes[0]
+		nodes := m.findNodesWithContext(node, params, ctxRow)
+		for _, n := range nodes {
+			p := make(map[string]interface{})
+			if node.Variable != "" {
+				p[node.Variable] = n
+			}
+			for k, v := range ctxRow {
+				p[k] = v
+			}
+			matchedPaths = append(matchedPaths, p)
+		}
+		return matchedPaths, nil
+	}
+
+	startNode := path.Nodes[0]
+	startNodes := m.findNodesWithContext(startNode, params, ctxRow)
+
+	for _, start := range startNodes {
+		paths := m.traversePath(start, path, 0, make(map[string]bool))
+		for _, p := range paths {
+			for k, v := range ctxRow {
+				p[k] = v
+			}
+			matchedPaths = append(matchedPaths, p)
+		}
+	}
+
+	return matchedPaths, nil
+}
+
+func (m *Matcher) findNodesWithContext(nodePattern *ast.NodePattern, params map[string]interface{}, ctxRow map[string]interface{}) []*graph.Node {
+	var nodes []*graph.Node
+
+	if len(nodePattern.Labels) > 0 {
+		ids, _ := m.Index.LookupByLabel(nodePattern.Labels[0])
+		for _, id := range ids {
+			data, err := m.Store.Get(storage.NodeKey(id))
+			if err != nil {
+				continue
+			}
+			var node graph.Node
+			if err := storage.Unmarshal(data, &node); err == nil {
+				if m.nodeMatchesPropertiesWithContext(&node, nodePattern.Labels, nodePattern.Properties, params, ctxRow) {
+					nodes = append(nodes, &node)
+				}
+			}
+		}
+	} else {
+		iter, _ := m.Store.NewIter(nil)
+		defer iter.Close()
+		for iter.SeekGE([]byte(storage.KeyPrefixNode)); iter.Valid(); iter.Next() {
+			key := iter.Key()
+			if len(key) < 5 || string(key)[:5] != storage.KeyPrefixNode {
+				break
+			}
+			var node graph.Node
+			if err := storage.Unmarshal(iter.Value(), &node); err == nil {
+				if m.nodeMatchesPropertiesWithContext(&node, nil, nodePattern.Properties, params, ctxRow) {
+					nodes = append(nodes, &node)
+				}
+			}
+		}
+	}
+
+	return nodes
+}
+
+func (m *Matcher) nodeMatchesPropertiesWithContext(node *graph.Node, labels []string, props map[string]ast.Expr, params map[string]interface{}, ctxRow map[string]interface{}) bool {
+	for _, label := range labels {
+		found := false
+		for _, nodeLabel := range node.Labels {
+			if nodeLabel == label {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+
+	for k, expr := range props {
+		prop, exists := node.Properties[k]
+		if !exists {
+			return false
+		}
+		expected := m.exprToValueWithContext(expr, params, ctxRow)
+		if !m.propertyMatches(prop, expected) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m *Matcher) exprToValueWithContext(expr ast.Expr, params map[string]interface{}, ctxRow map[string]interface{}) interface{} {
+	switch e := expr.(type) {
+	case *ast.Ident:
+		if val, ok := ctxRow[e.Name]; ok {
+			return val
+		}
+		if val, ok := params[e.Name]; ok {
+			return val
+		}
+	case *ast.IntegerLit:
+		return e.Value
+	case *ast.FloatLit:
+		return e.Value
+	case *ast.StringLit:
+		return e.Value
+	case *ast.BoolLit:
+		return e.Value
+	case *ast.Param:
+		return params[e.Name]
+	case *ast.ParamExpr:
+		return params[e.Name]
+	}
+	return nil
+}
+
+func (m *Matcher) EvaluateExpressionWithContext(path map[string]interface{}, expr ast.Expr, params map[string]interface{}, ctxRow map[string]interface{}) bool {
+	switch e := expr.(type) {
+	case *ast.BinaryExpr:
+		return m.evaluateBinaryExprWithContext(path, e, params, ctxRow)
+	default:
+		return true
+	}
+}
+
+func (m *Matcher) evaluateBinaryExprWithContext(path map[string]interface{}, expr *ast.BinaryExpr, params map[string]interface{}, ctxRow map[string]interface{}) bool {
+	op := expr.Operator
+	if op == "AND" {
+		return m.EvaluateExpressionWithContext(path, expr.Left, params, ctxRow) && m.EvaluateExpressionWithContext(path, expr.Right, params, ctxRow)
+	}
+	if op == "OR" {
+		return m.EvaluateExpressionWithContext(path, expr.Left, params, ctxRow) || m.EvaluateExpressionWithContext(path, expr.Right, params, ctxRow)
+	}
+
+	leftVal := m.resolveExprValueWithContext(path, expr.Left, params, ctxRow)
+	rightVal := m.resolveExprValueWithContext(path, expr.Right, params, ctxRow)
+
+	if leftVal == nil || rightVal == nil {
+		return false
+	}
+
+	return m.compareValues(leftVal, rightVal, op)
+}
+
+func (m *Matcher) resolveExprValueWithContext(path map[string]interface{}, expr ast.Expr, params map[string]interface{}, ctxRow map[string]interface{}) interface{} {
+	switch e := expr.(type) {
+	case *ast.PropertyAccessExpr:
+		if ident, ok := e.Target.(*ast.Ident); ok {
+			if obj, ok := path[ident.Name]; ok {
+				switch o := obj.(type) {
+				case *graph.Node:
+					if prop, exists := o.Properties[e.Property]; exists {
+						return m.PropertyToInterface(prop)
+					}
+				case *graph.Relationship:
+					if prop, exists := o.Properties[e.Property]; exists {
+						return m.PropertyToInterface(prop)
+					}
+				}
+			}
+			if val, ok := ctxRow[ident.Name]; ok {
+				return val
+			}
+		}
+	case *ast.Ident:
+		if val, ok := ctxRow[e.Name]; ok {
+			return val
+		}
+		if val, ok := path[e.Name]; ok {
+			return val
+		}
+	case *ast.Param:
+		return params[e.Name]
+	case *ast.ParamExpr:
+		return params[e.Name]
+	case *ast.StringLit:
+		return e.Value
+	case *ast.IntegerLit:
+		return e.Value
+	case *ast.FloatLit:
+		return e.Value
+	case *ast.BoolLit:
+		return e.Value
+	case *ast.ListExpr:
+		var items []interface{}
+		for _, item := range e.Elements {
+			items = append(items, m.resolveExprValueWithContext(path, item, params, ctxRow))
+		}
+		return items
+	}
+	return nil
 }
 
 // executeMatchClause executes a single MATCH clause.
@@ -393,6 +739,12 @@ func (m *Matcher) EvaluateExpression(path map[string]interface{}, expr ast.Expr,
 
 // evaluateBinaryExpr evaluates a binary comparison expression (e.g., n.name = "Alice").
 func (m *Matcher) evaluateBinaryExpr(path map[string]interface{}, comp *ast.BinaryExpr, params map[string]interface{}) bool {
+	switch comp.Operator {
+	case "AND", "and", "&&":
+		return m.EvaluateExpression(path, comp.Left, params) && m.EvaluateExpression(path, comp.Right, params)
+	case "OR", "or", "||":
+		return m.EvaluateExpression(path, comp.Left, params) || m.EvaluateExpression(path, comp.Right, params)
+	}
 
 	var leftVal interface{}
 	var leftProp string
@@ -481,6 +833,12 @@ func (m *Matcher) compareValues(left, right interface{}, op string) bool {
 		return leftStr < rightStr
 	case "<=":
 		return leftStr <= rightStr
+	case "STARTS WITH":
+		return strings.HasPrefix(leftStr, rightStr)
+	case "ENDS WITH":
+		return strings.HasSuffix(leftStr, rightStr)
+	case "CONTAINS":
+		return strings.Contains(leftStr, rightStr)
 	}
 
 	return false
@@ -573,6 +931,216 @@ func (m *Matcher) resolveExprValue(path map[string]interface{}, expr ast.Expr, p
 	}
 	return nil
 }
+
+func (m *Matcher) resolveIntValue(expr ast.Expr, params map[string]interface{}) int64 {
+	switch e := expr.(type) {
+	case *ast.IntegerLit:
+		return e.Value
+	case *ast.Param:
+		if v, ok := params[e.Name]; ok {
+			if i, ok := ToInt64(v); ok {
+				return i
+			}
+		}
+	case *ast.ParamExpr:
+		if v, ok := params[e.Name]; ok {
+			if i, ok := ToInt64(v); ok {
+				return i
+			}
+		}
+	case *ast.Ident:
+		if v, ok := params[e.Name]; ok {
+			if i, ok := ToInt64(v); ok {
+				return i
+			}
+		}
+	}
+	return 0
+}
+
+func (m *Matcher) sortRows(rows []map[string]interface{}, orderBy *ast.OrderByExpr, params map[string]interface{}) []map[string]interface{} {
+	if len(orderBy.Items) == 0 {
+		return rows
+	}
+
+	sort.Slice(rows, func(i, j int) bool {
+		for _, item := range orderBy.Items {
+			valI := m.getSortValue(rows[i], item.Expr, params)
+			valJ := m.getSortValue(rows[j], item.Expr, params)
+
+			if valI == nil && valJ == nil {
+				continue
+			}
+			if valI == nil {
+				return !item.Descending
+			}
+			if valJ == nil {
+				return item.Descending
+			}
+
+			less := m.compareSortValues(valI, valJ)
+			if item.Descending {
+				less = !less
+			}
+			if less {
+				return true
+			}
+			if m.compareSortValues(valI, valJ) && !m.compareSortValues(valJ, valI) {
+				continue
+			}
+		}
+		return false
+	})
+
+	return rows
+}
+
+func (m *Matcher) getSortValue(row map[string]interface{}, expr ast.Expr, params map[string]interface{}) interface{} {
+	switch e := expr.(type) {
+	case *ast.PropertyAccessExpr:
+		if ident, ok := e.Target.(*ast.Ident); ok {
+			fullKey := ident.Name + "." + e.Property
+			if val, exists := row[fullKey]; exists {
+				return val
+			}
+			obj := row[ident.Name]
+			if obj == nil {
+				return nil
+			}
+			if node, ok := obj.(*graph.Node); ok {
+				if prop, exists := node.Properties[e.Property]; exists {
+					return m.PropertyToInterface(prop)
+				}
+				return nil
+			}
+			if rel, ok := obj.(*graph.Relationship); ok {
+				if prop, exists := rel.Properties[e.Property]; exists {
+					return m.PropertyToInterface(prop)
+				}
+				return nil
+			}
+			return nil
+		}
+	case *ast.Ident:
+		if val, ok := row[e.Name]; ok {
+			return val
+		}
+	}
+	return nil
+}
+
+func (m *Matcher) compareSortValues(a, b interface{}) bool {
+	aFloat, aOk := ToFloat64(a)
+	bFloat, bOk := ToFloat64(b)
+
+	if aOk && bOk {
+		return aFloat < bFloat
+	}
+
+	aStr := fmt.Sprintf("%v", a)
+	bStr := fmt.Sprintf("%v", b)
+	return aStr < bStr
+}
+
+func (m *Matcher) ExecuteUnwind(stmt *ast.UnwindStmt, params map[string]interface{}) (rows []map[string]interface{}, columns []string, err error) {
+	listVal := m.resolveExprValue(nil, stmt.List, params)
+	if listVal == nil {
+		return rows, columns, nil
+	}
+
+	var list []interface{}
+	switch v := listVal.(type) {
+	case []interface{}:
+		list = v
+	case []string:
+		for _, s := range v {
+			list = append(list, s)
+		}
+	default:
+		return rows, columns, nil
+	}
+
+	for _, item := range list {
+		row := make(map[string]interface{})
+		row[stmt.Variable] = item
+		rows = append(rows, row)
+	}
+
+	if stmt.Return != nil {
+		for i := range stmt.Return.Items {
+			columns = append(columns, m.getColumnName(stmt.Return.Items[i]))
+		}
+		var processedRows []map[string]interface{}
+		for _, row := range rows {
+			newRow := make(map[string]interface{})
+			for i := range stmt.Return.Items {
+				m.fillRow(newRow, stmt.Return.Items[i], row)
+			}
+			processedRows = append(processedRows, newRow)
+		}
+		return processedRows, columns, nil
+	}
+
+	if len(rows) > 0 {
+		columns = []string{stmt.Variable}
+	}
+
+	return rows, columns, nil
+}
+
+func (m *Matcher) ProcessReturnStmt(rows []map[string]interface{}, returnExpr *ast.ReturnExpr) ([]map[string]interface{}, []string, error) {
+	if returnExpr == nil {
+		return rows, nil, nil
+	}
+
+	hasAggregation := m.hasAggregation(returnExpr.Items)
+	if hasAggregation {
+		aggResult, cols, err := m.computeAggregation(rows, returnExpr)
+		return aggResult, cols, err
+	}
+
+	var processedRows []map[string]interface{}
+	for _, row := range rows {
+		newRow := make(map[string]interface{})
+		for i := range returnExpr.Items {
+			m.fillRow(newRow, returnExpr.Items[i], row)
+		}
+		processedRows = append(processedRows, newRow)
+	}
+
+	var columns []string
+	for i := range returnExpr.Items {
+		columns = append(columns, m.getColumnName(returnExpr.Items[i]))
+	}
+
+	if returnExpr.OrderBy != nil && len(processedRows) > 0 {
+		processedRows = m.sortRows(processedRows, returnExpr.OrderBy, nil)
+	}
+
+	skip := 0
+	if returnExpr.Skip != nil {
+		skip = int(m.resolveIntValue(returnExpr.Skip, nil))
+		if skip < 0 {
+			skip = 0
+		}
+		if skip > len(processedRows) {
+			skip = len(processedRows)
+		}
+	}
+
+	if skip > 0 {
+		processedRows = processedRows[skip:]
+	}
+
+	if returnExpr.Limit != nil {
+		limit := int(m.resolveIntValue(returnExpr.Limit, nil))
+		if limit > 0 && limit < len(processedRows) {
+			processedRows = processedRows[:limit]
+		}
+	}
+
+	return processedRows, columns, nil
+}
 func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, path map[string]interface{}) {
 	switch expr := item.Expr.(type) {
 	case *ast.PropertyAccessExpr:
@@ -618,8 +1186,295 @@ func (m *Matcher) getColumnName(item *ast.ReturnItemExpr) string {
 		}
 	case *ast.Ident:
 		return expr.Name
+	case *ast.FuncCall:
+		return expr.Name
 	}
 	return ""
+}
+
+func (m *Matcher) hasAggregation(items []*ast.ReturnItemExpr) bool {
+	for _, item := range items {
+		if m.exprHasAggregation(item.Expr) {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *Matcher) exprHasAggregation(expr ast.Expr) bool {
+	switch e := expr.(type) {
+	case *ast.FuncCall:
+		switch strings.ToLower(e.Name) {
+		case "count", "sum", "avg", "min", "max", "collect", "size":
+			return true
+		}
+	case *ast.BinaryExpr:
+		if m.exprHasAggregation(e.Left) || m.exprHasAggregation(e.Right) {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *Matcher) computeAggregation(rows []map[string]interface{}, returnExpr *ast.ReturnExpr) ([]map[string]interface{}, []string, error) {
+	var columns []string
+	for _, item := range returnExpr.Items {
+		columns = append(columns, m.getColumnName(item))
+	}
+
+	groupedItems := make(map[string][]map[string]interface{})
+	nonAggKeys := m.getNonAggregatedKeys(returnExpr.Items)
+
+	if len(nonAggKeys) == 0 {
+		resultRow := make(map[string]interface{})
+		for _, item := range returnExpr.Items {
+			colName := m.getColumnName(item)
+			val := m.evaluateAggregation(item.Expr, rows)
+			resultRow[colName] = val
+		}
+		return []map[string]interface{}{resultRow}, columns, nil
+	}
+
+	for _, row := range rows {
+		key := m.computeGroupKey(row, nonAggKeys)
+		groupedItems[key] = append(groupedItems[key], row)
+	}
+
+	var result []map[string]interface{}
+	for _, groupRows := range groupedItems {
+		resultRow := make(map[string]interface{})
+		for _, item := range returnExpr.Items {
+			colName := m.getColumnName(item)
+			val := m.evaluateAggregation(item.Expr, groupRows)
+			resultRow[colName] = val
+		}
+		for _, key := range nonAggKeys {
+			if val := m.getRowValue(groupRows[0], key); val != nil {
+				resultRow[key] = val
+			}
+		}
+		result = append(result, resultRow)
+	}
+
+	return result, columns, nil
+}
+
+func (m *Matcher) getNonAggregatedKeys(items []*ast.ReturnItemExpr) []string {
+	var keys []string
+	for _, item := range items {
+		if !m.exprHasAggregation(item.Expr) {
+			key := m.getColumnName(item)
+			if key != "" {
+				keys = append(keys, key)
+			}
+		}
+	}
+	return keys
+}
+
+func (m *Matcher) computeGroupKey(row map[string]interface{}, keys []string) string {
+	var parts []string
+	for _, key := range keys {
+		val := m.getRowValue(row, key)
+		if val != nil {
+			parts = append(parts, fmt.Sprintf("%v", val))
+		} else {
+			parts = append(parts, "")
+		}
+	}
+	return strings.Join(parts, "|")
+}
+
+func (m *Matcher) getRowValue(row map[string]interface{}, key string) interface{} {
+	if strings.Contains(key, ".") {
+		parts := strings.SplitN(key, ".", 2)
+		if val, ok := row[parts[0]]; ok {
+			if node, ok := val.(*graph.Node); ok {
+				propVal, found := node.GetProperty(parts[1])
+				if found {
+					return propVal.InterfaceValue()
+				}
+				return nil
+			}
+			if m, ok := val.(map[string]interface{}); ok {
+				return m[parts[1]]
+			}
+		}
+		return nil
+	}
+	return row[key]
+}
+
+func (m *Matcher) evaluateAggregation(expr ast.Expr, rows []map[string]interface{}) interface{} {
+	switch e := expr.(type) {
+	case *ast.FuncCall:
+		return m.evaluateFuncCall(e, rows)
+	case *ast.Ident:
+		if len(rows) > 0 {
+			if val, ok := rows[0][e.Name]; ok {
+				return val
+			}
+		}
+		return nil
+	}
+	return nil
+}
+
+func (m *Matcher) evaluateFuncCall(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	switch strings.ToLower(call.Name) {
+	case "count":
+		return m.evalCount(call, rows)
+	case "sum":
+		return m.evalSum(call, rows)
+	case "avg":
+		return m.evalAvg(call, rows)
+	case "min":
+		return m.evalMin(call, rows)
+	case "max":
+		return m.evalMax(call, rows)
+	case "collect", "size":
+		return m.evalCollect(call, rows)
+	}
+	return nil
+}
+
+func (m *Matcher) evalCount(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	if len(call.Args) == 0 {
+		return len(rows)
+	}
+	arg := call.Args[0]
+	switch arg.(type) {
+	case *ast.StarLit:
+		return len(rows)
+	case *ast.Ident, *ast.PropertyAccessExpr:
+		count := 0
+		for _, row := range rows {
+			val := m.resolveExprValue(row, arg, nil)
+			if val != nil {
+				count++
+			}
+		}
+		return count
+	}
+	return len(rows)
+}
+
+func (m *Matcher) evalSum(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	if len(call.Args) == 0 {
+		return 0
+	}
+	arg := call.Args[0]
+	sum := 0.0
+	for _, row := range rows {
+		val := m.resolveExprValue(row, arg, nil)
+		if val != nil {
+			if f, ok := ToFloat64(val); ok {
+				sum += f
+			}
+		}
+	}
+	return sum
+}
+
+func (m *Matcher) evalAvg(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	if len(call.Args) == 0 || len(rows) == 0 {
+		return 0.0
+	}
+	arg := call.Args[0]
+	sum := 0.0
+	count := 0
+	for _, row := range rows {
+		val := m.resolveExprValue(row, arg, nil)
+		if val != nil {
+			if f, ok := ToFloat64(val); ok {
+				sum += f
+				count++
+			}
+		}
+	}
+	if count == 0 {
+		return 0.0
+	}
+	return sum / float64(count)
+}
+
+func (m *Matcher) evalMin(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	if len(call.Args) == 0 {
+		return nil
+	}
+	arg := call.Args[0]
+	var minVal interface{}
+	for _, row := range rows {
+		val := m.resolveExprValue(row, arg, nil)
+		if val != nil {
+			if minVal == nil {
+				minVal = val
+			} else if less, ok := compareValues(val, minVal); ok && less {
+				minVal = val
+			}
+		}
+	}
+	return minVal
+}
+
+func (m *Matcher) evalMax(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	if len(call.Args) == 0 {
+		return nil
+	}
+	arg := call.Args[0]
+	var maxVal interface{}
+	for _, row := range rows {
+		val := m.resolveExprValue(row, arg, nil)
+		if val != nil {
+			if maxVal == nil {
+				maxVal = val
+			} else {
+				if greater, ok := compareValues(maxVal, val); ok && greater {
+					maxVal = val
+				}
+			}
+		}
+	}
+	return maxVal
+}
+
+func (m *Matcher) evalCollect(call *ast.FuncCall, rows []map[string]interface{}) interface{} {
+	if len(call.Args) == 0 {
+		result := make([]interface{}, len(rows))
+		for i, row := range rows {
+			result[i] = row
+		}
+		return result
+	}
+	arg := call.Args[0]
+	result := make([]interface{}, 0, len(rows))
+	for _, row := range rows {
+		val := m.resolveExprValue(row, arg, nil)
+		result = append(result, val)
+	}
+	return result
+}
+
+func compareValues(a, b interface{}) (bool, bool) {
+	aFloat, aOk := ToFloat64(a)
+	bFloat, bOk := ToFloat64(b)
+	if aOk && bOk {
+		return aFloat < bFloat, true
+	}
+
+	aInt, aOk := ToInt64(a)
+	bInt, bOk := ToInt64(b)
+	if aOk && bOk {
+		return aInt < bInt, true
+	}
+
+	aStr, aOk := a.(string)
+	bStr, bOk := b.(string)
+	if aOk && bOk {
+		return aStr < bStr, true
+	}
+
+	return false, false
 }
 
 // exprToValue converts an expression to its value.

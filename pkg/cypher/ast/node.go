@@ -94,6 +94,7 @@ func (e *ListIndexExpr) exprNode()        {}
 func (e *ListExpr) exprNode()             {}
 func (e *MapExpr) exprNode()              {}
 func (e *MapPair) exprNode()              {}
+func (e *StarLit) exprNode()              {}
 
 // stmtNode implementations mark types as statement nodes.
 // These methods are empty and serve only as type markers.

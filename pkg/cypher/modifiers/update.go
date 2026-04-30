@@ -43,17 +43,21 @@ type Modifier struct {
 //
 // Parameters:
 //   - store: The storage database
+//   - index: The graph index for efficient lookups (shared across components)
+//   - adj: The adjacency list for relationship traversal (shared across components)
 //
 // Returns a new Modifier instance.
 //
 // Example:
 //
-//	modifier := modifiers.NewModifier(store)
-func NewModifier(store *storage.DB) *Modifier {
+//	index := graph.NewIndex(store)
+//	adj := graph.NewAdjacencyList(store)
+//	modifier := modifiers.NewModifier(store, index, adj)
+func NewModifier(store *storage.DB, index *graph.Index, adj *graph.AdjacencyList) *Modifier {
 	return &Modifier{
 		Store: store,
-		index: graph.NewIndex(store),
-		adj:   graph.NewAdjacencyList(store),
+		index: index,
+		adj:   adj,
 	}
 }
 
@@ -88,6 +92,8 @@ func (m *Modifier) ExecuteSet(t *tx.Transaction, stmt *ast.SetStmt, path map[str
 					node = o
 				case *graph.Relationship:
 					rel = o
+				default:
+					// Silently ignore unexpected types in path
 				}
 			}
 		} else if pa, ok := item.Target.(*ast.PropertyAccessExpr); ok {
@@ -98,6 +104,8 @@ func (m *Modifier) ExecuteSet(t *tx.Transaction, stmt *ast.SetStmt, path map[str
 						node = o
 					case *graph.Relationship:
 						rel = o
+					default:
+						// Silently ignore unexpected types in path
 					}
 				}
 			}
@@ -161,6 +169,8 @@ func (m *Modifier) ExecuteDelete(t *tx.Transaction, stmt *ast.DeleteStmt, path m
 					node = o
 				case *graph.Relationship:
 					rel = o
+				default:
+					// Silently ignore unexpected types in path
 				}
 			}
 		case *ast.PropertyAccessExpr:
@@ -171,9 +181,13 @@ func (m *Modifier) ExecuteDelete(t *tx.Transaction, stmt *ast.DeleteStmt, path m
 						node = o
 					case *graph.Relationship:
 						rel = o
+					default:
+						// Silently ignore unexpected types in path
 					}
 				}
 			}
+		default:
+			// Silently ignore unexpected expression types
 		}
 
 		if rel != nil {
@@ -225,12 +239,20 @@ func (m *Modifier) ExecuteRemove(t *tx.Transaction, stmt *ast.RemoveStmt, path m
 					if n, ok := obj.(*graph.Node); ok {
 						node = n
 					}
+					// Note: only *graph.Node is valid for label removal
 				}
 			}
 			if node != nil {
 				if err := m.index.RemoveLabelIndex(t, node); err != nil {
 					return 0, err
 				}
+				newLabels := make([]string, 0, len(node.Labels))
+				for _, l := range node.Labels {
+					if l != item.Label {
+						newLabels = append(newLabels, l)
+					}
+				}
+				node.Labels = newLabels
 				if err := m.saveNode(t, node); err != nil {
 					return 0, err
 				}
@@ -248,6 +270,8 @@ func (m *Modifier) ExecuteRemove(t *tx.Transaction, stmt *ast.RemoveStmt, path m
 							if err := m.saveRel(t, o); err != nil {
 								return 0, err
 							}
+						default:
+							// Silently ignore unexpected types in path
 						}
 					}
 				}

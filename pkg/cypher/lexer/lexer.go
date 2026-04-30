@@ -30,13 +30,13 @@ import (
 
 // Lexer tokenizes Cypher query strings into a stream of tokens.
 type Lexer struct {
-	input   string      // Input string to tokenize
-	pos     int         // Current position in input
-	line    int         // Current line number
-	column  int         // Current column number
-	tokens  []Token     // Accumulated tokens
-	errors  []error     // Accumulated errors
-	lastTok *Token      // Last token produced
+	input   string  // Input string to tokenize
+	pos     int     // Current position in input
+	line    int     // Current line number
+	column  int     // Current column number
+	tokens  []Token // Accumulated tokens
+	errors  []error // Accumulated errors
+	lastTok *Token  // Last token produced
 }
 
 // New creates a new Lexer for the given input string.
@@ -113,11 +113,7 @@ func (l *Lexer) nextToken() (Token, error) {
 	case isLetter(ch) || ch == '_':
 		return l.readIdentifier()
 	case ch == '$':
-		l.advance()
-		if isLetter(l.peek()) || l.peek() == '_' {
-			return l.readParameter()
-		}
-		return Token{Type: TokenDollar, Value: "$", Line: l.line, Column: l.column - 1}, nil
+		return l.readParameter()
 	case ch == '-':
 		return l.readDashOrArrow()
 	case ch == '<':
@@ -300,6 +296,31 @@ func (l *Lexer) readString() (Token, error) {
 	}, nil
 }
 
+// readParameter reads a parameter reference (e.g., $name).
+func (l *Lexer) readParameter() (Token, error) {
+	startLine := l.line
+	startCol := l.column
+	startPos := l.pos
+
+	// Skip the '$' character.
+	l.advance()
+
+	// Read the parameter name.
+	for isLetter(l.peek()) || isDigit(l.peek()) || l.peek() == '_' {
+		l.advance()
+	}
+
+	value := l.input[startPos:l.pos]
+
+	return Token{
+		Type:     TokenIdentifier,
+		Value:    value,
+		Line:     startLine,
+		Column:   startCol,
+		Position: startPos,
+	}, nil
+}
+
 // readIdentifier reads an identifier or keyword.
 func (l *Lexer) readIdentifier() (Token, error) {
 	startLine := l.line
@@ -330,25 +351,6 @@ func (l *Lexer) readIdentifier() (Token, error) {
 	return Token{
 		Type:     tokType,
 		Value:    value,
-		Line:     startLine,
-		Column:   startCol,
-		Position: startPos,
-	}, nil
-}
-
-// readParameter reads a parameter reference (e.g., $name).
-func (l *Lexer) readParameter() (Token, error) {
-	startLine := l.line
-	startCol := l.column
-	startPos := l.pos - 1
-
-	for isLetter(l.peek()) || isDigit(l.peek()) || l.peek() == '_' {
-		l.advance()
-	}
-
-	return Token{
-		Type:     TokenIdentifier,
-		Value:    l.input[startPos:l.pos],
 		Line:     startLine,
 		Column:   startCol,
 		Position: startPos,

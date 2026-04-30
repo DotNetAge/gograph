@@ -1,54 +1,56 @@
 package graph
 
 import (
+	"strings"
 	"testing"
 )
 
 func TestGenerateID(t *testing.T) {
-	// Set a known counter value for testing
-	SetIDCounter(0)
-
-	// Generate first ID
+	// Generate IDs and verify format (prefix:ULID)
 	id1 := GenerateID("node")
-	if id1 != "node:b1" {
-		t.Errorf("expected 'node:b1', got %s", id1)
+	if !strings.HasPrefix(id1, "node:") {
+		t.Errorf("expected ID to start with 'node:', got %s", id1)
+	}
+	if len(id1) <= len("node:") {
+		t.Errorf("expected ID to have ULID suffix, got %s", id1)
 	}
 
-	// Generate second ID
+	// Generate second ID - should be different
 	id2 := GenerateID("node")
-	if id2 != "node:c2" {
-		t.Errorf("expected 'node:c2', got %s", id2)
+	if id1 == id2 {
+		t.Errorf("expected unique IDs, got same ID: %s", id1)
 	}
 
-	// Generate third ID
+	// Generate third ID with different prefix
 	id3 := GenerateID("rel")
-	if id3 != "rel:d3" {
-		t.Errorf("expected 'rel:d3', got %s", id3)
+	if !strings.HasPrefix(id3, "rel:") {
+		t.Errorf("expected ID to start with 'rel:', got %s", id3)
 	}
 
 	// Test with different prefix
 	id4 := GenerateID("test")
-	if id4 != "test:e4" {
-		t.Errorf("expected 'test:e4', got %s", id4)
+	if !strings.HasPrefix(id4, "test:") {
+		t.Errorf("expected ID to start with 'test:', got %s", id4)
 	}
 }
 
 func TestSetIDCounter(t *testing.T) {
-	// Set counter to a specific value
+	// SetIDCounter is deprecated and should be a no-op with ULID generation.
+	// This test verifies that IDs are still generated correctly after calling it.
 	SetIDCounter(100)
 
-	// Generate ID and check if it uses the new counter value
 	id := GenerateID("node")
-	if id != "node:x1" {
-		t.Errorf("expected 'node:x1', got %s", id)
+	if !strings.HasPrefix(id, "node:") {
+		t.Errorf("expected ID to start with 'node:', got %s", id)
 	}
 
-	// Set counter to another value
 	SetIDCounter(200)
 
-	// Generate another ID
 	id2 := GenerateID("node")
-	if id2 != "node:t1" {
-		t.Errorf("expected 'node:t1', got %s", id2)
+	if !strings.HasPrefix(id2, "node:") {
+		t.Errorf("expected ID to start with 'node:', got %s", id2)
+	}
+	if id == id2 {
+		t.Errorf("expected unique IDs after counter reset, got same ID: %s", id)
 	}
 }

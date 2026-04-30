@@ -265,6 +265,13 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, error) {
 		return p.parseCaseExpr()
 	}
 
+	if p.match(lexer.TokenStar) {
+		return &ast.StarLit{
+			Start:  start,
+			EndPos: p.currentPos(),
+		}, nil
+	}
+
 	if p.matchKeyword("EXISTS") {
 		if err := p.expect(lexer.TokenLParen); err != nil {
 			return nil, err
@@ -356,6 +363,16 @@ func (p *Parser) parsePrimaryExpr() (ast.Expr, error) {
 		name := p.advance().Value
 		return &ast.Param{
 			Name:   name,
+			Start:  start,
+			EndPos: p.currentPos(),
+		}, nil
+	}
+
+	// Handle parameter as a single identifier token (e.g., $minAge).
+	if p.check(lexer.TokenIdentifier) && len(p.peek().Value) > 0 && p.peek().Value[0] == '$' {
+		param := p.advance()
+		return &ast.Param{
+			Name:   param.Value[1:],
 			Start:  start,
 			EndPos: p.currentPos(),
 		}, nil
@@ -595,11 +612,18 @@ func (p *Parser) parseArgList() ([]ast.Expr, error) {
 
 func parseFloat(s string) float64 {
 	var f float64
+	var decimal float64 = 1
+	hasDecimal := false
 	for _, c := range s {
 		if c >= '0' && c <= '9' {
-			f = f*10 + float64(c-'0')
+			if hasDecimal {
+				decimal /= 10
+				f += float64(c-'0') * decimal
+			} else {
+				f = f*10 + float64(c-'0')
+			}
 		} else if c == '.' {
-			break
+			hasDecimal = true
 		}
 	}
 	return f

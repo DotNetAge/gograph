@@ -3,10 +3,12 @@
 // and retrieving graph data including nodes, relationships, and indices.
 //
 // The storage layer uses the following key prefixes:
-//   - "n:" - Node data
-//   - "r:" - Relationship data
-//   - "i:" - Index data
-//   - "a:" - Adjacency list data
+//   - "node:" - Node data
+//   - "rel:" - Relationship data
+//   - "label:" - Label index data
+//   - "prop:" - Property index data
+//   - "adj:" - Adjacency list data
+//   - "meta:" - Metadata
 //
 // Basic Usage:
 //
@@ -29,6 +31,13 @@ package storage
 
 import (
 	"github.com/cockroachdb/pebble"
+	"github.com/DotNetAge/gograph/pkg/kv"
+)
+
+// Compile-time interface checks.
+var (
+	_ kv.Store     = (*DB)(nil)
+	_ kv.Iterator  = (*Iterator)(nil)
 )
 
 // noopLogger is a logger that discards all log output.
@@ -185,8 +194,12 @@ func (db *DB) NewBatch() *Batch {
 //	for iter.SeekGE([]byte("prefix")); iter.Valid(); iter.Next() {
 //	    fmt.Printf("%s: %s\n", iter.Key(), iter.Value())
 //	}
-func (db *DB) NewIter(opts *pebble.IterOptions) (*Iterator, error) {
-	iter, err := db.db.NewIter(opts)
+func (db *DB) NewIter(opts interface{}) (kv.Iterator, error) {
+	var pebbleOpts *pebble.IterOptions
+	if opts != nil {
+		pebbleOpts = opts.(*pebble.IterOptions)
+	}
+	iter, err := db.db.NewIter(pebbleOpts)
 	if err != nil {
 		return nil, err
 	}

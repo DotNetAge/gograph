@@ -3,6 +3,7 @@ package cypher
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DotNetAge/gograph/pkg/cypher/ast"
 	"github.com/DotNetAge/gograph/pkg/cypher/creators"
@@ -17,11 +18,8 @@ import (
 // Executor executes Cypher queries against the graph database.
 // It coordinates parsing, planning, and execution of queries.
 //
-// The executor manages:
-//   - Query parsing and AST generation
-//   - Index management for efficient lookups
-//   - Transaction coordination
-//   - Match, create, and modify operations
+// The executor delegates statement execution to specialized handlers
+// via the StatementRouter, maintaining clean separation of concerns.
 //
 // Example:
 //
@@ -44,6 +42,14 @@ type Executor struct {
 	matcher  *matchers.Matcher
 	creator  *creators.Creator
 	modifier *modifiers.Modifier
+	router   *StatementRouter
+}
+
+// StatementRouter routes AST statements to their respective execution handlers.
+// It encapsulates the statement dispatch logic, keeping the Executor focused
+// on high-level coordination.
+type StatementRouter struct {
+	executor *Executor
 }
 
 // NewExecutor creates a new query executor for the given storage.
@@ -59,14 +65,17 @@ type Executor struct {
 //	executor := cypher.NewExecutor(store)
 func NewExecutor(store *storage.DB) *Executor {
 	index := graph.NewIndex(store)
-	return &Executor{
+	adj := graph.NewAdjacencyList(store)
+	e := &Executor{
 		Store:    store,
 		Index:    index,
 		txMgr:    tx.NewManager(store),
 		matcher:  matchers.NewMatcher(store, index),
-		creator:  creators.NewCreator(store),
-		modifier: modifiers.NewModifier(store),
+		creator:  creators.NewCreator(store, index, adj),
+		modifier: modifiers.NewModifier(store, index, adj),
 	}
+	e.router = &StatementRouter{executor: e}
+	return e
 }
 
 // Execute parses and executes a Cypher query string.
@@ -137,25 +146,46 @@ func (e *Executor) withTx(fn func(*tx.Transaction) error) error {
 func (e *Executor) ExecuteWithTx(t *tx.Transaction, query *ast.Query, params map[string]interface{}) (Result, error) {
 	result := Result{}
 	varVars := make(map[string]interface{})
+	var unwindContext []map[string]interface{}
 
 	for _, stmt := range query.Statements {
 		var execErr error
 		switch s := stmt.(type) {
 		case *ast.CreateStmt:
-			an, ar, err := e.creator.ExecuteCreate(t, s, params)
+			var existing []map[string]interface{}
+			for _, row := range result.Rows {
+				existing = append(existing, row)
+			}
+			an, ar, err := e.creator.ExecuteCreate(t, s, params, existing...)
 			if err != nil {
 				return Result{}, err
 			}
 			result.AddAffected(an, ar)
 
 		case *ast.MatchStmt:
-			rows, cols, err := e.matcher.ExecuteMatch(s, params)
+			var rows []map[string]interface{}
+			var cols []string
+			var err error
+			if unwindContext != nil {
+				rows, cols, err = e.matcher.ExecuteMatchWithContext(s, params, unwindContext)
+			} else {
+				rows, cols, err = e.matcher.ExecuteMatch(s, params)
+			}
 			execErr = err
 			if execErr == nil {
 				result.Rows = rows
 				result.Columns = cols
 			}
-			execErr = e.handleMatchDelete(t, s, &result, params)
+			unwindContext = nil
+			if execErr == nil {
+				execErr = e.handleMatchDelete(t, s, &result, params)
+			}
+			if execErr == nil {
+				execErr = e.handleMatchSet(t, s, &result, params)
+			}
+			if execErr == nil {
+				execErr = e.handleMatchRemove(t, s, &result, params)
+			}
 
 		case *ast.SetStmt:
 			an, err := e.modifier.ExecuteSet(t, s, varVars, params)
@@ -184,6 +214,23 @@ func (e *Executor) ExecuteWithTx(t *tx.Transaction, query *ast.Query, params map
 				return Result{}, err
 			}
 			result.AddAffected(an, ar)
+
+		case *ast.UnwindStmt:
+			rows, cols, err := e.matcher.ExecuteUnwind(s, params)
+			if err != nil {
+				return Result{}, err
+			}
+			result.Rows = rows
+			result.Columns = cols
+			unwindContext = rows
+
+		case *ast.ReturnStmt:
+			rows, cols, err := e.matcher.ProcessReturnStmt(result.Rows, s.Return)
+			if err != nil {
+				return Result{}, err
+			}
+			result.Rows = rows
+			result.Columns = cols
 		}
 
 		if execErr != nil {
@@ -229,6 +276,31 @@ func (e *Executor) handleMatchDelete(t *tx.Transaction, s *ast.MatchStmt, result
 	return nil
 }
 
+func (e *Executor) handleMatchRemove(t *tx.Transaction, s *ast.MatchStmt, result *Result, params map[string]interface{}) error {
+	var removeClause *ast.RemoveClause
+	for _, clause := range s.Clauses {
+		if rc, ok := clause.(*ast.RemoveClause); ok {
+			removeClause = rc
+			break
+		}
+	}
+
+	if removeClause == nil {
+		return nil
+	}
+
+	for _, row := range result.Rows {
+		an, err := e.modifier.ExecuteRemove(t, &ast.RemoveStmt{
+			Items: removeClause.Items,
+		}, row, params)
+		if err != nil {
+			return err
+		}
+		result.AddAffected(an, 0)
+	}
+	return nil
+}
+
 // ExecuteAST executes a parsed AST query.
 //
 // Parameters:
@@ -246,78 +318,150 @@ func (e *Executor) handleMatchDelete(t *tx.Transaction, s *ast.MatchStmt, result
 func (e *Executor) ExecuteAST(ctx context.Context, query *ast.Query, params map[string]interface{}) (Result, error) {
 	result := Result{}
 	varVars := make(map[string]interface{})
+	var unwindContext []map[string]interface{}
 
 	for _, stmt := range query.Statements {
-		var execErr error
-		switch s := stmt.(type) {
-		case *ast.CreateStmt:
-			execErr = e.withTx(func(t *tx.Transaction) error {
-				an, ar, err := e.creator.ExecuteCreate(t, s, params)
-				if err != nil {
-					return err
-				}
-				result.AddAffected(an, ar)
-				return nil
-			})
-
-		case *ast.MatchStmt:
-			rows, cols, err := e.matcher.ExecuteMatch(s, params)
-			execErr = err
-			if execErr == nil {
-				result.Rows = rows
-				result.Columns = cols
-			}
-			if execErr == nil {
-				execErr = e.handleMatchDeleteAST(s, &result, params)
-			}
-
-		case *ast.SetStmt:
-			execErr = e.withTx(func(t *tx.Transaction) error {
-				an, err := e.modifier.ExecuteSet(t, s, varVars, params)
-				if err != nil {
-					return err
-				}
-				result.AddAffected(an, 0)
-				return nil
-			})
-
-		case *ast.DeleteStmt:
-			execErr = e.withTx(func(t *tx.Transaction) error {
-				an, ar, err := e.modifier.ExecuteDelete(t, s, varVars, params)
-				if err != nil {
-					return err
-				}
-				result.AddAffected(an, ar)
-				return nil
-			})
-
-		case *ast.RemoveStmt:
-			execErr = e.withTx(func(t *tx.Transaction) error {
-				an, err := e.modifier.ExecuteRemove(t, s, varVars, params)
-				if err != nil {
-					return err
-				}
-				result.AddAffected(an, 0)
-				return nil
-			})
-
-		case *ast.MergeStmt:
-			execErr = e.withTx(func(t *tx.Transaction) error {
-				an, ar, err := e.creator.ExecuteMerge(t, s, params)
-				if err != nil {
-					return err
-				}
-				result.AddAffected(an, ar)
-				return nil
-			})
-		}
-
+		execErr := e.router.route(stmt, &result, &varVars, &unwindContext, params)
 		if execErr != nil {
 			return Result{}, execErr
 		}
 	}
 
 	return result, nil
+}
+
+// route dispatches a single statement to its appropriate handler.
+// It updates the execution state (result, variables, unwind context) in place.
+func (r *StatementRouter) route(
+	stmt ast.Stmt,
+	result *Result,
+	varVars *map[string]interface{},
+	unwindContext *[]map[string]interface{},
+	params map[string]interface{},
+) error {
+	e := r.executor
+
+	switch s := stmt.(type) {
+	case *ast.CreateStmt:
+		return e.withTx(func(t *tx.Transaction) error {
+			var existing []map[string]interface{}
+			for _, row := range result.Rows {
+				existing = append(existing, row)
+			}
+			an, ar, err := e.creator.ExecuteCreate(t, s, params, existing...)
+			if err != nil {
+				return err
+			}
+			result.AddAffected(an, ar)
+			return nil
+		})
+
+	case *ast.MatchStmt:
+		var rows []map[string]interface{}
+		var cols []string
+		var err error
+		if *unwindContext != nil {
+			rows, cols, err = e.matcher.ExecuteMatchWithContext(s, params, *unwindContext)
+		} else {
+			rows, cols, err = e.matcher.ExecuteMatch(s, params)
+		}
+		if err != nil {
+			return err
+		}
+		result.Rows = rows
+		result.Columns = cols
+		*unwindContext = nil
+		return e.withTx(func(t *tx.Transaction) error {
+			if err := e.handleMatchDelete(t, s, result, params); err != nil {
+				return err
+			}
+			if err := e.handleMatchSet(t, s, result, params); err != nil {
+				return err
+			}
+			if err := e.handleMatchRemove(t, s, result, params); err != nil {
+				return err
+			}
+			return nil
+		})
+
+	case *ast.SetStmt:
+		return e.withTx(func(t *tx.Transaction) error {
+			an, err := e.modifier.ExecuteSet(t, s, *varVars, params)
+			if err != nil {
+				return err
+			}
+			result.AddAffected(an, 0)
+			return nil
+		})
+
+	case *ast.DeleteStmt:
+		return e.withTx(func(t *tx.Transaction) error {
+			an, ar, err := e.modifier.ExecuteDelete(t, s, *varVars, params)
+			if err != nil {
+				return err
+			}
+			result.AddAffected(an, ar)
+			return nil
+		})
+
+	case *ast.RemoveStmt:
+		return e.withTx(func(t *tx.Transaction) error {
+			an, err := e.modifier.ExecuteRemove(t, s, *varVars, params)
+			if err != nil {
+				return err
+			}
+			result.AddAffected(an, 0)
+			return nil
+		})
+
+	case *ast.MergeStmt:
+		return e.withTx(func(t *tx.Transaction) error {
+			an, ar, err := e.creator.ExecuteMerge(t, s, params)
+			if err != nil {
+				return err
+			}
+			result.AddAffected(an, ar)
+			return nil
+		})
+
+	case *ast.UnwindStmt:
+		rows, cols, err := e.matcher.ExecuteUnwind(s, params)
+		if err != nil {
+			return err
+		}
+		result.Rows = rows
+		result.Columns = cols
+		*unwindContext = rows
+		return nil
+
+	case *ast.WithStmt:
+		returnExpr := &ast.ReturnExpr{
+			Items:    s.Items,
+			Distinct: s.Distinct,
+			OrderBy:  s.OrderBy,
+			Skip:     s.Skip,
+			Limit:    s.Limit,
+		}
+		rows, cols, err := e.matcher.ProcessReturnStmt(result.Rows, returnExpr)
+		if err != nil {
+			return err
+		}
+		result.Rows = rows
+		result.Columns = cols
+		return nil
+
+	case *ast.ReturnStmt:
+		rows, cols, err := e.matcher.ProcessReturnStmt(result.Rows, s.Return)
+		if err != nil {
+			return err
+		}
+		result.Rows = rows
+		result.Columns = cols
+		return nil
+
+	default:
+		return fmt.Errorf("unsupported statement type: %T", stmt)
+	}
 }
 
 // handleMatchDeleteAST handles DELETE clauses in MATCH statements for AST execution.
@@ -328,34 +472,27 @@ func (e *Executor) ExecuteAST(ctx context.Context, query *ast.Query, params map[
 //   - params: Query parameters
 //
 // Returns an error if deletion fails.
-func (e *Executor) handleMatchDeleteAST(s *ast.MatchStmt, result *Result, params map[string]interface{}) error {
-	var deleteClause *ast.DeleteClause
+func (e *Executor) handleMatchSet(t *tx.Transaction, s *ast.MatchStmt, result *Result, params map[string]interface{}) error {
+	var setClause *ast.SetClause
 	for _, clause := range s.Clauses {
-		if dc, ok := clause.(*ast.DeleteClause); ok {
-			deleteClause = dc
+		if sc, ok := clause.(*ast.SetClause); ok {
+			setClause = sc
 			break
 		}
 	}
 
-	if deleteClause == nil {
+	if setClause == nil {
 		return nil
 	}
 
+	setStmt := &ast.SetStmt{Items: setClause.Items}
+
 	for _, row := range result.Rows {
-		err := e.withTx(func(t *tx.Transaction) error {
-			an, ar, err := e.modifier.ExecuteDelete(t, &ast.DeleteStmt{
-				Detach: deleteClause.Detach,
-				Items:  deleteClause.Items,
-			}, row, params)
-			if err != nil {
-				return err
-			}
-			result.AddAffected(an, ar)
-			return nil
-		})
+		an, err := e.modifier.ExecuteSet(t, setStmt, row, params)
 		if err != nil {
 			return err
 		}
+		result.AddAffected(an, 0)
 	}
 	return nil
 }

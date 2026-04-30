@@ -199,6 +199,13 @@ func (p *Parser) parseMatchStmtWithOptional(optional bool) (*ast.MatchStmt, erro
 				return nil, err
 			}
 			stmt.Clauses = append(stmt.Clauses, del)
+		} else if p.checkKeyword("REMOVE") {
+			p.advance()
+			removeClause, err := p.parseRemoveClause()
+			if err != nil {
+				return nil, err
+			}
+			stmt.Clauses = append(stmt.Clauses, removeClause)
 		} else {
 			break
 		}
@@ -541,9 +548,10 @@ func (p *Parser) parseRemoveItem() (ast.RemoveItemExpr, error) {
 	if p.checkIdentifier() && p.checkNext(lexer.TokenColon) {
 		name := p.advance().Value
 		p.advance()
-		_ = p.advance().Value
+		labelName := p.advance().Value
 		item.Target = &ast.Ident{Name: name, Start: start}
 		item.IsLabel = true
+		item.Label = labelName
 		item.EndPos = p.currentPos()
 		return item, nil
 	}
@@ -670,6 +678,7 @@ func (p *Parser) parseReturnStmt() (*ast.ReturnStmt, error) {
 		OrderBy:  clause.OrderBy,
 		Skip:     clause.Skip,
 		Limit:    clause.Limit,
+		Return:   clause,
 		Start:    start,
 		EndPos:   p.currentPos(),
 	}, nil

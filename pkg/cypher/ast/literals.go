@@ -135,6 +135,26 @@ func (e *NullLit) End() Pos { return e.EndPos }
 // String returns "NULL".
 func (e *NullLit) String() string { return "NULL" }
 
+// StarLit represents the * wildcard expression.
+// It is used in COUNT(*) and other contexts where * means "all".
+//
+// Fields:
+//   - Start: Position in source where this literal begins
+//   - EndPos: Position in source where this literal ends
+type StarLit struct {
+	Start  Pos
+	EndPos Pos
+}
+
+// Position returns the starting position of this literal in the source.
+func (e *StarLit) Position() Pos { return e.Start }
+
+// End returns the ending position of this literal in the source.
+func (e *StarLit) End() Pos { return e.EndPos }
+
+// String returns "*".
+func (e *StarLit) String() string { return "*" }
+
 // Param represents a parameter placeholder expression.
 // It references a parameter by name without the $ prefix.
 //

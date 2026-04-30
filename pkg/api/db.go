@@ -158,13 +158,6 @@ func (db *DB) Close() error {
 //
 //	fmt.Printf("Created %d nodes\n", result.NodesCreated)
 func (db *DB) Exec(ctx context.Context, cypherQuery string, args ...interface{}) (Result, error) {
-	db.mu.RLock()
-	if db.closed {
-		db.mu.RUnlock()
-		return Result{}, ErrDBClosed
-	}
-	db.mu.RUnlock()
-
 	params := extractParams(args)
 
 	db.mu.RLock()
@@ -210,13 +203,6 @@ func (db *DB) Exec(ctx context.Context, cypherQuery string, args ...interface{})
 //	    fmt.Printf("Name: %s, Age: %d\n", name, age)
 //	}
 func (db *DB) Query(ctx context.Context, cypherQuery string, args ...interface{}) (*Rows, error) {
-	db.mu.RLock()
-	if db.closed {
-		db.mu.RUnlock()
-		return nil, ErrDBClosed
-	}
-	db.mu.RUnlock()
-
 	params := extractParams(args)
 
 	db.mu.RLock()

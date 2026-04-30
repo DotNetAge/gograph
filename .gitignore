@@ -15,4 +15,6 @@ binding/build/
 *.so
 *.a
 *.cxx
+*.db/
+TODO.md
 

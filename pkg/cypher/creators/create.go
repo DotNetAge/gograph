@@ -21,6 +21,7 @@ package creators
 import (
 	"github.com/DotNetAge/gograph/pkg/cypher/ast"
 	"github.com/DotNetAge/gograph/pkg/cypher/matchers"
+	"github.com/DotNetAge/gograph/pkg/cypher/modifiers"
 	"github.com/DotNetAge/gograph/pkg/cypher/utils"
 	"github.com/DotNetAge/gograph/pkg/graph"
 	"github.com/DotNetAge/gograph/pkg/storage"
@@ -44,17 +45,21 @@ type Creator struct {
 //
 // Parameters:
 //   - store: The storage database
+//   - index: The graph index for efficient lookups (shared across components)
+//   - adj: The adjacency list for relationship traversal (shared across components)
 //
 // Returns a new Creator instance.
 //
 // Example:
 //
-//	creator := creators.NewCreator(store)
-func NewCreator(store *storage.DB) *Creator {
+//	index := graph.NewIndex(store)
+//	adj := graph.NewAdjacencyList(store)
+//	creator := creators.NewCreator(store, index, adj)
+func NewCreator(store *storage.DB, index *graph.Index, adj *graph.AdjacencyList) *Creator {
 	return &Creator{
 		Store: store,
-		index: graph.NewIndex(store),
-		adj:   graph.NewAdjacencyList(store),
+		index: index,
+		adj:   adj,
 	}
 }
 
@@ -72,7 +77,7 @@ func NewCreator(store *storage.DB) *Creator {
 //	nodes, rels, err := creator.ExecuteCreate(tx, createStmt, map[string]interface{}{
 //	    "name": "Alice",
 //	})
-func (c *Creator) ExecuteCreate(t tx.Tx, stmt *ast.CreateStmt, params map[string]interface{}) (affectedNodes, affectedRels int, err error) {
+func (c *Creator) ExecuteCreate(t tx.Tx, stmt *ast.CreateStmt, params map[string]interface{}, existingNodes ...map[string]interface{}) (affectedNodes, affectedRels int, err error) {
 	if stmt.Pattern == nil {
 		return 0, 0, nil
 	}
@@ -82,7 +87,7 @@ func (c *Creator) ExecuteCreate(t tx.Tx, stmt *ast.CreateStmt, params map[string
 			continue
 		}
 
-		nodes, rels, err := c.createPath(t, part.Path, params)
+		_, nodes, rels, err := c.createPath(t, part.Path, params, existingNodes...)
 		if err != nil {
 			return 0, 0, err
 		}
@@ -94,51 +99,70 @@ func (c *Creator) ExecuteCreate(t tx.Tx, stmt *ast.CreateStmt, params map[string
 }
 
 // createPath creates nodes and relationships for a single path pattern.
-func (c *Creator) createPath(t tx.Tx, path *ast.PathExpr, params map[string]interface{}) (nodes, rels int, err error) {
+func (c *Creator) createPath(t tx.Tx, path *ast.PathExpr, params map[string]interface{}, existingNodes ...map[string]interface{}) ([]*graph.Node, int, int, error) {
 	if len(path.Nodes) == 0 {
-		return 0, 0, nil
+		return nil, 0, 0, nil
 	}
 
 	var createdNodes []*graph.Node
+	nodes := 0
+	rels := 0
+
 	for _, nodePattern := range path.Nodes {
-		node := &graph.Node{
-			ID:         graph.GenerateID("node"),
-			Labels:     nodePattern.Labels,
-			Properties: make(map[string]graph.PropertyValue),
-		}
+		var node *graph.Node
 
-		if nodePattern.Properties != nil {
-			for k, v := range nodePattern.Properties {
-				node.Properties[k] = graph.ToPropertyValue(c.exprToValue(v, params))
-			}
-		}
-
-		if nodePattern.PropertyExpr != nil {
-			if param, ok := nodePattern.PropertyExpr.(*ast.ParamExpr); ok {
-				if props, ok := params[param.Name].(map[string]interface{}); ok {
-					for k, v := range props {
-						node.Properties[k] = graph.ToPropertyValue(v)
+		if nodePattern.Variable != "" && len(existingNodes) > 0 {
+			for _, existing := range existingNodes {
+				if n, ok := existing[nodePattern.Variable]; ok {
+					if existingNode, isNode := n.(*graph.Node); isNode {
+						node = existingNode
+						break
 					}
 				}
 			}
 		}
 
-		data, err := storage.Marshal(node)
-		if err != nil {
-			return 0, 0, err
-		}
-		if err := t.Put(storage.NodeKey(node.ID), data); err != nil {
-			return 0, 0, err
-		}
-		if err := c.index.BuildLabelIndex(t, node); err != nil {
-			return 0, 0, err
-		}
-		if err := c.index.BuildPropertyIndex(t, node); err != nil {
-			return 0, 0, err
+		if node == nil {
+			node = &graph.Node{
+				ID:         graph.GenerateID("node"),
+				Labels:     nodePattern.Labels,
+				Properties: make(map[string]graph.PropertyValue),
+			}
+
+			if nodePattern.Properties != nil {
+				for k, v := range nodePattern.Properties {
+					node.Properties[k] = graph.ToPropertyValue(c.exprToValue(v, params))
+				}
+			}
+
+			if nodePattern.PropertyExpr != nil {
+				if param, ok := nodePattern.PropertyExpr.(*ast.ParamExpr); ok {
+					if props, ok := params[param.Name].(map[string]interface{}); ok {
+						for k, v := range props {
+							node.Properties[k] = graph.ToPropertyValue(v)
+						}
+					}
+				}
+			}
+
+			data, err := storage.Marshal(node)
+			if err != nil {
+				return nil, 0, 0, err
+			}
+			if err := t.Put(storage.NodeKey(node.ID), data); err != nil {
+				return nil, 0, 0, err
+			}
+			if err := c.index.BuildLabelIndex(t, node); err != nil {
+				return nil, 0, 0, err
+			}
+			if err := c.index.BuildPropertyIndex(t, node); err != nil {
+				return nil, 0, 0, err
+			}
+
+			nodes++
 		}
 
 		createdNodes = append(createdNodes, node)
-		nodes++
 	}
 
 	for i, relPattern := range path.Relationships {
@@ -165,20 +189,20 @@ func (c *Creator) createPath(t tx.Tx, path *ast.PathExpr, params map[string]inte
 
 		relData, err := storage.Marshal(rel)
 		if err != nil {
-			return 0, 0, err
+			return nil, nodes, rels, err
 		}
 
 		if err := t.Put(storage.RelKey(rel.ID), relData); err != nil {
-			return 0, 0, err
+			return nil, nodes, rels, err
 		}
 		if err := c.adj.AddRelationship(t, rel); err != nil {
-			return 0, 0, err
+			return nil, nodes, rels, err
 		}
 
 		rels++
 	}
 
-	return nodes, rels, nil
+	return createdNodes, nodes, rels, nil
 }
 
 // ExecuteMerge executes a MERGE statement and returns the number of affected elements.
@@ -199,6 +223,9 @@ func (c *Creator) ExecuteMerge(t tx.Tx, stmt *ast.MergeStmt, params map[string]i
 		return 0, 0, nil
 	}
 
+	modifier := modifiers.NewModifier(c.Store, c.index, c.adj)
+	realTx := t.(*tx.Transaction)
+
 	for _, part := range stmt.Pattern.Parts {
 		if part.Path == nil || len(part.Path.Nodes) == 0 {
 			continue
@@ -211,12 +238,36 @@ func (c *Creator) ExecuteMerge(t tx.Tx, stmt *ast.MergeStmt, params map[string]i
 		}
 
 		if len(paths) == 0 {
-			nodes, rels, err := c.createPath(t, part.Path, params)
+			createdNodes, nodes, rels, err := c.createPath(t, part.Path, params)
 			if err != nil {
 				return 0, 0, err
 			}
 			affectedNodes += nodes
 			affectedRels += rels
+
+			if len(stmt.OnCreate) > 0 && len(createdNodes) > 0 {
+				setStmt := &ast.SetStmt{Items: stmt.OnCreate}
+				for _, createdNode := range createdNodes {
+					path := map[string]interface{}{}
+					if part.Path.Nodes[0].Variable != "" {
+						path[part.Path.Nodes[0].Variable] = createdNode
+					}
+					_, err := modifier.ExecuteSet(realTx, setStmt, path, params)
+					if err != nil {
+						return 0, 0, err
+					}
+				}
+			}
+		} else {
+			for _, path := range paths {
+				if len(stmt.OnMatch) > 0 {
+					setStmt := &ast.SetStmt{Items: stmt.OnMatch}
+					_, err := modifier.ExecuteSet(realTx, setStmt, path, params)
+					if err != nil {
+						return 0, 0, err
+					}
+				}
+			}
 		}
 	}
 
