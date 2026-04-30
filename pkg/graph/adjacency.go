@@ -30,6 +30,7 @@ import (
 //	related, err := adj.GetRelatedNodes(nodeID, "KNOWS", graph.DirectionOutgoing)
 type AdjacencyList struct {
 	store *storage.DB
+	cache *AdjacencyCache
 }
 
 // NewAdjacencyList creates a new AdjacencyList instance.
@@ -44,7 +45,10 @@ type AdjacencyList struct {
 //	store, _ := storage.Open("/path/to/db")
 //	adj := graph.NewAdjacencyList(store)
 func NewAdjacencyList(store *storage.DB) *AdjacencyList {
-	return &AdjacencyList{store: store}
+	return &AdjacencyList{
+		store: store,
+		cache: NewAdjacencyCache(10000), // Cache up to 10,000 adjacency entries
+	}
 }
 
 // AddRelationship creates adjacency entries for a relationship within a mutation context.
@@ -72,6 +76,10 @@ func (adj *AdjacencyList) AddRelationship(m Mutator, rel *Relationship) error {
 	if err := m.Put(inKey, []byte(rel.StartNodeID)); err != nil {
 		return err
 	}
+
+	// Invalidate cache entries for both nodes (both directions)
+	adj.cache.Invalidate(rel.StartNodeID, rel.Type, "")
+	adj.cache.Invalidate(rel.EndNodeID, rel.Type, "")
 
 	return nil
 }
@@ -102,6 +110,10 @@ func (adj *AdjacencyList) RemoveRelationship(m Mutator, rel *Relationship) error
 		return err
 	}
 
+	// Invalidate cache entries for both nodes (both directions)
+	adj.cache.Invalidate(rel.StartNodeID, rel.Type, "")
+	adj.cache.Invalidate(rel.EndNodeID, rel.Type, "")
+
 	return nil
 }
 
@@ -126,6 +138,11 @@ func (adj *AdjacencyList) RemoveRelationship(m Mutator, rel *Relationship) error
 //	    fmt.Printf("Related node: %s\n", id)
 //	}
 func (adj *AdjacencyList) GetRelatedNodes(nodeID, relType string, direction Direction) ([]string, error) {
+	// Check cache first
+	if cached, found := adj.cache.Get(nodeID, relType, direction); found {
+		return cached, nil
+	}
+
 	var nodeIDs []string
 
 	var directions []string
@@ -156,6 +173,9 @@ func (adj *AdjacencyList) GetRelatedNodes(nodeID, relType string, direction Dire
 			}
 		}()
 	}
+
+	// Store in cache for future queries
+	adj.cache.Put(nodeID, relType, direction, nodeIDs)
 
 	return nodeIDs, nil
 }
