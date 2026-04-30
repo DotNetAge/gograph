@@ -76,6 +76,65 @@ gograph
 - 🛡️ **ACID**: MVCC, thread-safety, and WAL recovery.
 - 🛠️ **TUI Included**: Interactive shell with auto-completion and ASCII tables.
 
+## 📝 CRUD Examples
+
+### Create
+```python
+import cypherdb
+
+db = cypherdb.Database("my_graph.db")
+
+with db.transaction() as tx:
+    # Create nodes
+    alice = tx.create_node("Person", {"name": "Alice", "age": 30})
+    bob = tx.create_node("Person", {"name": "Bob"})
+    charlie = tx.create_node("Person", {"name": "Charlie"})
+    
+    # Create relationship
+    tx.create_relationship(alice, bob, "KNOWS", {"since": 2020})
+    tx.create_relationship(bob, charlie, "KNOWS", {"since": 2021})
+```
+
+### Read
+```python
+with db.transaction() as tx:
+    # Find all Person nodes
+    persons = tx.query("MATCH (p:Person) RETURN p.name, p.age")
+    for person in persons:
+        print(f"Name: {person['p.name']}, Age: {person.get('p.age', 'N/A')}")
+    
+    # Find relationships
+    friends = tx.query("""
+        MATCH (a:Person)-[r:KNOWS]->(b:Person) 
+        RETURN a.name, b.name, r.since
+    """)
+    for f in friends:
+        print(f"{f['a.name']} knows {f['b.name']} since {f['r.since']}")
+```
+
+### Update
+```python
+with db.transaction() as tx:
+    # Update property
+    tx.exec("MATCH (p:Person {name: 'Alice'}) SET p.age = 31")
+    
+    # Add label
+    tx.exec("MATCH (p:Person {name: 'Bob'}) SET p:Admin")
+```
+
+### Delete
+```python
+with db.transaction() as tx:
+    # Delete a node
+    tx.exec("MATCH (p:Person {name: 'Alice'}) DELETE p")
+    
+    # Delete node and all its relationships
+    tx.exec("MATCH (p:Person {name: 'Bob'}) DETACH DELETE p")
+    
+    # Delete relationships only
+    tx.exec("MATCH ()-[r:KNOWS]->() WHERE r.since < 2021 DELETE r")
+```
+
 ## 💻 CLI Usage
 
 The `gograph` binary provides a powerful TUI and command-line utilities.

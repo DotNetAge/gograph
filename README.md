@@ -88,6 +88,33 @@ func main() {
 }
 ```
 
+## 📝 CRUD Examples
+
+### Create
+```bash
+gograph exec "CREATE (a:User {name: 'Alice', age: 30})"
+gograph exec "CREATE (a:User {name: 'Bob'})-[:KNOWS {since: 2020}]->(b:User {name: 'Charlie'})"
+```
+
+### Read
+```bash
+gograph query "MATCH (u:User) RETURN u.name, u.age"
+gograph query "MATCH (a:User)-[r:KNOWS]->(b:User) RETURN a.name, b.name, r.since"
+```
+
+### Update
+```bash
+gograph exec "MATCH (u:User {name: 'Alice'}) SET u.age = 31"
+gograph exec "MATCH (u:User {name: 'Bob'}) SET u:Admin"
+```
+
+### Delete
+```bash
+gograph exec "MATCH (u:User {name: 'Alice'}) DELETE u"
+gograph exec "MATCH (u:User) WHERE u.name = 'Bob' DETACH DELETE u"
+gograph exec "MATCH ()-[r:KNOWS]->() WHERE r.since < 2020 DELETE r"
+```
+
 ## ✨ Key Features
 
 - 🚀 **Pure Go**: No CGO, seamless cross-platform support.
@@ -95,6 +122,8 @@ func main() {
 - 🔍 **Cypher Support**: Native `MATCH`, `CREATE`, `SET`, `DELETE`.
 - 🛡️ **ACID**: MVCC, thread-safety, and WAL recovery.
 - 🛠️ **TUI Included**: Interactive shell with auto-completion and ASCII tables.
+
+
 
 ## 💻 CLI Usage
 

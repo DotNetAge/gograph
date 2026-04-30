@@ -89,6 +89,32 @@ func main() {
 	}
 }
 ```
+## 📝 CRUD 示例
+
+### 创建 (Create)
+```bash
+gograph exec "CREATE (a:User {name: 'Alice', age: 30})"
+gograph exec "CREATE (a:User {name: 'Bob'})-[:KNOWS {since: 2020}]->(b:User {name: 'Charlie'})"
+```
+
+### 查询 (Read)
+```bash
+gograph query "MATCH (u:User) RETURN u.name, u.age"
+gograph query "MATCH (a:User)-[r:KNOWS]->(b:User) RETURN a.name, b.name, r.since"
+```
+
+### 更新 (Update)
+```bash
+gograph exec "MATCH (u:User {name: 'Alice'}) SET u.age = 31"
+gograph exec "MATCH (u:User {name: 'Bob'}) SET u:Admin"
+```
+
+### 删除 (Delete)
+```bash
+gograph exec "MATCH (u:User {name: 'Alice'}) DELETE u"
+gograph exec "MATCH (u:User) WHERE u.name = 'Bob' DETACH DELETE u"
+gograph exec "MATCH ()-[r:KNOWS]->() WHERE r.since < 2020 DELETE r"
+```
 
 ## ✨ 特色亮点
 
@@ -97,6 +123,8 @@ func main() {
 - 🔍 **原生 Cypher 支持**：深度支持 `MATCH`, `CREATE`, `SET`, `DELETE` 等核心子集。
 - 🛡️ **ACID 事务保障**：支持多版本并发控制 (MVCC)、并发读写安全及故障恢复。
 - 🛠️ **内置 TUI**：自带带自动补全和 ASCII 数据表的交互式终端环境。
+
+
 
 ## 💻 CLI 命令行使用
 
