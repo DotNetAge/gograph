@@ -34,6 +34,7 @@ type Relationship struct {
 }
 
 // NewRelationship creates a new Relationship with the given parameters.
+// The relationship ID is automatically generated with a "rel:" prefix and a ULID suffix.
 //
 // Parameters:
 //   - startNodeID: The ID of the node where the relationship originates
@@ -56,12 +57,39 @@ type Relationship struct {
 //	    },
 //	)
 func NewRelationship(startNodeID, endNodeID, relType string, properties map[string]interface{}) *Relationship {
+	return NewRelationshipWithID(GenerateID("rel"), startNodeID, endNodeID, relType, properties)
+}
+
+// NewRelationshipWithID creates a new Relationship with a user-specified ID.
+// This allows users to provide their own identifiers instead of auto-generated ones.
+//
+// Parameters:
+//   - id: The unique identifier for this relationship (user-defined)
+//   - startNodeID: The ID of the node where the relationship originates
+//   - endNodeID: The ID of the node where the relationship points to
+//   - relType: The type/category of the relationship
+//   - properties: A map of property names to values
+//
+// Returns a new Relationship with the specified ID.
+//
+// Example:
+//
+//	rel := graph.NewRelationshipWithID(
+//	    "knows:123",
+//	    alice.ID,
+//	    bob.ID,
+//	    "KNOWS",
+//	    map[string]interface{}{
+//	        "since": "2020-01-01",
+//	    },
+//	)
+func NewRelationshipWithID(id, startNodeID, endNodeID, relType string, properties map[string]interface{}) *Relationship {
 	props := make(map[string]PropertyValue)
 	for k, v := range properties {
 		props[k] = ToPropertyValue(v)
 	}
 	return &Relationship{
-		ID:          GenerateID("rel"),
+		ID:          id,
 		StartNodeID: startNodeID,
 		EndNodeID:   endNodeID,
 		Type:        relType,

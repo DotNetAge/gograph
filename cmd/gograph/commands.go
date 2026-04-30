@@ -7,11 +7,14 @@ import (
 	"strings"
 
 	"github.com/DotNetAge/gograph/pkg/api"
+	"github.com/DotNetAge/gograph/pkg/api/format"
 	"github.com/DotNetAge/gograph/pkg/graph"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
+
+var outputFormat string
 
 var execCmd = &cobra.Command{
 	Use:   "exec [db_path] [cypher_query]",
@@ -40,8 +43,13 @@ var execCmd = &cobra.Command{
 		}
 
 		color.Green("Query executed successfully.")
-		fmt.Printf("Affected Nodes: %d\n", res.AffectedNodes)
-		fmt.Printf("Affected Rels:  %d\n", res.AffectedRels)
+
+		formatter := format.NewFormatter(outputFormat)
+		out, err := formatter.Format(res)
+		if err != nil {
+			return fmt.Errorf("format error: %w", err)
+		}
+		fmt.Println(out)
 		return nil
 	},
 }
@@ -112,6 +120,11 @@ var queryCmd = &cobra.Command{
 
 		return nil
 	},
+}
+
+func init() {
+	execCmd.Flags().StringVarP(&outputFormat, "format", "f", "table", "Output format: json, xml, yaml, csv, table")
+	queryCmd.Flags().StringVarP(&outputFormat, "format", "f", "table", "Output format: json, xml, yaml, csv, table")
 }
 
 func formatValue(val interface{}) string {

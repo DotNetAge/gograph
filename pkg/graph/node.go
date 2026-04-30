@@ -63,6 +63,7 @@ type Node struct {
 }
 
 // NewNode creates a new Node with the given labels and properties.
+// The node ID is automatically generated with a "node:" prefix and a ULID suffix.
 //
 // Parameters:
 //   - labels: The categories or types for this node (e.g., ["Person"])
@@ -83,12 +84,36 @@ type Node struct {
 //	    },
 //	)
 func NewNode(labels []string, properties map[string]interface{}) *Node {
+	return NewNodeWithID(GenerateID("node"), labels, properties)
+}
+
+// NewNodeWithID creates a new Node with a user-specified ID, labels, and properties.
+// This allows users to provide their own identifiers instead of auto-generated ones.
+//
+// Parameters:
+//   - id: The unique identifier for this node (user-defined)
+//   - labels: The categories or types for this node (e.g., ["Person"])
+//   - properties: A map of property names to values
+//
+// Returns a new Node with the specified ID.
+//
+// Example:
+//
+//	node := graph.NewNodeWithID(
+//	    "user:123",
+//	    []string{"Person"},
+//	    map[string]interface{}{
+//	        "name": "Alice",
+//	        "age":  30,
+//	    },
+//	)
+func NewNodeWithID(id string, labels []string, properties map[string]interface{}) *Node {
 	props := make(map[string]PropertyValue)
 	for k, v := range properties {
 		props[k] = ToPropertyValue(v)
 	}
 	return &Node{
-		ID:         GenerateID("node"),
+		ID:         id,
 		Labels:     labels,
 		Properties: props,
 	}
