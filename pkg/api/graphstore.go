@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/DotNetAge/gograph/pkg/graph"
 	"github.com/DotNetAge/gograph/pkg/storage"
@@ -83,21 +82,11 @@ func (gs *GraphStore) UpsertNodes(nodes []*NodeData) error {
 			return err
 		}
 
-		for _, label := range node.Labels {
-			key := storage.LabelKey(label, node.ID)
-			if err := batch.Put(key, []byte(node.ID)); err != nil {
-				return err
-			}
+		if err := gs.index.BuildLabelIndex(batch, node); err != nil {
+			return err
 		}
-
-		for _, label := range node.Labels {
-			for propName, propValue := range node.Properties {
-				encodedValue := graph.EncodePropertyValue(propValue)
-				key := storage.PropertyKey(label, propName, encodedValue)
-				if err := batch.Put(key, []byte(node.ID)); err != nil {
-					return err
-				}
-			}
+		if err := gs.index.BuildPropertyIndex(batch, node); err != nil {
+			return err
 		}
 	}
 
@@ -114,12 +103,14 @@ func (gs *GraphStore) UpsertEdges(edges []*EdgeData) error {
 	batch := gs.store.NewBatch()
 	defer batch.Close()
 
+	rels := make([]*graph.Relationship, 0, len(edges))
 	for _, edgeData := range edges {
 		if edgeData.FromNodeID == "" || edgeData.ToNodeID == "" {
 			return ErrInvalidEdgeData
 		}
 
 		rel := graph.NewRelationship(edgeData.FromNodeID, edgeData.ToNodeID, edgeData.Type, edgeData.Properties)
+		rels = append(rels, rel)
 
 		relData, err := storage.Marshal(rel)
 		if err != nil {
@@ -129,16 +120,10 @@ func (gs *GraphStore) UpsertEdges(edges []*EdgeData) error {
 		if err := batch.Put(storage.RelKey(rel.ID), relData); err != nil {
 			return err
 		}
+	}
 
-		outKey := storage.AdjKey(rel.StartNodeID, rel.Type, "out", rel.ID)
-		if err := batch.Put(outKey, []byte(rel.EndNodeID)); err != nil {
-			return err
-		}
-
-		inKey := storage.AdjKey(rel.EndNodeID, rel.Type, "in", rel.ID)
-		if err := batch.Put(inKey, []byte(rel.StartNodeID)); err != nil {
-			return err
-		}
+	if err := gs.adj.AddRelationships(batch, rels); err != nil {
+		return err
 	}
 
 	return batch.Commit()
@@ -362,28 +347,18 @@ func (gs *GraphStore) getRelatedByTypes(nodeID string, relTypes []string) ([]str
 
 	for _, relType := range relTypes {
 		for _, dir := range []string{"out", "in"} {
-			prefix := storage.AdjKeyPrefixNodeAndTypeAndDir(nodeID, relType, dir)
-			prefixStr := string(prefix)
-			iter, err := gs.store.NewIter(nil)
+			key := storage.AdjGroupKey(nodeID, relType, dir)
+			data, err := gs.store.Get(key)
 			if err != nil {
-				return nil, err
+				continue
 			}
-
-			func() {
-				defer iter.Close()
-				for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
-					key := string(iter.Key())
-					if !strings.HasPrefix(key, prefixStr) {
-						break
-					}
-					// Key format: adj:{nodeID}:{relType}:{dir}:{relID}
-					// Extract relID from remainder after prefix
-					remainder := strings.TrimPrefix(key, prefixStr)
-					if remainder != "" {
-						relIDs = append(relIDs, remainder)
-					}
-				}
-			}()
+			var entries []graph.AdjacencyEntry
+			if err := storage.Unmarshal(data, &entries); err != nil {
+				continue
+			}
+			for _, e := range entries {
+				relIDs = append(relIDs, e.RelID)
+			}
 		}
 	}
 

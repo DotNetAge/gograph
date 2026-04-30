@@ -8,11 +8,17 @@ import (
 // Index manages label and property indexes for efficient node lookups.
 type Index struct {
 	store *storage.DB
+	stats *StatsCollector
 }
 
 // NewIndex creates a new Index instance for the given storage.
 func NewIndex(store *storage.DB) *Index {
-	return &Index{store: store}
+	return &Index{store: store, stats: NewStatsCollector()}
+}
+
+// Stats returns the statistics collector for query optimization.
+func (idx *Index) Stats() *StatsCollector {
+	return idx.stats
 }
 
 // BuildLabelIndex creates index entries for all labels on a node.
@@ -22,6 +28,7 @@ func (idx *Index) BuildLabelIndex(m Mutator, node *Node) error {
 		if err := m.Put(key, []byte(node.ID)); err != nil {
 			return err
 		}
+		idx.stats.RecordLabel(label)
 	}
 	return nil
 }
@@ -33,33 +40,40 @@ func (idx *Index) RemoveLabelIndex(m Mutator, node *Node) error {
 		if err := m.Delete(key); err != nil {
 			return err
 		}
+		idx.stats.RemoveLabel(label)
 	}
 	return nil
 }
 
-// BuildPropertyIndex creates index entries for all properties on a node.
+// BuildPropertyIndex creates index entries for all properties on a node,
+// but only for the primary label (first label) to reduce index size.
 func (idx *Index) BuildPropertyIndex(m Mutator, node *Node) error {
-	for _, label := range node.Labels {
-		for propName, propValue := range node.Properties {
-			encodedValue := encodePropertyValue(propValue)
-			key := storage.PropertyKey(label, propName, encodedValue)
-			if err := m.Put(key, []byte(node.ID)); err != nil {
-				return err
-			}
+	if len(node.Labels) == 0 {
+		return nil
+	}
+	primaryLabel := node.Labels[0]
+	for propName, propValue := range node.Properties {
+		encodedValue := encodePropertyValue(propValue)
+		key := storage.PropertyKey(primaryLabel, propName, encodedValue)
+		if err := m.Put(key, []byte(node.ID)); err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
-// RemovePropertyIndex removes index entries for all properties on a node.
+// RemovePropertyIndex removes index entries for all properties on a node,
+// but only for the primary label (first label).
 func (idx *Index) RemovePropertyIndex(m Mutator, node *Node) error {
-	for _, label := range node.Labels {
-		for propName, propValue := range node.Properties {
-			encodedValue := encodePropertyValue(propValue)
-			key := storage.PropertyKey(label, propName, encodedValue)
-			if err := m.Delete(key); err != nil {
-				return err
-			}
+	if len(node.Labels) == 0 {
+		return nil
+	}
+	primaryLabel := node.Labels[0]
+	for propName, propValue := range node.Properties {
+		encodedValue := encodePropertyValue(propValue)
+		key := storage.PropertyKey(primaryLabel, propName, encodedValue)
+		if err := m.Delete(key); err != nil {
+			return err
 		}
 	}
 	return nil

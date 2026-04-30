@@ -545,11 +545,18 @@ func (m *Matcher) executePath(path *ast.PathExpr, params map[string]interface{})
 }
 
 // findNodes finds all nodes matching the given node pattern.
+// If statistics are available, it selects the most selective label
+// (the one with the fewest nodes) to minimize the initial scan.
 func (m *Matcher) findNodes(nodePattern *ast.NodePattern, params map[string]interface{}) []*graph.Node {
 	var nodes []*graph.Node
 
 	if len(nodePattern.Labels) > 0 {
-		ids, _ := m.Index.LookupByLabel(nodePattern.Labels[0])
+		// Use statistics to select the most selective label
+		label := nodePattern.Labels[0]
+		if stats := m.Index.Stats(); stats != nil && len(nodePattern.Labels) > 1 {
+			label = stats.SelectBestLabel(nodePattern.Labels)
+		}
+		ids, _ := m.Index.LookupByLabel(label)
 		for _, id := range ids {
 			data, err := m.Store.Get(storage.NodeKey(id))
 			if err != nil {

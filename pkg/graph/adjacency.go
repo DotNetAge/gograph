@@ -4,139 +4,172 @@
 package graph
 
 import (
-	"strings"
-
 	"github.com/DotNetAge/gograph/pkg/storage"
 )
+
+// AdjacencyEntry represents a single relationship in a merged adjacency group.
+type AdjacencyEntry struct {
+	RelID  string `msgpack:"r"`
+	NodeID string `msgpack:"n"`
+}
 
 // AdjacencyList manages the adjacency relationships between nodes.
 // It provides methods to build and query relationships between graph nodes,
 // enabling efficient traversal of the graph structure.
 //
-// The adjacency list stores relationships in both directions:
-//   - Outgoing: From start node to end node
-//   - Incoming: From end node to start node
-//
-// This allows for efficient querying of relationships in either direction.
-//
-// Example:
-//
-//	adj := graph.NewAdjacencyList(store)
-//
-//	// Add a relationship to the adjacency list
-//	err := adj.AddRelationship(mutator, relationship)
-//
-//	// Query related nodes
-//	related, err := adj.GetRelatedNodes(nodeID, "KNOWS", graph.DirectionOutgoing)
+// The adjacency list stores relationships in merged groups per (nodeID, relType, direction)
+// to reduce the number of small keys in the LSM-Tree. Each group is stored as
+// a MessagePack-encoded list of AdjacencyEntry.
 type AdjacencyList struct {
 	store *storage.DB
 	cache *AdjacencyCache
 }
 
 // NewAdjacencyList creates a new AdjacencyList instance.
-//
-// Parameters:
-//   - store: The storage database to use for adjacency data
-//
-// Returns a new AdjacencyList ready to manage relationships.
-//
-// Example:
-//
-//	store, _ := storage.Open("/path/to/db")
-//	adj := graph.NewAdjacencyList(store)
 func NewAdjacencyList(store *storage.DB) *AdjacencyList {
 	return &AdjacencyList{
 		store: store,
-		cache: NewAdjacencyCache(10000), // Cache up to 10,000 adjacency entries
+		cache: NewAdjacencyCache(10000),
 	}
 }
 
+// loadGroup loads an adjacency group from storage.
+func (adj *AdjacencyList) loadGroup(nodeID, relType, direction string) ([]AdjacencyEntry, error) {
+	key := storage.AdjGroupKey(nodeID, relType, direction)
+	data, err := adj.store.Get(key)
+	if err != nil {
+		// If not found, return empty slice
+		return []AdjacencyEntry{}, nil
+	}
+	var entries []AdjacencyEntry
+	if err := storage.Unmarshal(data, &entries); err != nil {
+		return nil, err
+	}
+	return entries, nil
+}
+
+// saveGroup saves an adjacency group to storage via the mutator.
+func (adj *AdjacencyList) saveGroup(m Mutator, nodeID, relType, direction string, entries []AdjacencyEntry) error {
+	key := storage.AdjGroupKey(nodeID, relType, direction)
+	if len(entries) == 0 {
+		return m.Delete(key)
+	}
+	data, err := storage.Marshal(entries)
+	if err != nil {
+		return err
+	}
+	return m.Put(key, data)
+}
+
 // AddRelationship creates adjacency entries for a relationship within a mutation context.
-// It creates both outgoing and incoming entries to enable bidirectional traversal.
-//
-// Parameters:
-//   - m: The Mutator to use for the operation
-//   - rel: The relationship to add to the adjacency list
-//
-// Returns an error if the operation fails.
-//
-// Example:
-//
-//	err := adj.AddRelationship(mutator, relationship)
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
+// It appends to the merged groups for both outgoing and incoming directions.
 func (adj *AdjacencyList) AddRelationship(m Mutator, rel *Relationship) error {
-	outKey := storage.AdjKey(rel.StartNodeID, rel.Type, "out", rel.ID)
-	if err := m.Put(outKey, []byte(rel.EndNodeID)); err != nil {
-		return err
+	return adj.AddRelationships(m, []*Relationship{rel})
+}
+
+// AddRelationships batch-creates adjacency entries for multiple relationships.
+// It properly merges relationships into groups even when operating within a
+// single uncommitted batch by aggregating in memory before writing.
+func (adj *AdjacencyList) AddRelationships(m Mutator, rels []*Relationship) error {
+	// groupKey -> entries (loaded from storage + new ones)
+	type groupKey struct {
+		nodeID    string
+		relType   string
+		direction string
+	}
+	groups := make(map[groupKey][]AdjacencyEntry)
+
+	// Load existing groups from storage
+	for _, rel := range rels {
+		outKey := groupKey{rel.StartNodeID, rel.Type, "out"}
+		if _, ok := groups[outKey]; !ok {
+			entries, _ := adj.loadGroup(rel.StartNodeID, rel.Type, "out")
+			groups[outKey] = entries
+		}
+		inKey := groupKey{rel.EndNodeID, rel.Type, "in"}
+		if _, ok := groups[inKey]; !ok {
+			entries, _ := adj.loadGroup(rel.EndNodeID, rel.Type, "in")
+			groups[inKey] = entries
+		}
 	}
 
-	inKey := storage.AdjKey(rel.EndNodeID, rel.Type, "in", rel.ID)
-	if err := m.Put(inKey, []byte(rel.StartNodeID)); err != nil {
-		return err
+	// Append new relationships to groups
+	for _, rel := range rels {
+		outKey := groupKey{rel.StartNodeID, rel.Type, "out"}
+		groups[outKey] = append(groups[outKey], AdjacencyEntry{RelID: rel.ID, NodeID: rel.EndNodeID})
+
+		inKey := groupKey{rel.EndNodeID, rel.Type, "in"}
+		groups[inKey] = append(groups[inKey], AdjacencyEntry{RelID: rel.ID, NodeID: rel.StartNodeID})
 	}
 
-	// Invalidate cache entries for both nodes (both directions)
-	adj.cache.Invalidate(rel.StartNodeID, rel.Type, "")
-	adj.cache.Invalidate(rel.EndNodeID, rel.Type, "")
+	// Write all groups back
+	for gk, entries := range groups {
+		if err := adj.saveGroup(m, gk.nodeID, gk.relType, gk.direction, entries); err != nil {
+			return err
+		}
+	}
+
+	// Invalidate cache entries
+	invalidated := make(map[groupKey]bool)
+	for _, rel := range rels {
+		outKey := groupKey{rel.StartNodeID, rel.Type, ""}
+		if !invalidated[outKey] {
+			adj.cache.Invalidate(rel.StartNodeID, rel.Type, "")
+			invalidated[outKey] = true
+		}
+		inKey := groupKey{rel.EndNodeID, rel.Type, ""}
+		if !invalidated[inKey] {
+			adj.cache.Invalidate(rel.EndNodeID, rel.Type, "")
+			invalidated[inKey] = true
+		}
+	}
 
 	return nil
 }
 
 // RemoveRelationship removes adjacency entries for a relationship within a mutation context.
-// It removes both outgoing and incoming entries.
-//
-// Parameters:
-//   - m: The Mutator to use for the operation
-//   - rel: The relationship to remove from the adjacency list
-//
-// Returns an error if the operation fails.
-//
-// Example:
-//
-//	err := adj.RemoveRelationship(mutator, relationship)
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
+// It removes entries from the merged groups for both directions.
 func (adj *AdjacencyList) RemoveRelationship(m Mutator, rel *Relationship) error {
-	outKey := storage.AdjKey(rel.StartNodeID, rel.Type, "out", rel.ID)
-	if err := m.Delete(outKey); err != nil {
+	// Remove from outgoing group
+	outEntries, err := adj.loadGroup(rel.StartNodeID, rel.Type, "out")
+	if err != nil {
+		return err
+	}
+	outEntries = filterEntries(outEntries, rel.ID)
+	if err := adj.saveGroup(m, rel.StartNodeID, rel.Type, "out", outEntries); err != nil {
 		return err
 	}
 
-	inKey := storage.AdjKey(rel.EndNodeID, rel.Type, "in", rel.ID)
-	if err := m.Delete(inKey); err != nil {
+	// Remove from incoming group
+	inEntries, err := adj.loadGroup(rel.EndNodeID, rel.Type, "in")
+	if err != nil {
+		return err
+	}
+	inEntries = filterEntries(inEntries, rel.ID)
+	if err := adj.saveGroup(m, rel.EndNodeID, rel.Type, "in", inEntries); err != nil {
 		return err
 	}
 
-	// Invalidate cache entries for both nodes (both directions)
+	// Invalidate cache entries for both nodes
 	adj.cache.Invalidate(rel.StartNodeID, rel.Type, "")
 	adj.cache.Invalidate(rel.EndNodeID, rel.Type, "")
 
 	return nil
 }
 
+// filterEntries removes the entry with the given relID from the slice.
+func filterEntries(entries []AdjacencyEntry, relID string) []AdjacencyEntry {
+	filtered := make([]AdjacencyEntry, 0, len(entries))
+	for _, e := range entries {
+		if e.RelID != relID {
+			filtered = append(filtered, e)
+		}
+	}
+	return filtered
+}
+
 // GetRelatedNodes returns the IDs of nodes related to the given node with the
 // specified relationship type and direction.
-//
-// Parameters:
-//   - nodeID: The ID of the node to find relationships for
-//   - relType: The type of relationship to look for
-//   - direction: The direction of relationships to query (outgoing, incoming, or both)
-//
-// Returns a slice of node IDs that are related to the given node, or an error if the query fails.
-//
-// Example:
-//
-//	// Get all nodes that this node knows
-//	related, err := adj.GetRelatedNodes(nodeID, "KNOWS", graph.DirectionOutgoing)
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
-//	for _, id := range related {
-//	    fmt.Printf("Related node: %s\n", id)
-//	}
 func (adj *AdjacencyList) GetRelatedNodes(nodeID, relType string, direction Direction) ([]string, error) {
 	// Check cache first
 	if cached, found := adj.cache.Get(nodeID, relType, direction); found {
@@ -156,22 +189,13 @@ func (adj *AdjacencyList) GetRelatedNodes(nodeID, relType string, direction Dire
 	}
 
 	for _, dir := range directions {
-		prefix := storage.AdjKeyPrefixNodeAndTypeAndDir(nodeID, relType, dir)
-		iter, err := adj.store.NewIter(nil)
+		entries, err := adj.loadGroup(nodeID, relType, dir)
 		if err != nil {
 			return nil, err
 		}
-
-		func() {
-			defer iter.Close()
-			for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
-				key := iter.Key()
-				if !hasAdjPrefix(key, prefix) {
-					break
-				}
-				nodeIDs = append(nodeIDs, string(iter.Value()))
-			}
-		}()
+		for _, e := range entries {
+			nodeIDs = append(nodeIDs, e.NodeID)
+		}
 	}
 
 	// Store in cache for future queries
@@ -182,22 +206,6 @@ func (adj *AdjacencyList) GetRelatedNodes(nodeID, relType string, direction Dire
 
 // GetAllRelated returns all Relationship IDs related to the given node, regardless of type.
 // This is critical for efficient `Detach Delete` operations.
-//
-// Parameters:
-//   - nodeID: The ID of the node to find all relationships for
-//
-// Returns a slice of relationship IDs, or an error if the query fails.
-//
-// Example:
-//
-//	// Get all relationships for a node (for detach delete)
-//	relIDs, err := adj.GetAllRelated(nodeID)
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
-//	for _, relID := range relIDs {
-//	    fmt.Printf("Relationship: %s\n", relID)
-//	}
 func (adj *AdjacencyList) GetAllRelated(nodeID string) ([]string, error) {
 	var relIDs []string
 	prefix := storage.AdjKeyPrefix(nodeID)
@@ -208,19 +216,19 @@ func (adj *AdjacencyList) GetAllRelated(nodeID string) ([]string, error) {
 	}
 	defer iter.Close()
 
-	prefixStr := string(prefix)
 	for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
 		key := iter.Key()
-		keyStr := string(key)
 		if !hasAdjPrefix(key, prefix) {
 			break
 		}
 
-		remainder := strings.TrimPrefix(keyStr, prefixStr)
-		parts := strings.Split(remainder, ":")
-		if len(parts) >= 3 {
-			relID := strings.Join(parts[2:], ":")
-			relIDs = append(relIDs, relID)
+		data := iter.Value()
+		var entries []AdjacencyEntry
+		if err := storage.Unmarshal(data, &entries); err != nil {
+			continue
+		}
+		for _, e := range entries {
+			relIDs = append(relIDs, e.RelID)
 		}
 	}
 
@@ -228,12 +236,6 @@ func (adj *AdjacencyList) GetAllRelated(nodeID string) ([]string, error) {
 }
 
 // hasAdjPrefix checks if the key has the given prefix.
-//
-// Parameters:
-//   - key: The key to check
-//   - prefix: The prefix to look for
-//
-// Returns true if the key starts with the prefix.
 func hasAdjPrefix(key, prefix []byte) bool {
 	return len(key) >= len(prefix) && string(key[:len(prefix)]) == string(prefix)
 }

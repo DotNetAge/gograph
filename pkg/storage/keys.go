@@ -65,6 +65,7 @@ func RelKey(relID string) []byte {
 }
 
 // LabelKey returns the storage key for a label index entry.
+// Uses short label encoding to reduce key size.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -75,13 +76,14 @@ func RelKey(relID string) []byte {
 // Example:
 //
 //	key := storage.LabelKey("Person", "node:a1")
-//	// key = []byte("label:Person:node:a1")
+//	// key = []byte("label:La:node:a1")  (if Person maps to code 'a')
 func LabelKey(labelName, nodeID string) []byte {
-	return []byte(KeyPrefixLabel + labelName + ":" + nodeID)
+	return []byte(KeyPrefixLabel + EncodeLabelKey(labelName) + ":" + nodeID)
 }
 
 // LabelKeyPrefix returns the key prefix for all entries with the given label.
 // This is used for iterating over all nodes with a specific label.
+// Uses short label encoding to reduce key size.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -91,12 +93,13 @@ func LabelKey(labelName, nodeID string) []byte {
 // Example:
 //
 //	prefix := storage.LabelKeyPrefix("Person")
-//	// prefix = []byte("label:Person:")
+//	// prefix = []byte("label:La:")  (if Person maps to code 'a')
 func LabelKeyPrefix(labelName string) []byte {
-	return []byte(KeyPrefixLabel + labelName + ":")
+	return []byte(KeyPrefixLabel + EncodeLabelKey(labelName) + ":")
 }
 
 // PropertyKey returns the storage key for a property index entry.
+// Uses short label encoding to reduce key size.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -108,13 +111,14 @@ func LabelKeyPrefix(labelName string) []byte {
 // Example:
 //
 //	key := storage.PropertyKey("Person", "name", "Alice")
-//	// key = []byte("prop:Person:name:Alice")
+//	// key = []byte("prop:La:name:Alice")  (if Person maps to code 'a')
 func PropertyKey(labelName, propName, propValue string) []byte {
-	return []byte(KeyPrefixProp + labelName + ":" + propName + ":" + propValue)
+	return []byte(KeyPrefixProp + EncodeLabelKey(labelName) + ":" + propName + ":" + propValue)
 }
 
 // PropertyKeyPrefix returns the key prefix for all entries with the given label and property name.
 // This is used for iterating over all nodes with a specific label and property.
+// Uses short label encoding to reduce key size.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -125,9 +129,9 @@ func PropertyKey(labelName, propName, propValue string) []byte {
 // Example:
 //
 //	prefix := storage.PropertyKeyPrefix("Person", "name")
-//	// prefix = []byte("prop:Person:name:")
+//	// prefix = []byte("prop:La:name:")  (if Person maps to code 'a')
 func PropertyKeyPrefix(labelName, propName string) []byte {
-	return []byte(KeyPrefixProp + labelName + ":" + propName + ":")
+	return []byte(KeyPrefixProp + EncodeLabelKey(labelName) + ":" + propName + ":")
 }
 
 // AdjKey returns the storage key for an adjacency entry.
@@ -197,4 +201,23 @@ func AdjKeyPrefixNodeAndType(nodeID, relType string) []byte {
 //	// prefix = []byte("adj:node:a1:KNOWS:out:")
 func AdjKeyPrefixNodeAndTypeAndDir(nodeID, relType, direction string) []byte {
 	return []byte(KeyPrefixAdj + nodeID + ":" + relType + ":" + direction + ":")
+}
+
+// AdjGroupKey returns the storage key for a merged adjacency group.
+// A group contains all relationships of the same type and direction for a node.
+// This reduces the number of small keys in the storage layer.
+//
+// Parameters:
+//   - nodeID: The ID of the node
+//   - relType: The type of relationship
+//   - direction: The direction ("out" or "in")
+//
+// Returns the storage key as a byte slice.
+//
+// Example:
+//
+//	key := storage.AdjGroupKey("node:a1", "KNOWS", "out")
+//	// key = []byte("adj:node:a1:KNOWS:out")
+func AdjGroupKey(nodeID, relType, direction string) []byte {
+	return []byte(KeyPrefixAdj + nodeID + ":" + relType + ":" + direction)
 }

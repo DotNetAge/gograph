@@ -163,26 +163,30 @@ func TestPebble(t *testing.T) {
 }
 
 func TestKeys(t *testing.T) {
+	ResetLabelCoder()
+	defer ResetLabelCoder()
+
 	if string(NodeKey("1")) != "node:1" {
 		t.Error("invalid node key")
 	}
 	if string(RelKey("2")) != "rel:2" {
 		t.Error("invalid rel key")
 	}
-	if string(LabelKey("User", "1")) != "label:User:1" {
+	// Label keys now use short encoding: User -> La
+	if string(LabelKey("User", "1")) != "label:La:1" {
 		t.Error("invalid label key")
 	}
-	if string(PropertyKey("User", "name", "Alice")) != "prop:User:name:Alice" {
+	if string(PropertyKey("User", "name", "Alice")) != "prop:La:name:Alice" {
 		t.Error("invalid property key")
 	}
 	if string(AdjKey("1", "KNOWS", "out", "5")) != "adj:1:KNOWS:out:5" {
 		t.Error("invalid adj key")
 	}
 
-	if string(LabelKeyPrefix("User")) != "label:User:" {
+	if string(LabelKeyPrefix("User")) != "label:La:" {
 		t.Error("invalid label key prefix")
 	}
-	if string(PropertyKeyPrefix("User", "name")) != "prop:User:name:" {
+	if string(PropertyKeyPrefix("User", "name")) != "prop:La:name:" {
 		t.Error("invalid property key prefix")
 	}
 	if string(AdjKeyPrefix("1")) != "adj:1:" {
