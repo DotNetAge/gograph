@@ -1142,6 +1142,9 @@ func (m *Matcher) ProcessReturnStmt(rows []map[string]interface{}, returnExpr *a
 	return processedRows, columns, nil
 }
 func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, path map[string]interface{}) {
+	// Determine the output key: use alias if provided, otherwise use the expression's natural name.
+	outputKey := m.getColumnName(item)
+
 	switch expr := item.Expr.(type) {
 	case *ast.PropertyAccessExpr:
 		if ident, ok := expr.Target.(*ast.Ident); ok {
@@ -1152,21 +1155,27 @@ func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, 
 			switch o := obj.(type) {
 			case *graph.Node:
 				if expr.Property == "" {
-					row[ident.Name] = o
+					row[outputKey] = o
 				} else if prop, exists := o.Properties[expr.Property]; exists {
-					row[ident.Name+"."+expr.Property] = m.PropertyToInterface(prop)
+					row[outputKey] = m.PropertyToInterface(prop)
 				}
 			case *graph.Relationship:
 				if expr.Property == "" {
-					row[ident.Name] = o
+					row[outputKey] = o
 				} else if prop, exists := o.Properties[expr.Property]; exists {
-					row[ident.Name+"."+expr.Property] = m.PropertyToInterface(prop)
+					row[outputKey] = m.PropertyToInterface(prop)
 				}
 			}
 		}
 	case *ast.Ident:
 		if obj, ok := path[expr.Name]; ok {
-			row[expr.Name] = obj
+			row[outputKey] = obj
+		}
+	case *ast.FuncCall:
+		// Function calls are handled separately in aggregation processing.
+		// For non-aggregation cases, store the result if available in path.
+		if val, ok := path[outputKey]; ok {
+			row[outputKey] = val
 		}
 	}
 }

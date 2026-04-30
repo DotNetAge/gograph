@@ -90,6 +90,7 @@ var queryCmd = &cobra.Command{
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader(cols)
 		table.SetAutoWrapText(false)
+		table.SetAutoFormatHeaders(false)
 
 		count := 0
 		for rows.Next() {

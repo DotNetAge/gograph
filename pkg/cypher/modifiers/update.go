@@ -96,6 +96,31 @@ func (m *Modifier) ExecuteSet(t *tx.Transaction, stmt *ast.SetStmt, path map[str
 					// Silently ignore unexpected types in path
 				}
 			}
+
+			// Handle SET n:Label when Target is Ident
+			if item.IsLabel && node != nil {
+				label := m.exprToString(item.Value, params)
+				if label != "" {
+					exists := false
+					for _, l := range node.Labels {
+						if l == label {
+							exists = true
+							break
+						}
+					}
+					if !exists {
+						node.Labels = append(node.Labels, label)
+						if err := m.index.BuildLabelIndex(t, node); err != nil {
+							return 0, err
+						}
+						if err := m.saveNode(t, node); err != nil {
+							return 0, err
+						}
+						affectedNodes++
+					}
+				}
+				continue
+			}
 		} else if pa, ok := item.Target.(*ast.PropertyAccessExpr); ok {
 			if ident, ok := pa.Target.(*ast.Ident); ok {
 				if obj, exists := path[ident.Name]; exists {
@@ -114,11 +139,25 @@ func (m *Modifier) ExecuteSet(t *tx.Transaction, stmt *ast.SetStmt, path map[str
 				if node != nil {
 					label := m.exprToString(item.Value, params)
 					if label != "" {
-						node.Labels = append(node.Labels, label)
-						if err := m.saveNode(t, node); err != nil {
-							return 0, err
+						// Check if label already exists to avoid duplicates
+						exists := false
+						for _, l := range node.Labels {
+							if l == label {
+								exists = true
+								break
+							}
 						}
-						affectedNodes++
+						if !exists {
+							node.Labels = append(node.Labels, label)
+							// Update label index for the new label
+							if err := m.index.BuildLabelIndex(t, node); err != nil {
+								return 0, err
+							}
+							if err := m.saveNode(t, node); err != nil {
+								return 0, err
+							}
+							affectedNodes++
+						}
 					}
 				}
 				continue
@@ -243,7 +282,9 @@ func (m *Modifier) ExecuteRemove(t *tx.Transaction, stmt *ast.RemoveStmt, path m
 				}
 			}
 			if node != nil {
-				if err := m.index.RemoveLabelIndex(t, node); err != nil {
+				// Remove only the specified label from the index
+				key := storage.LabelKey(item.Label, node.ID)
+				if err := t.Delete(key); err != nil {
 					return 0, err
 				}
 				newLabels := make([]string, 0, len(node.Labels))
