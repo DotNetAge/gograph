@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/DotNetAge/gograph/pkg/graph"
 	"github.com/DotNetAge/gograph/pkg/storage"
@@ -339,6 +340,74 @@ func (gs *GraphStore) GetNeighborsByTypes(nodeID string, depth int, limit int, r
 	}
 
 	return results, nil
+}
+
+// ListNodes returns all nodes in the graph store.
+// Uses storage prefix iteration to list all node: prefixed keys.
+//
+// Returns a slice of all Node objects, or an error if iteration fails.
+func (gs *GraphStore) ListNodes() ([]*graph.Node, error) {
+	gs.db.RLock()
+	defer gs.db.RUnlock()
+	if gs.db.IsClosedLocked() {
+		return nil, ErrDBClosed
+	}
+
+	iter, err := gs.store.NewIter(nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create node iterator: %w", err)
+	}
+	defer iter.Close()
+
+	prefix := []byte(storage.KeyPrefixNode)
+	var nodes []*graph.Node
+	for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
+		if len(iter.Key()) < len(prefix) || string(iter.Key()[:len(prefix)]) != storage.KeyPrefixNode {
+			break
+		}
+		data := make([]byte, len(iter.Value()))
+		copy(data, iter.Value())
+		var node graph.Node
+		if err := storage.Unmarshal(data, &node); err != nil {
+			continue // skip corrupt entries
+		}
+		nodes = append(nodes, &node)
+	}
+	return nodes, nil
+}
+
+// ListEdges returns all relationships in the graph store.
+// Uses storage prefix iteration to list all rel: prefixed keys.
+//
+// Returns a slice of all Relationship objects, or an error if iteration fails.
+func (gs *GraphStore) ListEdges() ([]*graph.Relationship, error) {
+	gs.db.RLock()
+	defer gs.db.RUnlock()
+	if gs.db.IsClosedLocked() {
+		return nil, ErrDBClosed
+	}
+
+	iter, err := gs.store.NewIter(nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create edge iterator: %w", err)
+	}
+	defer iter.Close()
+
+	prefix := []byte(storage.KeyPrefixRel)
+	var edges []*graph.Relationship
+	for iter.SeekGE(prefix); iter.Valid(); iter.Next() {
+		if len(iter.Key()) < len(prefix) || string(iter.Key()[:len(prefix)]) != storage.KeyPrefixRel {
+			break
+		}
+		data := make([]byte, len(iter.Value()))
+		copy(data, iter.Value())
+		var rel graph.Relationship
+		if err := storage.Unmarshal(data, &rel); err != nil {
+			continue // skip corrupt entries
+		}
+		edges = append(edges, &rel)
+	}
+	return edges, nil
 }
 
 // getRelatedByTypes returns relationship IDs for the given node filtered by relationship types.

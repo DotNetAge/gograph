@@ -475,6 +475,13 @@ func (m *Matcher) resolveExprValueWithContext(path map[string]interface{}, expr 
 			items = append(items, m.resolveExprValueWithContext(path, item, params, ctxRow))
 		}
 		return items
+	case *ast.FuncCall:
+		if len(e.Args) > 0 {
+			resolved := m.resolveFuncArg(path, e.Args[0])
+			if resolved != nil {
+				return m.evaluateStandardFunc(e.Name, resolved)
+			}
+		}
 	}
 	return nil
 }
@@ -935,6 +942,13 @@ func (m *Matcher) resolveExprValue(path map[string]interface{}, expr ast.Expr, p
 			items = append(items, m.resolveExprValue(path, item, params))
 		}
 		return items
+	case *ast.FuncCall:
+		if len(e.Args) > 0 {
+			resolved := m.resolveFuncArg(path, e.Args[0])
+			if resolved != nil {
+				return m.evaluateStandardFunc(e.Name, resolved)
+			}
+		}
 	}
 	return nil
 }
@@ -1179,10 +1193,15 @@ func (m *Matcher) fillRow(row map[string]interface{}, item *ast.ReturnItemExpr, 
 			row[outputKey] = obj
 		}
 	case *ast.FuncCall:
-		// Function calls are handled separately in aggregation processing.
-		// For non-aggregation cases, store the result if available in path.
-		if val, ok := path[outputKey]; ok {
-			row[outputKey] = val
+		// Handle standard Cypher built-in functions on the current path.
+		if len(expr.Args) > 0 {
+			resolved := m.resolveFuncArg(path, expr.Args[0])
+			if resolved != nil {
+				val := m.evaluateStandardFunc(expr.Name, resolved)
+				if val != nil {
+					row[outputKey] = val
+				}
+			}
 		}
 	}
 }
@@ -1523,6 +1542,86 @@ func (m *Matcher) propertyMatches(prop graph.PropertyValue, expected interface{}
 // Delegates to graph.PropertyValue.InterfaceValue().
 func (m *Matcher) PropertyToInterface(prop graph.PropertyValue) interface{} {
 	return prop.InterfaceValue()
+}
+
+// resolveFuncArg resolves the first argument of a Cypher function call.
+// The argument is typically an *ast.Ident (variable name) which is looked up
+// in the path to get the actual node or relationship object.
+func (m *Matcher) resolveFuncArg(path map[string]interface{}, arg ast.Expr) interface{} {
+	switch a := arg.(type) {
+	case *ast.Ident:
+		return path[a.Name]
+	case *ast.PropertyAccessExpr:
+		if ident, ok := a.Target.(*ast.Ident); ok {
+			if obj := path[ident.Name]; obj != nil {
+				switch o := obj.(type) {
+				case *graph.Node:
+					if prop, exists := o.Properties[a.Property]; exists {
+						return m.PropertyToInterface(prop)
+					}
+				case *graph.Relationship:
+					if prop, exists := o.Properties[a.Property]; exists {
+						return m.PropertyToInterface(prop)
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// evaluateStandardFunc evaluates a standard Cypher built-in function
+// (id, labels, properties, type, keys) on the resolved argument.
+func (m *Matcher) evaluateStandardFunc(name string, resolved interface{}) interface{} {
+	switch strings.ToLower(name) {
+	case "id":
+		switch v := resolved.(type) {
+		case *graph.Node:
+			return v.ID
+		case *graph.Relationship:
+			return v.ID
+		}
+	case "labels":
+		if node, ok := resolved.(*graph.Node); ok {
+			return node.Labels
+		}
+	case "properties":
+		switch v := resolved.(type) {
+		case *graph.Node:
+			return m.nodePropsToMap(v.Properties)
+		case *graph.Relationship:
+			return m.nodePropsToMap(v.Properties)
+		}
+	case "type":
+		if rel, ok := resolved.(*graph.Relationship); ok {
+			return rel.Type
+		}
+	case "keys":
+		switch v := resolved.(type) {
+		case *graph.Node:
+			keys := make([]string, 0, len(v.Properties))
+			for k := range v.Properties {
+				keys = append(keys, k)
+			}
+			return keys
+		case *graph.Relationship:
+			keys := make([]string, 0, len(v.Properties))
+			for k := range v.Properties {
+				keys = append(keys, k)
+			}
+			return keys
+		}
+	}
+	return nil
+}
+
+// nodePropsToMap converts map[string]graph.PropertyValue to map[string]interface{}.
+func (m *Matcher) nodePropsToMap(props map[string]graph.PropertyValue) map[string]interface{} {
+	result := make(map[string]interface{}, len(props))
+	for k, v := range props {
+		result[k] = m.PropertyToInterface(v)
+	}
+	return result
 }
 
 func init() {

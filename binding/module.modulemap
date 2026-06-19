@@ -1,0 +1,4 @@
+module CGograph {
+    header "gograph_c.h"
+    export *
+}
