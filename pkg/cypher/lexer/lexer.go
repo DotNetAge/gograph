@@ -337,7 +337,7 @@ func (l *Lexer) readIdentifier() (Token, error) {
 	tokType := TokenIdentifier
 	if IsKeyword(upper) {
 		tokType = TokenIdentifier
-		value = upper
+		// 保留原始大小写，使属性名匹配准确（如 n.type → "type" 而非 "TYPE"）
 	}
 	if upper == "TRUE" || upper == "FALSE" {
 		tokType = TokenBoolean

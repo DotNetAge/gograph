@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/DotNetAge/gograph/pkg/cypher/ast"
 	"github.com/DotNetAge/gograph/pkg/cypher/lexer"
@@ -62,7 +63,7 @@ func (p *Parser) check(typ lexer.TokenType) bool {
 
 // checkKeyword returns true if the current token is an identifier with the given name.
 func (p *Parser) checkKeyword(name string) bool {
-	return !p.atEnd() && p.peek().Value == name
+	return !p.atEnd() && strings.EqualFold(p.peek().Value, name)
 }
 
 // checkIdentifier returns true if the current token is an identifier.
@@ -78,7 +79,7 @@ func (p *Parser) checkNext(typ lexer.TokenType) bool {
 // checkNextKeyword returns true if the next token is an identifier with the given name.
 func (p *Parser) checkNextKeyword(name string) bool {
 	next := p.peekNext()
-	return !p.atEnd() && next.Type == lexer.TokenIdentifier && next.Value == name
+	return !p.atEnd() && next.Type == lexer.TokenIdentifier && strings.EqualFold(next.Value, name)
 }
 
 // match consumes the current token if it has the given type and returns true.

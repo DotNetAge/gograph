@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"strings"
+
 	"github.com/DotNetAge/gograph/pkg/cypher/ast"
 	"github.com/DotNetAge/gograph/pkg/cypher/lexer"
 )
@@ -19,7 +21,8 @@ func (p *Parser) parseBinaryExpr(minPrec int) (ast.Expr, error) {
 		tok := p.peek()
 
 		if tok.Type == lexer.TokenIdentifier {
-			switch tok.Value {
+			upper := strings.ToUpper(tok.Value)
+			switch upper {
 			case "IS":
 				if minPrec > precEquality {
 					break
@@ -54,9 +57,9 @@ func (p *Parser) parseBinaryExpr(minPrec int) (ast.Expr, error) {
 				continue
 			case "AND", "OR", "XOR":
 				prec := precAnd
-				if tok.Value == "OR" {
+				if upper == "OR" {
 					prec = precOr
-				} else if tok.Value == "XOR" {
+				} else if upper == "XOR" {
 					prec = precXor
 				}
 				if prec < minPrec {
@@ -81,7 +84,7 @@ func (p *Parser) parseBinaryExpr(minPrec int) (ast.Expr, error) {
 				}
 				p.advance()
 				var op string
-				switch tok.Value {
+				switch upper {
 				case "CONTAINS":
 					op = "CONTAINS"
 				case "STARTS":
