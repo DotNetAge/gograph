@@ -23,6 +23,7 @@ package matchers
 
 import (
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 
@@ -72,6 +73,10 @@ func NewMatcher(store *storage.DB, index *graph.Index) *Matcher {
 //	    "name": "Alice",
 //	})
 func (m *Matcher) ExecuteMatch(stmt *ast.MatchStmt, params map[string]interface{}) (rows []map[string]interface{}, columns []string, err error) {
+	fmt.Fprintf(os.Stderr, "[DEBUG-matcher] ExecuteMatch called with %d clauses, params=%+v\n", len(stmt.Clauses), params)
+	for i, c := range stmt.Clauses {
+		fmt.Fprintf(os.Stderr, "[DEBUG-matcher] clause[%d] type=%T\n", i, c)
+	}
 	return m.ExecuteMatchWithContext(stmt, params, nil)
 }
 
@@ -106,13 +111,17 @@ func (m *Matcher) ExecuteMatchWithContext(stmt *ast.MatchStmt, params map[string
 	}
 
 	if whereExpr != nil {
+		fmt.Fprintf(os.Stderr, "[DEBUG-ExecuteMatchWithContext] filtering whereExpr=%T matchedPaths=%d\n", whereExpr, len(matchedPaths))
 		var filteredPaths []map[string]interface{}
 		for _, path := range matchedPaths {
-			if m.EvaluateExpression(path, whereExpr, params) {
+			result := m.EvaluateExpression(path, whereExpr, params)
+			fmt.Fprintf(os.Stderr, "[DEBUG-ExecuteMatchWithContext] path eval result=%v path=%+v\n", result, path)
+			if result {
 				filteredPaths = append(filteredPaths, path)
 			}
 		}
 		matchedPaths = filteredPaths
+		fmt.Fprintf(os.Stderr, "[DEBUG-ExecuteMatchWithContext] after where filter=%d\n", len(matchedPaths))
 	}
 
 	if returnExpr != nil && m.hasAggregation(returnExpr.Items) {
@@ -563,7 +572,8 @@ func (m *Matcher) findNodes(nodePattern *ast.NodePattern, params map[string]inte
 		if stats := m.Index.Stats(); stats != nil && len(nodePattern.Labels) > 1 {
 			label = stats.SelectBestLabel(nodePattern.Labels)
 		}
-		ids, _ := m.Index.LookupByLabel(label)
+		ids, lookupErr := m.Index.LookupByLabel(label)
+		fmt.Fprintf(os.Stderr, "[DEBUG-findNodes] label=%s ids=%d ids=%+v err=%v\n", label, len(ids), ids, lookupErr)
 		for _, id := range ids {
 			data, err := m.Store.Get(storage.NodeKey(id))
 			if err != nil {
@@ -741,12 +751,14 @@ func (m *Matcher) traversePath(start *graph.Node, path *ast.PathExpr, relIndex i
 //
 // Returns true if the expression evaluates to true for the given path.
 func (m *Matcher) EvaluateExpression(path map[string]interface{}, expr ast.Expr, params map[string]interface{}) bool {
+	fmt.Fprintf(os.Stderr, "[DEBUG-EvaluateExpression] expr type=%T\n", expr)
 	switch e := expr.(type) {
 	case *ast.BinaryExpr:
 		return m.evaluateBinaryExpr(path, e, params)
 	case *ast.InExpr:
 		return m.evaluateInExpr(path, e, params)
 	default:
+		fmt.Fprintf(os.Stderr, "[DEBUG-EvaluateExpression] default=true\n")
 		return true
 	}
 }
@@ -787,6 +799,7 @@ func (m *Matcher) evaluateBinaryExpr(path map[string]interface{}, comp *ast.Bina
 	}
 
 	if leftVal == nil {
+		fmt.Fprintf(os.Stderr, "[DEBUG-evaluateBinaryExpr] leftVal is nil, left=%T right=%T op=%s\n", comp.Left, comp.Right, comp.Operator)
 		return false
 	}
 
@@ -802,11 +815,15 @@ func (m *Matcher) evaluateBinaryExpr(path map[string]interface{}, comp *ast.Bina
 		rightVal = right.Value
 	case *ast.Param:
 		rightVal = params[right.Name]
+		fmt.Fprintf(os.Stderr, "[DEBUG-evaluateBinaryExpr] Param rightVal=%v (%T) from params[%s]\n", rightVal, rightVal, right.Name)
 	case *ast.ParamExpr:
 		rightVal = params[right.Name]
 	}
 
-	return m.compareValues(leftVal, rightVal, comp.Operator)
+	fmt.Fprintf(os.Stderr, "[DEBUG-evaluateBinaryExpr] leftVal=%v (%T) rightVal=%v (%T) op=%s\n", leftVal, leftVal, rightVal, rightVal, comp.Operator)
+	result := m.compareValues(leftVal, rightVal, comp.Operator)
+	fmt.Fprintf(os.Stderr, "[DEBUG-evaluateBinaryExpr] result=%v\n", result)
+	return result
 }
 
 // compareValues compares two values using the given operator.

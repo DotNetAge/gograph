@@ -28,28 +28,31 @@ libgograph_c.a: *.go
 	@echo "✓ Built: libgograph_c.a"
 
 # 生成 Python SWIG 包装
-gograph_wrap.cxx: gograph.i gograph_c.h
+swig/gograph_wrap.cxx: gograph.i gograph_c.h
 	@echo "Generating SWIG wrapper for Python..."
-	swig -python -o gograph_wrap.cxx gograph.i
-	@echo "✓ Generated: gograph_wrap.cxx"
+	mkdir -p swig
+	swig -python -outdir swig -o swig/gograph_wrap.cxx gograph.i
+	@echo "✓ Generated: swig/gograph_wrap.cxx"
 
 # 生成 Java SWIG 包装
-gograph_wrap_java.cxx: gograph.i gograph_c.h
+swig/gograph_wrap_java.cxx: gograph.i gograph_c.h
 	@echo "Generating SWIG wrapper for Java..."
-	swig -java -package org.gograph.binding -o gograph_wrap_java.cxx gograph.i
-	@echo "✓ Generated: gograph_wrap_java.cxx"
+	mkdir -p swig
+	swig -java -package org.gograph.binding -o swig/gograph_wrap_java.cxx gograph.i
+	@echo "✓ Generated: swig/gograph_wrap_java.cxx"
 
 # 生成 C# SWIG 包装
-gograph_wrap_csharp.cxx: gograph.i gograph_c.h
+swig/gograph_wrap_csharp.cxx: gograph.i gograph_c.h
 	@echo "Generating SWIG wrapper for C#..."
-	swig -csharp -namespace GoGraph.Binding -o gograph_wrap_csharp.cxx gograph.i
-	@echo "✓ Generated: gograph_wrap_csharp.cxx"
+	mkdir -p swig
+	swig -csharp -namespace GoGraph.Binding -o swig/gograph_wrap_csharp.cxx gograph.i
+	@echo "✓ Generated: swig/gograph_wrap_csharp.cxx"
 
 # 编译 Python 模块
-_gograph.so: gograph_wrap.cxx libgograph_c.a
+_gograph.so: swig/gograph_wrap.cxx libgograph_c.a
 	@echo "Building Python module..."
 	g++ -fPIC -shared \
-		gograph_wrap.cxx \
+		swig/gograph_wrap.cxx \
 		-o _gograph.so \
 		$(shell python3-config --includes) \
 		-L. -lgograph_c \
@@ -86,7 +89,7 @@ clean:
 	rm -f gograph_wrap*.cxx
 	rm -f gograph.py gograph_wrap.c
 	rm -f *.class
-	rm -rf build dist *.egg-info
+	rm -rf build dist *.egg-info swig
 	@echo "✓ Cleaned."
 
 # 帮助

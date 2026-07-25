@@ -3,6 +3,8 @@
 // and basic CRUD operations.
 package storage
 
+import "strings"
+
 // Key prefixes for different types of data in the storage layer.
 // These prefixes ensure that different data types are stored in separate
 // key ranges for efficient iteration and querying.
@@ -65,7 +67,8 @@ func RelKey(relID string) []byte {
 }
 
 // LabelKey returns the storage key for a label index entry.
-// Uses short label encoding to reduce key size.
+// Uses a lowercased label name directly in the key so that lookups
+// are consistent across process restarts (no short-code encoding).
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -76,14 +79,14 @@ func RelKey(relID string) []byte {
 // Example:
 //
 //	key := storage.LabelKey("Person", "node:a1")
-//	// key = []byte("label:La:node:a1")  (if Person maps to code 'a')
+//	// key = []byte("label:person:node:a1")
 func LabelKey(labelName, nodeID string) []byte {
-	return []byte(KeyPrefixLabel + EncodeLabelKey(labelName) + ":" + nodeID)
+	return []byte(KeyPrefixLabel + strings.ToLower(labelName) + ":" + nodeID)
 }
 
 // LabelKeyPrefix returns the key prefix for all entries with the given label.
 // This is used for iterating over all nodes with a specific label.
-// Uses short label encoding to reduce key size.
+// Uses a lowercased label name directly in the key.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -93,13 +96,13 @@ func LabelKey(labelName, nodeID string) []byte {
 // Example:
 //
 //	prefix := storage.LabelKeyPrefix("Person")
-//	// prefix = []byte("label:La:")  (if Person maps to code 'a')
+//	// prefix = []byte("label:person:")
 func LabelKeyPrefix(labelName string) []byte {
-	return []byte(KeyPrefixLabel + EncodeLabelKey(labelName) + ":")
+	return []byte(KeyPrefixLabel + strings.ToLower(labelName) + ":")
 }
 
 // PropertyKey returns the storage key for a property index entry.
-// Uses short label encoding to reduce key size.
+// Uses a lowercased label name directly in the key.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -111,14 +114,14 @@ func LabelKeyPrefix(labelName string) []byte {
 // Example:
 //
 //	key := storage.PropertyKey("Person", "name", "Alice")
-//	// key = []byte("prop:La:name:Alice")  (if Person maps to code 'a')
+//	// key = []byte("prop:person:name:Alice")
 func PropertyKey(labelName, propName, propValue string) []byte {
-	return []byte(KeyPrefixProp + EncodeLabelKey(labelName) + ":" + propName + ":" + propValue)
+	return []byte(KeyPrefixProp + strings.ToLower(labelName) + ":" + propName + ":" + propValue)
 }
 
 // PropertyKeyPrefix returns the key prefix for all entries with the given label and property name.
 // This is used for iterating over all nodes with a specific label and property.
-// Uses short label encoding to reduce key size.
+// Uses a lowercased label name directly in the key.
 //
 // Parameters:
 //   - labelName: The name of the label
@@ -129,9 +132,9 @@ func PropertyKey(labelName, propName, propValue string) []byte {
 // Example:
 //
 //	prefix := storage.PropertyKeyPrefix("Person", "name")
-//	// prefix = []byte("prop:La:name:")  (if Person maps to code 'a')
+//	prefix = []byte("prop:person:name:")
 func PropertyKeyPrefix(labelName, propName string) []byte {
-	return []byte(KeyPrefixProp + EncodeLabelKey(labelName) + ":" + propName + ":")
+	return []byte(KeyPrefixProp + strings.ToLower(labelName) + ":" + propName + ":")
 }
 
 // AdjKey returns the storage key for an adjacency entry.

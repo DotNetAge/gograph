@@ -163,31 +163,28 @@ func TestPebble(t *testing.T) {
 }
 
 func TestKeys(t *testing.T) {
-	ResetLabelCoder()
-	defer ResetLabelCoder()
-
 	if string(NodeKey("1")) != "node:1" {
 		t.Error("invalid node key")
 	}
 	if string(RelKey("2")) != "rel:2" {
 		t.Error("invalid rel key")
 	}
-	// Label keys now use short encoding: User -> La
-	if string(LabelKey("User", "1")) != "label:La:1" {
-		t.Error("invalid label key")
+	// Label keys use lowercased raw label names for consistency.
+	if string(LabelKey("User", "1")) != "label:user:1" {
+		t.Errorf("invalid label key: got %q", string(LabelKey("User", "1")))
 	}
-	if string(PropertyKey("User", "name", "Alice")) != "prop:La:name:Alice" {
-		t.Error("invalid property key")
+	if string(PropertyKey("User", "name", "Alice")) != "prop:user:name:Alice" {
+		t.Errorf("invalid property key: got %q", string(PropertyKey("User", "name", "Alice")))
 	}
 	if string(AdjKey("1", "KNOWS", "out", "5")) != "adj:1:KNOWS:out:5" {
 		t.Error("invalid adj key")
 	}
 
-	if string(LabelKeyPrefix("User")) != "label:La:" {
-		t.Error("invalid label key prefix")
+	if string(LabelKeyPrefix("User")) != "label:user:" {
+		t.Errorf("invalid label key prefix: got %q", string(LabelKeyPrefix("User")))
 	}
-	if string(PropertyKeyPrefix("User", "name")) != "prop:La:name:" {
-		t.Error("invalid property key prefix")
+	if string(PropertyKeyPrefix("User", "name")) != "prop:user:name:" {
+		t.Errorf("invalid property key prefix: got %q", string(PropertyKeyPrefix("User", "name")))
 	}
 	if string(AdjKeyPrefix("1")) != "adj:1:" {
 		t.Error("invalid adj key prefix")
