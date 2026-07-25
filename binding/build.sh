@@ -95,18 +95,21 @@ generate_swig_wrapper() {
                 cd ..
                 return
             fi
-            swig -python -o gograph_wrap.cxx gograph.i
-            print_info "✓ Python wrapper generated: gograph/gograph_wrap.cxx"
+            mkdir -p swig
+            swig -python -o swig/gograph_wrap.cxx gograph.i
+            print_info "✓ Python wrapper generated: swig/gograph_wrap.cxx"
             ;;
         
         java)
-            swig -java -package org.gograph.binding -o gograph_wrap.cxx gograph.i
-            print_info "✓ Java wrapper generated: gograph/gograph_wrap.cxx"
+            mkdir -p swig
+            swig -java -package org.gograph.binding -o swig/gograph_wrap.cxx gograph.i
+            print_info "✓ Java wrapper generated: swig/gograph_wrap.cxx"
             ;;
         
         csharp)
-            swig -csharp -namespace GoGraph.Binding -o gograph_wrap.cxx gograph.i
-            print_info "✓ C# wrapper generated: gograph/gograph_wrap.cxx"
+            mkdir -p swig
+            swig -csharp -namespace GoGraph.Binding -o swig/gograph_wrap.cxx gograph.i
+            print_info "✓ C# wrapper generated: swig/gograph_wrap.cxx"
             ;;
         
         *)
@@ -135,7 +138,7 @@ build_python_module() {
     
     # 编译共享库
     g++ -fPIC -shared \
-        gograph_wrap.cxx \
+        swig/gograph_wrap.cxx \
         -o _gograph.so \
         ${PYTHON_INCLUDE} \
         -L. -lgograph_c \

@@ -2,6 +2,7 @@
 CypherDB Python Binding Setup
 
 This setup.py builds a Python package for CypherDB, a high-performance graph database.
+Version is automatically derived from git tags via setuptools-scm.
 """
 
 import os
@@ -9,8 +10,6 @@ import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
-
-__version__ = "0.2.3"
 
 class CustomBuildExt(build_ext):
     """Custom build extension to copy pre-built shared library"""
@@ -30,7 +29,6 @@ class CustomBuildExt(build_ext):
 
 setup(
     name="cypherdb",
-    version=__version__,
     description="CypherDB is a lightweight, zero-dependency, embedded graph database written entirely in Go and Python bindings. Think of it as SQLite for Graph Databases",
     long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",

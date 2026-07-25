@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cypherdb"
-version = "0.3.0"
+dynamic = ["version"]
 description = "CypherDB is a lightweight, zero-dependency, embedded graph database written entirely in Go. Think of it as SQLite for Graph Databases"
 authors = [{ name = "Ray", email = "ray@rayainfo.cn" }]
 readme = "README.md"
@@ -31,3 +31,5 @@ requires-python = ">=3.9"
 [project.urls]
 "Homepage" = "https://github.com/DotNetAge/gograph"
 "Repository" = "https://github.com/DotNetAge/gograph"
+
+[tool.setuptools_scm]

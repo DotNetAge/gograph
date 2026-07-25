@@ -1,0 +1,147 @@
+# GoReleaser 配置文件
+# 用于自动化构建、打包和发布 GoGraph 的跨平台二进制、deb/rpm 包和 Homebrew 公式
+# 版本: 2.x
+version: 2
+
+project_name: gograph
+
+env:
+  - GO111MODULE=on
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod verify
+
+builds:
+  - id: gograph
+    main: ./cmd/gograph
+    binary: gograph
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.Version={{.Version}}
+    tags:
+      - netgo
+
+archives:
+  - id: binary
+    builds:
+      - gograph
+    formats:
+      - tar.gz
+    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}_{{.Arch}}"
+    files:
+      - none*
+
+nfpms:
+  - id: packages
+    package_name: gograph
+    file_name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}_{{.Arch}}"
+    builds:
+      - gograph
+    formats:
+      - deb
+      - rpm
+    vendor: DotNetAge
+    homepage: https://github.com/DotNetAge/gograph
+    maintainer: Ray <ray@rayainfo.cn>
+    description: |-
+      GoGraph is a lightweight, zero-dependency embedded graph database
+      written entirely in Go. Think of it as SQLite for Graph Databases.
+    license: MIT
+    section: database
+    priority: optional
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/gograph/copyright
+      - src: README.md
+        dst: /usr/share/doc/gograph/README.md
+
+brews:
+  - name: gograph
+    repository:
+      owner: DotNetAge
+      name: homebrew-gograph
+    commit_author:
+      name: goreleaserbot
+      email: noreply@github.com
+    homepage: https://github.com/DotNetAge/gograph
+    description: "GoGraph: embedded graph database — SQLite for graphs, written in Go"
+    license: MIT
+    test: |
+      system "#{bin}/gograph", "--help"
+    install: |
+      bin.install "gograph"
+    extra_install: |
+      man1.install "manpages/gograph.1.gz" if File.exist?("manpages/gograph.1.gz")
+
+release:
+  github:
+    owner: DotNetAge
+    name: gograph
+  draft: false
+  prerelease: auto
+  name_template: "{{.ProjectName}} v{{.Version}}"
+  header: |
+    ## GoGraph {{.Version}} ({{.Date}})
+
+    ### 下载
+
+    | 平台 | 架构 | 格式 |
+    |------|------|------|
+    | Linux | amd64 | [tar.gz]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_linux_amd64.tar.gz) • [deb]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_linux_amd64.deb) • [rpm]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_linux_amd64.rpm) |
+    | Linux | arm64 | [tar.gz]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_linux_arm64.tar.gz) • [deb]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_linux_arm64.deb) • [rpm]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_linux_arm64.rpm) |
+    | macOS | amd64 | [tar.gz]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_darwin_amd64.tar.gz) |
+    | macOS | arm64 | [tar.gz]({{.ReleaseURL}}/download/{{.Tag}}/gograph_{{.Version}}_darwin_arm64.tar.gz) |
+
+    ### 安装方式
+
+    **Homebrew**:
+    ```bash
+    brew install DotNetAge/tap/gograph
+    ```
+
+    **Debian/Ubuntu**:
+    ```bash
+    sudo dpkg -i gograph_{{.Version}}_linux_amd64.deb
+    ```
+
+    **RHEL/CentOS/Fedora**:
+    ```bash
+    sudo rpm -ivh gograph_{{.Version}}_linux_amd64.rpm
+    ```
+
+    **PyPI (Python 绑定)**:
+    ```bash
+    pip install cypherdb
+    ```
+
+  footer: |
+    ---
+    Released by [GoReleaser](https://goreleaser.com)
+
+changelog:
+  use: github
+  sort: asc
+  groups:
+    - title: "🚀 新功能"
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: "🐛 修复"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: "📝 文档"
+      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: "💎 其他改动"
+      order: 999
+
+announce:
+  skip: true

@@ -5,42 +5,68 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: '发布版本号 (如 v0.4.0)'
+        required: true
+        type: string
 
 permissions:
   contents: write
+  id-token: write  # 用于 PyPI OIDC 发布
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build:
+  # ─── GoReleaser: Go 二进制 + deb/rpm + Homebrew ─────────────────────────
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # 完整历史用于 changelog
+
+      - name: Set up Go
+        uses: actions/setup-go@v6.3.0
+        with:
+          go-version: '1.25.1'
+          cache: true
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ─── PyPI: 构建各平台 wheel ─────────────────────────────────────────────
+  pypi-build:
+    needs: [goreleaser]
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
-            goos: linux
-            goarch: amd64
-            ext: ''
-          - os: ubuntu-latest
-            goos: linux
-            goarch: arm64
-            ext: ''
-          - os: macos-latest
-            goos: darwin
-            goarch: amd64
-            ext: ''
-          - os: macos-latest
-            goos: darwin
-            goarch: arm64
-            ext: ''
-          - os: windows-latest
-            goos: windows
-            goarch: amd64
-            ext: '.exe'
+            python: '3.12'
+            wheel_tag: manylinux_2_28_x86_64
+          - os: macos-13        # Intel macOS
+            python: '3.12'
+            wheel_tag: macosx_10_15_x86_64
+          - os: macos-latest    # Apple Silicon macOS
+            python: '3.14'
+            wheel_tag: macosx_11_0_arm64
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v6.3.0
@@ -48,86 +74,90 @@ jobs:
           go-version: '1.25.1'
           cache: true
 
-      - name: Build
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 0
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          OUTPUT_NAME="gograph-${VERSION}-${GOOS}-${GOARCH}${matrix.ext}"
-          
-          go build -ldflags="-s -w -X github.com/DotNetAge/gograph/cmd/gograph.Version=${VERSION}" -o "${OUTPUT_NAME}" ./cmd/gograph
-          
-          echo "Built: ${OUTPUT_NAME}"
-          ls -la "${OUTPUT_NAME}"
-
-      - name: Upload Release Asset
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: gograph ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          files: |
-            gograph-*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-binding:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Set up Go
-        uses: actions/setup-go@v6.3.0
-        with:
-          go-version: '1.25.1'
-          cache: true
-
-      - name: Build Go static library
-        run: |
-          cd binding
-          go build -buildmode=c-archive -o libgograph_c.a ./cmd
-
-      - name: Setup Python
+      - name: Setup Python ${{ matrix.python }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python }}
 
       - name: Install SWIG
         run: |
-          sudo apt-get update
-          sudo apt-get install -y swig
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update
+            sudo apt-get install -y swig python3-dev python3-pip
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            brew install swig
+          fi
+
+      - name: Build Go static library
+        working-directory: binding
+        run: go build -buildmode=c-archive -o libgograph_c.a ./cmd
 
       - name: Generate SWIG wrapper
         working-directory: binding
         run: |
-          swig -python -o gograph_wrap.cxx gograph.i
+          mkdir -p swig
+          swig -python -o swig/gograph_wrap.cxx gograph.i
 
-      - name: Build Python extension
+      - name: Build _gograph.so
         working-directory: binding
         run: |
           g++ -fPIC -shared \
-            gograph_wrap.cxx \
+            swig/gograph_wrap.cxx \
             -o _gograph.so \
-            $(python3 -m py_compile --print path)/../include/python3.12 \
+            $(python3-config --includes) \
             -L. -lgograph_c \
             $(python3-config --ldflags --embed) \
-            -lpthread
+            -lpthread \
+            -Wl,-rpath,./
+          ls -la _gograph.so
 
-      - name: Upload Python binding
-        uses: softprops/action-gh-release@v2
+      - name: Verify _gograph.so loads
+        working-directory: binding
+        run: |
+          python3 -c "
+          import sys
+          sys.path.insert(0, '.')
+          # 只加载 so 符号，不运行完整数据库测试
+          import ctypes
+          lib = ctypes.CDLL('./_gograph.so')
+          print(f'✓ _gograph.so loaded successfully: {lib}')
+          "
+
+      - name: Build wheel
+        working-directory: binding
+        run: |
+          pip install --upgrade pip build wheel
+          python3 -m build --wheel --outdir dist/
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.ref }}
-          release_name: gograph ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          files: |
-            binding/_gograph.so
-            binding/gograph.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: wheels-${{ runner.os }}-${{ matrix.wheel_tag }}
+          path: binding/dist/*.whl
+          if-no-files-found: error
+
+  # ─── PyPI: 发布到 pypi.org ────────────────────────────────────────────
+  pypi-publish:
+    needs: [pypi-build]
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write  # 必须，用于 Trusted Publishing
+    steps:
+      - name: Download all platform wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist/
+
+      - name: Display downloaded wheels
+        run: ls -la dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          verbose: true
+          # 使用 Trusted Publishing (OIDC)，无需 API token
+          # 需要在 PyPI 上为项目配置 Trusted Publisher
